@@ -19,7 +19,7 @@ $.lang.register('twitter.tweet', '[Twitter Feed von @(twitterid)] $1');
 $.lang.register('twitter.tweet.mention', '[Twitter Feed von @(twitterid)] @$1: $2');
 $.lang.register('twitter.reward.announcement', 'Retweets von $1! Belohnung von $2 vergeben!');
 $.lang.register('twitter.usage', 'Verwendung: !twitter [lasttweet | lastmention | lastretweet | set | post | id]');
-$.lang.register('twitter.id', '$1 ist auf Twitter @$2 [twitter.com/$2]');
+$.lang.register('twitter.id', '$1 ist auf Twitter @$2: twitter.com/$2');
 $.lang.register('twitter.usage.id', '("!twitter usage" für die Verwendung)');
 $.lang.register('twitter.set.usage', 'Verwendung: !twitter set [message | polldelay | poll | post | updatetimer | reward]');
 $.lang.register('twitter.set.polldelay.usage', 'Verwendung: !twitter set polldelay [mentions | retweets | hometimeline | usertimeline]');

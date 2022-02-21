@@ -34,9 +34,9 @@ if (file_exists('rollbar-allowed-versions.json')) {
     $allowed_versions = array();
 }
 
-foreach($maxver as $v) {
-    if (!array_key_exists($v, $allowed_versions)) {
-        $allowed_versions[$v] = array();
+foreach($maxver as $k => $v) {
+    if (!array_key_exists($k, $allowed_versions)) {
+        $allowed_versions[$k] = array();
     }
 }
 
@@ -44,7 +44,7 @@ if (!array_key_exists($item['type'], $allowed_versions)) {
     doexit(400, 'environment not allowed', 'env');
 }
 
-if (!in_array($item['version'], $allowed_versions[$item['type']])) {
+if (strlen($item['version']) > 0 && !in_array($item['version'], $allowed_versions[$item['type']])) {
     array_push($allowed_versions[$item['type']], $item['version']);
     while (count($allowed_versions[$item['type']]) > $maxver[$item['type']]) {
         array_shift($allowed_versions[$item['type']]);

@@ -42,7 +42,7 @@ import tv.phantombot.RepoVersion;
 public class GitHubAPIv3 {
 
     private static GitHubAPIv3 instance;
-    private static final String sAPIURL = "https://api.github.com/repos/PhantomBot/PhantomBot";
+    private static final String sAPIURL = "https://api.github.com/repos/PhantomBotDE/PhantomBotDE";
     private static final int iHTTPTimeout = 2 * 1000;
 
     public static synchronized GitHubAPIv3 instance() {

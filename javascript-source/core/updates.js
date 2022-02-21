@@ -211,25 +211,7 @@
         $.inidb.set('updates', 'installedv3.4.1', 'true');
     }
 
-    /* version 3.5.0 updates */
-    if (!$.inidb.exists('updates', 'installedv3.5.0') || $.inidb.get('updates', 'installedv3.5.0') != 'true') {
-        $.consoleLn('Starte PhantomBot Update 3.5.0 Updates...');
-
-        // Remove org.mozilla.javascript entries in phantombot_time
-        var keys = $.inidb.GetKeyList('time', ''),
-        i;
-
-        for (i = 0; i < keys.length; i++) {
-            if ($.javaString(keys[i]) === null || $.javaString(keys[i]) === undefined || $.javaString(keys[i]).startsWith('org.mozilla.javascript')) {
-                $.inidb.RemoveKey('time', '', keys[i]);
-            }
-        }
-
-        $.consoleLn('PhantomBot update 3.5.0 abgeschlossen!');
-        $.inidb.set('updates', 'installedv3.5.0', 'true');
-    }
-
-    /* version 3.4.7 updates */
+    /* version 3.4.8 updates */
     if (!$.inidb.exists('updates', 'installedv3.4.8') || $.inidb.get('updates', 'installedv3.4.8') != 'true') {
         $.consoleLn('Starte PhantomBot Update 3.4.8 Updates...');
 
@@ -287,6 +269,24 @@
 
         $.consoleLn('PhantomBot Update 3.4.8 abgeschlossen!');
         $.inidb.set('updates', 'installedv3.4.8', 'true');
+    }
+
+    /* version 3.5.0 updates */
+    if (!$.inidb.exists('updates', 'installedv3.5.0') || $.inidb.get('updates', 'installedv3.5.0') != 'true') {
+        $.consoleLn('Starte PhantomBot Update 3.5.0 Updates...');
+
+        // Remove org.mozilla.javascript entries in phantombot_time
+        var keys = $.inidb.GetKeyList('time', ''),
+        i;
+
+        for (i = 0; i < keys.length; i++) {
+            if ($.javaString(keys[i]) === null || $.javaString(keys[i]) === undefined || $.javaString(keys[i]).startsWith('org.mozilla.javascript')) {
+                $.inidb.RemoveKey('time', '', keys[i]);
+            }
+        }
+
+        $.consoleLn('PhantomBot Update 3.5.0 abgeschlossen!');
+        $.inidb.set('updates', 'installedv3.5.0', 'true');
     }
 
     /**

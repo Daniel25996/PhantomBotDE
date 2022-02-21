@@ -32,7 +32,7 @@ function str_includes_array_value($needle, $haystack) {
             return true;
         }
     }
-
+    
     return false;
 }
 

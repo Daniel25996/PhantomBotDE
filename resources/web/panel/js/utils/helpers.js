@@ -921,16 +921,24 @@ $(function () {
         return helpers.getModuleStatus(id, toggle, swit);
     };
 
-    helpers.isSwappedSubscriberVIP = async function () {
-        let done = false;
-        let result;
-        socket.getDBValue('helpers_isSwappedSubscriberVIP', 'settings', 'isSwappedSubscriberVIP', function (e) {
-            result = e.settings === '1';
-            done = true;
-        });
-        await helpers.promisePoll(() => done);
-        return result;
+    let _isSwappedSubscriberVIP = false;
+    helpers.isSwappedSubscriberVIP = function () {
+        return _isSwappedSubscriberVIP;
     };
+
+    let checkSwappedSubscriberVIP = function () {
+        socket.getDBValue('helpers_isSwappedSubscriberVIP', 'settings', 'isSwappedSubscriberVIP', function (e) {
+            _isSwappedSubscriberVIP = e.settings === '1';
+        });
+    };
+
+    setTimeout(function () {
+        checkSwappedSubscriberVIP();
+    }, 5e3);
+
+    setInterval(function () {
+        checkSwappedSubscriberVIP();
+    }, 30e3);
 
     /*
      * @function Gets the group ID by its name.
@@ -1160,8 +1168,8 @@ $(function () {
 
                 let html = '';
                 if (version.startsWith("nightly-")) {
-                    html = 'Nightly build ' + version.substr(8) + ' von PhantomBotDE ist jetzt zum Download verfügbar! <br>' +
-                            'Hole dir deine eigene Kopie der nightly build ' + version.substr(8) + ' von PhantomBot ' +
+                    html = 'Nightly build ' + version.slice(8) + ' von PhantomBotDE ist jetzt zum Download verfügbar! <br>' +
+                            'Hole dir deine eigene Kopie der nightly build ' + version.slice(8) + ' von PhantomBot ' +
                             $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', downloadLink).append('hier.')[0].outerHTML + ' <br>' +
                             '<b>Bitte prüfe ' +
                             $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('diesen Guide')[0].outerHTML +
@@ -1262,7 +1270,7 @@ $(function () {
     };
 
     helpers.parseHashmap = function () {
-        var hash = window.location.hash.substr(1);
+        var hash = window.location.hash.slice(1);
         var kvs = hash.split('&');
         var hashmap = [];
         var spl;

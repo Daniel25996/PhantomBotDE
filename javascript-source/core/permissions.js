@@ -615,17 +615,17 @@
             userGroups[2] = 'Moderator';
             $.inidb.set('groups', '2', 'Moderator');
         }
-        if (!userGroups[3] || userGroups[3] != 'Abonnent') {
-            userGroups[3] = 'Abonnent';
-            $.inidb.set('groups', '3', 'Abonnent');
+        if (!userGroups[getSubscriberGroupID()] || userGroups[getSubscriberGroupID()] != 'Abonnent') {
+            userGroups[getSubscriberGroupID()] = 'Abonnent';
+            $.inidb.set('groups', getSubscriberGroupID() + '', 'Abonnent');
         }
         if (!userGroups[4] || userGroups[4] != 'Spender') {
             userGroups[4] = 'Spender';
             $.inidb.set('groups', '4', 'Spender');
         }
-        if (!userGroups[5] || userGroups[5] != 'VIP') {
-            userGroups[5] = 'VIP';
-            $.inidb.set('groups', '5', 'VIP');
+        if (!userGroups[getVIPGroupID()] || userGroups[getVIPGroupID()] != 'VIP') {
+            userGroups[getVIPGroupID()] = 'VIP';
+            $.inidb.set('groups', getVIPGroupID() + '', 'VIP');
         }
         if (!userGroups[6] || userGroups[6] != 'Stammzuschauer') {
             userGroups[6] = 'Stammzuschauer';

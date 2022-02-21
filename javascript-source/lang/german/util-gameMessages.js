@@ -99,7 +99,7 @@ $.lang.register('slot.lost.58', 'Nicht Pech oder Schicksal sind schuld. Du hast 
 $.lang.register('slot.lost.59', 'Du warst nicht schlecht. Du warst erbärmlich! Geh nach Hause!');
 $.lang.register('slot.lost.60', 'Du hast es wenigstens versucht, egal wie erbärmlich es auch war.');
 $.lang.register('slot.lost.61', 'Mein Vater könnte gewinnen und der ist tot!');
-$.lang.register('slot.lost.62', 'Du und die Tastatur! Ich habe trotzdem gewonnen! Du gehst mir auf die Nerven und du stinkst, stinkst erbärmlich!vv');
+$.lang.register('slot.lost.62', 'Du und die Tastatur! Ich habe trotzdem gewonnen! Du gehst mir auf die Nerven und du stinkst, stinkst erbärmlich!');
 
 
 // Win messages for the roll (roll.js) mini game:
@@ -175,7 +175,7 @@ $.lang.register('roll.lost.47', 'Ha-ha-ha! Was ist da los? Du hasst es zu verlie
 $.lang.register('roll.lost.48', 'Alte Worte der Weisheit... " Du Niete! "');
 $.lang.register('roll.lost.49', 'Ich werde dir nicht sagen, dass du schlecht bist. Ich werde es mir einfach denken, okay?');
 $.lang.register('roll.lost.50', 'Ich denke, dass ich etwas daraus gelernt habe. Du bist nichts...');
-$.lang.register('roll.lost.51', 'Hey! Mach dir keine Sorgen darüber! Du weisst schon... so schlecht zu sein!');
+$.lang.register('roll.lost.51', 'Hey! Mach dir keine Sorgen darüber! Du weißt schon... so schlecht zu sein!');
 $.lang.register('roll.lost.52', 'Die Tragödie aller Verlierer ist, dass sie denken, dass sie am Rande des Sieges wären!');
 $.lang.register('roll.lost.53', 'Hm! Du solltest wieder zu deinen Puzzles zurück kehren!');
 $.lang.register('roll.lost.54', 'Die Vergangenheit ist die Vergangenheit! Wenn du jetzt ein Verlierer bist, dann warst du vorher auch schon einer!');
