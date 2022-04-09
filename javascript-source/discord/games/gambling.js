@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,16 +87,26 @@
          * @discordcommandpath gamble [amount] - Gamble your points.
          */
         if (command.equalsIgnoreCase('gamble')) {
-            if (isNaN(parseInt(action))) {
-                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gambling.usage'));
-            } else {
-                var twitchName = $.discord.resolveTwitchName(event.getSenderId());
-                if (twitchName !== null) {
-                    gamble(channel, twitchName, mention, sender, parseInt(action));
-                } else {
-                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.nolink'));
-                }
+            var twitchName = $.discord.resolveTwitchName(event.getSenderId());
+            if (twitchName === null) {
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.nolink'));
+                return;
             }
+
+            var points;
+            if ($.equalsIgnoreCase(action, "all") || $.equalsIgnoreCase(action, "allin") || $.equalsIgnoreCase(action, "all-in")){
+                points = $.getUserPoints(sender);
+            } else if ($.equalsIgnoreCase(action, "half")){
+                points = Math.floor($.getUserPoints(sender)/2);
+            } else if (isNaN(parseInt(action))) {
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gambling.usage'));
+                return;
+            } else {
+                points = parseInt(action);
+            }
+
+            gamble(channel, twitchName, mention, sender, points);
+            return;
         }
 
         if (command.equalsIgnoreCase('gambling')) {

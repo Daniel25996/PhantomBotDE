@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+    Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -112,7 +112,7 @@
                             <br />
                             <div id="instructions">
                                 <ol>
-                                    <li>Erstelle eine neue Twitch-Anwendung, falls noch nicht geschehen<br />
+                                    <li>Erstelle eine neue Twitch-Anwendung, falls noch nicht geschehen. Es spielt keine Rolle, welches Twitch-Konto für diesen Schritt verwendet wird<br />
                                         <ol>
                                             <li>Gehe zum <a href="https://dev.twitch.tv/" target="_blank">Twitch Developer Portal</a> und melde dich an</li>
                                             <li>Klicke auf <i>Your Console</i> in der oberen rechten Ecke</li>
@@ -145,7 +145,7 @@
                                         </ol>
                                     </li>
                                     <li>
-                                        Klicke hier, um die Client-ID und das Client-Geheimnis zu speichern: <i id="saveclient" class="fas fa-save"></i>
+                                        Klicke den Disketten-Icon am Ende der Zeile, um die Client-ID und das Client-Geheimnis zu speichern: <i id="saveclient" class="fas fa-save"></i>
                                     </li>
                                     <li>
                                         Re-Autorisiere den Bot und Broadcaster mit den Schaltfl&auml;chen unten
@@ -185,7 +185,7 @@
                                                 <ul><li>Dies ist das Konto, als das der Bot im Chat angezeigt wird und das Konto, als das der Bot chattet.</li></ul>
                                             </li>
                                             <li id="connectbroadcasterinstruction"><div class="text-bold" style="display: inline;">Verbinde mit Twitch Broadcaster</div> - vergewissere dich, bevor du auf die Schaltfl&auml;che klickst, dass du mit dem Twitch-Konto des Broadcasters eingeloggt bist, wenn nicht, klicke auf <div class="text-bold" style="display: inline;">"Das bist nicht du? Abmelden."</div> oben auf der Twitch-Seite.
-                                                <ul><li>Dies ist der Account des Broadcasters, an dessen Kanal der Bot teilnehmen wird.</li></ul>
+                                                <ul><li>Dies ist der Account des Broadcasters, an dessen Kanal der Bot teilnehmen wird und verwendet diesen, um API-Anfragen zu autorisieren.</li></ul>
                                             </li>
                                         </ul>
                                     </div>
@@ -289,15 +289,15 @@
                                 "tooltip": "Wird verwendet, um in PubSub auf Moderationsaktionen zu achten."
                             },
                             "channel:read:hype_train": {
-                                "desc": "[Helix] Informationen zu aktuellen/vergangenen Hype-Trains abrufen",
+                                "desc": "Informationen zu aktuellen/vergangenen Hype-Trains abrufen",
                                 "tooltip": "Wird verwendet, um in EventSub nach Hype-Train-Benachrichtigungen zu suchen."
                             },
                             "channel:read:polls": {
-                                "desc": "[Helix] Informationen zu aktuellen/vergangenen Umfragen abrufen",
+                                "desc": "Informationen zu aktuellen/vergangenen Umfragen abrufen",
                                 "tooltip": "Wird verwendet, um in EventSub auf Twitch-Umfragebenachrichtigungen zu achten."
                             },
                             "channel:read:predictions": {
-                                "desc": "[Helix] Informationen zu aktuellen/vergangenen Vorhersagen abrufen",
+                                "desc": "Informationen zu aktuellen/vergangenen Vorhersagen abrufen",
                                 "tooltip": "Wird verwendet, um in EventSub auf Twitch-Vorhersagebenachrichtigungen zu achten."
                             },
                             "channel:read:redemptions": {
@@ -313,7 +313,7 @@
                                 "tooltip": "Wird von der zweiten Chat-Verbindung verwendet, um nach Host-Benachrichtigungen zu suchen."
                             },
                             "moderation:read": {
-                                "desc": "[Helix] Lies die Liste der Kanalmoderatoren",
+                                "desc": "Lies die Liste der Kanalmoderatoren",
                                 "tooltip": "Wird verwendet, um zu beobachten, ob Moderatoren in EventSub hinzufügt/entfernt werden."
                             }
                         };

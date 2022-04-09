@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,11 @@
  */
 package tv.phantombot.twitch.api;
 
+import com.gmt2001.HttpRequest;
+import com.gmt2001.httpclient.HttpClient;
+import com.gmt2001.httpclient.HttpClientResponse;
+import com.gmt2001.httpclient.HttpUrl;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import java.math.BigInteger;
 import java.net.URLEncoder;
@@ -31,10 +36,8 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -42,10 +45,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 import reactor.core.publisher.Mono;
-import reactor.netty.ByteBufFlux;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.http.client.HttpClient.RequestSender;
-import reactor.netty.http.client.HttpClientResponse;
 import reactor.util.annotation.Nullable;
 import tv.phantombot.PhantomBot;
 
@@ -61,12 +60,6 @@ public class Helix {
     private static final Helix INSTANCE = new Helix();
     // The base URL for Twitch API Helix.
     private static final String BASE_URL = "https://api.twitch.tv/helix";
-    // The user agent for our requests to Helix.
-    private static final String USER_AGENT = "PhantomBot/2021";
-    // Our content type, should always be JSON.
-    private static final String CONTENT_TYPE = "application/json";
-    // Timeout which to wait for a response before killing it (5 seconds).
-    private static final int TIMEOUT_TIME = 10000;
     private static final int QUEUE_TIME = 5000;
     private static final int CACHE_TIME = 30000;
     private static final int MUTATOR_CACHE_TIME = 1000;
@@ -188,31 +181,6 @@ public class Helix {
     }
 
     /**
-     * Method that adds extra information to our returned object.
-     *
-     * @param obj
-     * @param isSuccess
-     * @param requestType
-     * @param data
-     * @param url
-     * @param responseCode
-     * @param exception
-     * @param exceptionMessage
-     */
-    private void generateJSONObject(JSONObject obj, boolean isSuccess,
-            String requestType, String data, String url, int responseCode,
-            String exception, String exceptionMessage) throws JSONException {
-
-        obj.put("_success", isSuccess);
-        obj.put("_type", requestType);
-        obj.put("_post", data);
-        obj.put("_url", url);
-        obj.put("_http", responseCode);
-        obj.put("_exception", exception);
-        obj.put("_exceptionMessage", exceptionMessage);
-    }
-
-    /**
      * Method that handles data for Helix.
      *
      * @param type
@@ -221,6 +189,19 @@ public class Helix {
      * @return
      */
     private JSONObject handleRequest(HttpMethod type, String endPoint, String data) throws JSONException {
+        return this.handleRequest(type, endPoint, data, false);
+    }
+
+    /**
+     * Method that handles data for Helix.
+     *
+     * @param type
+     * @param url
+     * @param data
+     * @param isRetry
+     * @return
+     */
+    private JSONObject handleRequest(HttpMethod type, String endPoint, String data, boolean isRetry) throws JSONException {
         JSONObject returnObject = new JSONObject();
         int responseCode = 0;
 
@@ -228,47 +209,37 @@ public class Helix {
 
         try {
             if (this.oAuthToken == null || this.oAuthToken.isBlank()) {
-                throw new IllegalArgumentException("apiauth ist erforderlich");
+                throw new IllegalArgumentException("apioauth is required");
             }
-
-            RequestSender client = HttpClient.create().secure().baseUrl(BASE_URL).headers(h -> {
-                h.add("Content-Type", CONTENT_TYPE);
-                h.add("Client-ID", PhantomBot.instance().getProperties().getProperty("clientid", (TwitchValidate.instance().getAPIClientID().isBlank()
-                        ? "7wpchwtqz7pvivc3qbdn1kajz42tdmb" : TwitchValidate.instance().getAPIClientID())));
-                h.add("Authorization", "Bearer " + this.oAuthToken);
-                h.add("User-Agent", USER_AGENT);
-            }).request(type).uri(endPoint);
 
             if (data == null) {
                 data = "";
             }
 
-            CallResponse response = client.send(ByteBufFlux.fromString(Mono.just(data)))
-                    .responseSingle((res, buf) -> buf.asString().map(content -> new CallResponse(res, content)).defaultIfEmpty(new CallResponse(res, "{}")))
-                    .toFuture().get(TIMEOUT_TIME, TimeUnit.MILLISECONDS);
+            HttpHeaders headers = HttpClient.createHeaders(type, true);
+            headers.add("Client-ID", PhantomBot.instance().getProperties().getProperty("clientid", (TwitchValidate.instance().getAPIClientID().isBlank()
+                    ? "7wpchwtqz7pvivc3qbdn1kajz42tdmb" : TwitchValidate.instance().getAPIClientID())));
+            headers.add("Authorization", "Bearer " + this.oAuthToken);
+            HttpClientResponse response = HttpClient.request(type, HttpUrl.fromUri(BASE_URL, endPoint), headers, data);
 
-            if (response == null) {
-                throw new NullPointerException("response");
-            }
-
-            responseCode = response.response.status().code();
+            responseCode = response.responseCode().code();
 
             if (PhantomBot.instance().getProperties().getPropertyAsBoolean("helixdebug", false)) {
-                com.gmt2001.Console.debug.println("Helix-Ratelimit-Antwort > Limit: " + response.response.responseHeaders().getAsString("Ratelimit-Limit")
-                        + " <> Remaining: " + response.response.responseHeaders().getAsString("Ratelimit-Remaining") + " <> Reset: "
-                        + response.response.responseHeaders().getAsString("Ratelimit-Reset"));
+                com.gmt2001.Console.debug.println("Helix ratelimit response > Limit: " + response.responseHeaders().getAsString("Ratelimit-Limit")
+                        + " <> Remaining: " + response.responseHeaders().getAsString("Ratelimit-Remaining") + " <> Reset: "
+                        + response.responseHeaders().getAsString("Ratelimit-Reset"));
             }
 
-            this.updateRateLimits(response.response.responseHeaders().getInt("Ratelimit-Limit", RATELIMIT_DEFMAX),
-                    response.response.responseHeaders().getInt("Ratelimit-Remaining", 1),
-                    response.response.responseHeaders().getInt("Ratelimit-Reset", (int) (Date.from(Instant.now()).getTime() / 1000)) * 1000);
+            this.updateRateLimits(response.responseHeaders().getInt("Ratelimit-Limit", RATELIMIT_DEFMAX),
+                    response.responseHeaders().getInt("Ratelimit-Remaining", 1),
+                    response.responseHeaders().getInt("Ratelimit-Reset", (int) (Date.from(Instant.now()).getTime() / 1000)) * 1000);
 
-            returnObject = new JSONObject(response.body);
+            returnObject = response.jsonOrThrow();
             // Generate the return object,
-            this.generateJSONObject(returnObject, true, type.name(), data, endPoint, responseCode, "", "");
-        } catch (IllegalArgumentException | InterruptedException | NullPointerException | ExecutionException | TimeoutException | JSONException ex) {
+            HttpRequest.generateJSONObject(returnObject, true, type.name(), data, endPoint, responseCode, "", "");
+        } catch (Throwable ex) {
             // Generate the return object.
-            this.generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
+            HttpRequest.generateJSONObject(returnObject, false, type.name(), data, endPoint, responseCode, ex.getClass().getSimpleName(), ex.getMessage());
         }
 
         if (returnObject.has("error") && nextWarning.before(new Date())) {
@@ -284,6 +255,11 @@ public class Helix {
             StackTraceElement st = com.gmt2001.Console.debug.findCaller("tv.phantombot.twitch.api.Helix");
             com.gmt2001.Console.debug.println("Caller: [" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]");
             com.gmt2001.Console.debug.println(returnObject.toString(4));
+        }
+
+        if (!isRetry && (responseCode == 401 || (returnObject.has("status") && returnObject.getInt("status") == 401)) && PhantomBot.instance() != null) {
+            PhantomBot.instance().getAuthFlow().refresh(PhantomBot.instance().getProperties(), false, true);
+            return this.handleRequest(type, endPoint, data, true);
         }
 
         return returnObject;
@@ -417,7 +393,7 @@ public class Helix {
         }
 
         if (game_id == null && (language == null || language.isBlank()) && (title == null || title.isBlank()) && delay < 0) {
-            throw new IllegalArgumentException("muss ein gültiges Argument liefern");
+            throw new IllegalArgumentException("must provide one valid argument");
         }
 
         JSONStringer js = new JSONStringer();
@@ -528,7 +504,7 @@ public class Helix {
     public Mono<JSONObject> getUsersFollowsAsync(@Nullable String from_id, @Nullable String to_id, int first, @Nullable String after)
             throws JSONException, IllegalArgumentException {
         if ((from_id == null || from_id.isBlank()) && (to_id == null || to_id.isBlank())) {
-            throw new IllegalArgumentException("from_id oder to_id");
+            throw new IllegalArgumentException("from_id or to_id");
         }
 
         if (first <= 0) {
@@ -595,7 +571,7 @@ public class Helix {
 
         String userIds = null;
 
-        if (user_id != null && user_id.size() > 0) {
+        if (user_id != null && !user_id.isEmpty()) {
             userIds = user_id.stream().limit(100).collect(Collectors.joining("&user_id="));
         }
 
@@ -651,7 +627,7 @@ public class Helix {
     public Mono<JSONObject> getStreamsAsync(int first, @Nullable String before, @Nullable String after, @Nullable List<String> user_id,
             @Nullable List<String> user_login, @Nullable List<String> game_id, @Nullable List<String> language) throws JSONException, IllegalArgumentException {
         if (before != null && !before.isBlank() && after != null && !after.isBlank()) {
-            throw new IllegalArgumentException("kann nicht gleichzeitig vorher und nachher verwendet werden");
+            throw new IllegalArgumentException("can not use before and after at the same time");
         }
 
         if (first <= 0) {
@@ -662,25 +638,25 @@ public class Helix {
 
         String userIds = null;
 
-        if (user_id != null && user_id.size() > 0) {
+        if (user_id != null && !user_id.isEmpty()) {
             userIds = user_id.stream().limit(100).collect(Collectors.joining("&user_id="));
         }
 
         String userLogins = null;
 
-        if (user_login != null && user_login.size() > 0) {
+        if (user_login != null && !user_login.isEmpty()) {
             userLogins = user_login.stream().limit(100).collect(Collectors.joining("&user_login="));
         }
 
         String gameIds = null;
 
-        if (game_id != null && game_id.size() > 0) {
+        if (game_id != null && !game_id.isEmpty()) {
             gameIds = game_id.stream().limit(100).collect(Collectors.joining("&game_id="));
         }
 
         String languages = null;
 
-        if (language != null && language.size() > 0) {
+        if (language != null && !language.isEmpty()) {
             languages = language.stream().limit(100).collect(Collectors.joining("&language="));
         }
 
@@ -719,19 +695,19 @@ public class Helix {
     public Mono<JSONObject> getUsersAsync(@Nullable List<String> id, @Nullable List<String> login) throws JSONException {
         String userIds = null;
 
-        if (id != null && id.size() > 0) {
+        if (id != null && !id.isEmpty()) {
             userIds = id.stream().limit(100).collect(Collectors.joining("&id="));
         }
 
         String userLogins = null;
 
-        if (login != null && login.size() > 0) {
+        if (login != null && !login.isEmpty()) {
             userLogins = login.stream().limit(100 - (id != null ? id.stream().count() : 0)).collect(Collectors.joining("&login="));
         }
 
         boolean both = false;
 
-        if (id != null && id.size() > 0 && id.size() < 100 && login != null && login.size() > 0) {
+        if (id != null && !id.isEmpty() && id.size() < 100 && login != null && !login.isEmpty()) {
             both = true;
         }
 
@@ -925,12 +901,12 @@ public class Helix {
             @Nullable String after, @Nullable String language, @Nullable String period, @Nullable String sort, @Nullable String type)
             throws JSONException, IllegalArgumentException {
         if ((id == null || id.isEmpty()) && (user_id == null || user_id.isBlank()) && (game_id == null || game_id.isBlank())) {
-            throw new IllegalArgumentException("id, user_id, oder game_id");
+            throw new IllegalArgumentException("id, user_id, or game_id");
         }
 
         if (id != null && !id.isEmpty() && ((after != null && !after.isBlank()) || (before != null && !before.isBlank()) || (language != null && !language.isBlank())
                 || (period != null && !period.isBlank()) || (sort != null && !sort.isBlank()) || (type != null && !type.isBlank()))) {
-            throw new IllegalArgumentException("andere Parameter mit Video-ID nicht zulässig");
+            throw new IllegalArgumentException("other parameters not allowed with video id");
         }
 
         int c = 0;
@@ -947,11 +923,11 @@ public class Helix {
         }
 
         if (c > 1) {
-            throw new IllegalArgumentException("Es darf nur eine von id, user_id oder game_id angegeben werden");
+            throw new IllegalArgumentException("only one of id, user_id, or game_id may be specified");
         }
 
         if (before != null && !before.isBlank() && after != null && !after.isBlank()) {
-            throw new IllegalArgumentException("kann nicht gleichzeitig vorher und nachher verwendet werden");
+            throw new IllegalArgumentException("can not use before and after at the same time");
         }
 
         if (period != null && !period.isBlank() && !period.equals("all") && !period.equals("day") && !period.equals("week") && !period.equals("month")) {
@@ -974,7 +950,7 @@ public class Helix {
 
         String ids = null;
 
-        if (id != null && id.size() > 0) {
+        if (id != null && !id.isEmpty()) {
             ids = id.stream().limit(100).collect(Collectors.joining("&id="));
         }
 
@@ -1044,11 +1020,11 @@ public class Helix {
      */
     public Mono<JSONObject> getTeamsAsync(@Nullable String name, @Nullable String id) throws JSONException, IllegalArgumentException {
         if ((name == null || name.isBlank()) && (id == null || id.isBlank())) {
-            throw new IllegalArgumentException("Name oder ID");
+            throw new IllegalArgumentException("name or id");
         }
 
         if (name != null && !name.isBlank() && id != null && !id.isBlank()) {
-            throw new IllegalArgumentException("Es kann nur einer von Name oder ID angegeben werden");
+            throw new IllegalArgumentException("only one of name or id can be specified");
         }
 
         String endpoint = "/teams?" + this.qspValid("name", name) + this.qspValid("id", id);
@@ -1108,12 +1084,12 @@ public class Helix {
             @Nullable String before, @Nullable String after, @Nullable String started_at, @Nullable String ended_at)
             throws JSONException, IllegalArgumentException {
         if ((id == null || id.isEmpty()) && (broadcaster_id == null || broadcaster_id.isBlank()) && (game_id == null || game_id.isBlank())) {
-            throw new IllegalArgumentException("id, broadcaster_id, oder game_id");
+            throw new IllegalArgumentException("id, broadcaster_id, or game_id");
         }
 
         if (id != null && !id.isEmpty() && ((after != null && !after.isBlank()) || (before != null && !before.isBlank())
                 || (ended_at != null && !ended_at.isBlank()) || (started_at != null && !started_at.isBlank()))) {
-            throw new IllegalArgumentException("andere Parameter mit Clip-ID nicht erlaubt");
+            throw new IllegalArgumentException("other parameters not allowed with clip id");
         }
 
         if (ended_at != null && !ended_at.isBlank() && (started_at == null || started_at.isBlank())) {
@@ -1134,11 +1110,11 @@ public class Helix {
         }
 
         if (c > 1) {
-            throw new IllegalArgumentException("Es darf nur eine von id, Broadcaster_id oder game_id angegeben werden");
+            throw new IllegalArgumentException("only one of id, broadcaster_id, or game_id may be specified");
         }
 
         if (before != null && !before.isBlank() && after != null && !after.isBlank()) {
-            throw new IllegalArgumentException("kann nicht gleichzeitig vorher und nachher verwendet werden");
+            throw new IllegalArgumentException("can not use before and after at the same time");
         }
 
         if (first <= 0) {
@@ -1149,7 +1125,7 @@ public class Helix {
 
         String ids = null;
 
-        if (id != null && id.size() > 0) {
+        if (id != null && !id.isEmpty()) {
             ids = id.stream().limit(100).collect(Collectors.joining("&id="));
         }
 
@@ -1170,17 +1146,6 @@ public class Helix {
         private CallRequest(Date expires, Mono<JSONObject> processor) {
             this.expires = expires;
             this.processor = processor;
-        }
-    }
-
-    private class CallResponse {
-
-        private final HttpClientResponse response;
-        private final String body;
-
-        private CallResponse(HttpClientResponse response, String body) {
-            this.response = response;
-            this.body = body;
         }
     }
 }

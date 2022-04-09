@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+# Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -116,11 +116,18 @@ if mount | grep '/tmp' | grep -q noexec; then
 fi
 
 if [[ ! -x "${JAVA}" ]]; then
-    echo "Java hat nicht die ausführbare Berechtigung"
-    echo "Führe den folgenden Befehl aus, um dies zu beheben:"
+    echo "Java hat keine Ausführungsberechtigung"
+    echo "Versuch das zu beheben. Du wirst aufgefordert, dein Passwort einzugeben, um sudo zu aktivieren"
+    echo "Wenn dies fehlschlägt, führe bitte den folgenden Befehl aus, um dies zu beheben:"
     echo "   sudo chmod u+x ${JAVA}"
 
-    exit 1
+    sudo chmod u+x ${JAVA}
+
+    if [[ ! -x "${JAVA}" ]]; then
+        echo ""
+        echo "Befehl fehlgeschlagen. Bitte führe den obigen Befehl aus, um das Problem zu beheben"
+        exit 1
+    fi
 fi
 
 ${JAVA} --add-exports java.base/sun.security.x509=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED ${tmp} -Duser.language=en -Djava.security.policy=config/security -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar PhantomBotDE.jar ${1}

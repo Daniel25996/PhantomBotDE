@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ $.lang.register('gambling.error.max', 'Du darfst nur um maximal $1 spielen!');
 $.lang.register('gambling.error.min', 'u musst ein Minimum von $1 setzen, um spielen zu können!');
 $.lang.register('gambling.lost', '$1 würfelte $2. $3 verloren. $5'); // Verwenden Sie $4 für die Punkte, die der Benutzer noch hat.
 $.lang.register('gambling.won', '$1 würfelte $2. $3 gewonnen! $5'); // Verwenden Sie $4 für die Punkte, die der Benutzer noch hat.
-$.lang.register('gambling.usage', 'Verwendung: !gamble [Betrag]');
+$.lang.register('gambling.usage', 'Verwendung: !gamble [Betrag / all / half]');
 $.lang.register('gambling.set.max.usage', 'Verwendung: !gamblesetmax [Betrag]');
 $.lang.register('gambling.set.max', 'Maximaler Glücksspieleinsatz auf $1 gesetzt.');
 $.lang.register('gambling.set.min.usage', 'Verwendung: !gamblesetmin [Betrag]');

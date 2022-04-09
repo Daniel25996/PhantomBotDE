@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,14 +32,14 @@ public interface WsFrameHandler {
      *
      * @return {@code this}
      */
-    public WsFrameHandler register();
+    WsFrameHandler register();
 
     /**
      * Gets the {@link WsAuthenticationHandler} assigned to this endpoint
      *
      * @return An {@link WsAuthenticationHandler}
      */
-    public WsAuthenticationHandler getAuthHandler();
+    WsAuthenticationHandler getAuthHandler();
 
     /**
      * Handles the WebSocket frame and sends a response back to the client, if necessary
@@ -49,5 +49,5 @@ public interface WsFrameHandler {
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param frame The {@link WebSocketFrame} to process
      */
-    public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame);
+    void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame);
 }

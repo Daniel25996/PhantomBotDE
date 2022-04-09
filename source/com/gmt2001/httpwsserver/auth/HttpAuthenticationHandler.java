@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ public interface HttpAuthenticationHandler {
      * @param req The {@link FullHttpRequest} to check
      * @return {@code true} if authenticated, {@code false} otherwise
      */
-    public boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req);
+    boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req);
 
     /**
      * Invalidates the authentication of the specified {@link ChannelHandlerContext}, if supported by the authentication handler
@@ -46,5 +46,5 @@ public interface HttpAuthenticationHandler {
      * @param req The {@link FullHttpRequest}
      * @throws UnsupportedOperationException Thrown if the selected authentication handler does not support this operation
      */
-    public void invalidateAuthorization(ChannelHandlerContext ctx, FullHttpRequest req);
+    void invalidateAuthorization(ChannelHandlerContext ctx, FullHttpRequest req);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,10 +36,10 @@
 
             var streamer = $.user.sanitize(args[0]),
                     streamerDisplay = $.username.resolve(streamer),
-                    streamerGame = $.getGame(streamer),
+                    streamerGame = $.javaString($.getGame(streamer)),
                     streamerURL = 'https://twitch.tv/' + streamer;
 
-            if (streamerGame == null || streamerGame.length === 0) {
+            if (streamerGame === null || streamerGame.isBlank()) {
                 $.say($.lang.get('corecommands.shoutout.no.game', streamerDisplay, streamerURL));
                 return;
             }

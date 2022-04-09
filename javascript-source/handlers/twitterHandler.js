@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -436,7 +436,7 @@
                     return;
                 }
                 var retval = $.twitter.updateStatus(String(args.splice(1).join(' ')).replace(/\(enter\)/g, '\r\n')) + '';
-                if (retval.equals('true')) {
+                if (retval) {
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.post.sent', args.splice(1).join(' ')));
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('twitter.post.failed'));

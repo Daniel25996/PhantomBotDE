@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,10 @@
  */
 
 function alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue) {
+    alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue, false)
+}
+
+function alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue, replay) {
     if (announceFollows === true && followToggle === true) {
         if (s.match(/\(name\)/)) {
             s = $.replace(s, '(name)', $.username.resolve(follower));
@@ -44,7 +48,7 @@ function alertFollow(announceFollows, followToggle, s, follower, followReward, f
 
         followQueue.add(s);
 
-        if (followReward > 0) {
+        if (followReward > 0 && !replay) {
             $.inidb.incr('points', follower, followReward);
         }
 
@@ -202,7 +206,7 @@ function alertFollow(announceFollows, followToggle, s, follower, followReward, f
             if (action === undefined) {
                 return;
             }
-            alertFollow(announceFollows, followToggle, followMessage, action, followReward, followQueue);
+            alertFollow(announceFollows, followToggle, followMessage, action, followReward, followQueue, true);
         }
     });
 

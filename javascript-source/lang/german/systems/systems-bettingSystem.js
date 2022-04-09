@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ $.lang.register('bettingsystem.close.success.winners', 'Es haben $1 Personen die
 $.lang.register('bettingsystem.save.format', 'Titel: "$1", Optionen: "$2", Gesamt platzierte Wetteinsätze: $3, Gesamt platzierte Wetten: $4, Gewonnene Punkte: $5.');
 $.lang.register('bettingsystem.results', 'Aktuelle Wette: Titel: "$1", Optionen: "$2", Gesamtpunkte: $3, Gesamte Teilnehmer: $4');
 $.lang.register('bettingsystem.global.usage', 'Verwendung: !bet [open / close / save / saveformat / lookup / results / togglemessages / gain]');
-$.lang.register('bettingsystem.bet.usage', 'Verwendung: !bet [Wetteinsatz] [Option]');
+$.lang.register('bettingsystem.bet.usage', 'Verwendung: !bet [Wetteinsatz / all / half] [Option]');
 $.lang.register('bettingsystem.bet.error.neg', 'Du kannst keinen negativen Wetteinsatz "$1" angeben!');
 $.lang.register('bettingsystem.bet.error.min', 'Der Mindesteinsatz beträgt $1.');
 $.lang.register('bettingsystem.bet.error.max', 'Der Maximaleinsatz beträgt $1.');

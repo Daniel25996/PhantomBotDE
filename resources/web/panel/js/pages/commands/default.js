@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -145,7 +145,7 @@ $(function() {
                         tables: ['permcom', 'cooldown', 'pricecom', 'paycom', 'disabledCommands'],
                         keys: [command, command, command, command, command]
                     }, function(e) {
-                        let cooldownJson = (e.cooldown === null ? { isGlobal: 'true', seconds: 0 } : JSON.parse(e.cooldown));
+                        let cooldownJson = (e.cooldown === null ? { globalSec: -1, userSec: -1 } : JSON.parse(e.cooldown));
 
                         // Get advance modal from our util functions in /utils/helpers.js
                         helpers.getAdvanceModal('edit-command', 'Befehl bearbeiten', 'Speichern', $('<form/>', {
@@ -169,12 +169,12 @@ $(function() {
                                 // Append input box for the command reward.
                                 .append(helpers.getInputGroup('command-reward', 'number', 'Belohnung', '0', helpers.getDefaultIfNullOrUndefined(e.paycom, '0'),
                                     'Belohnung in Punkten, die der Benutzer beim Ausführen des Befehls erhalten soll.'))
-                                // Append input box for the command cooldown.
-                                .append(helpers.getInputGroup('command-cooldown', 'number', 'Abklingzeit (Sekunden)', '5', cooldownJson.seconds,
-                                    'Abklingzeit des Befehls in Sekunden.')
-                                    // Append checkbox for if the cooldown is global or per-user.
-                                    .append(helpers.getCheckBox('command-cooldown-global', cooldownJson.isGlobal === 'true', 'Global',
-                                        'Wenn diese Option aktiviert ist, wird die Abklingzeit auf alle im Kanal angewendet. Wenn diese Option nicht aktiviert ist, wird die Abklingzeit pro Benutzer angewendet.')))
+                                // Append input box for the global command cooldown.
+                                .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Globale Abklingzeit (Sekunden)', '-1', cooldownJson.globalSec,
+                                    'Globale Abklingzeit des Befehls in Sekunden. -1 Verwendet die botweiten Einstellungen.'))
+                                // Append input box for per-user cooldown.
+                                    .append(helpers.getCheckBox('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', cooldownJson.userSec,
+                                        'Abklingzeit des Befehls pro Benutzer in Sekunden. -1 entfernt die Abklingzeit pro Benutzer.'))
                                 .append(helpers.getCheckBox('command-disabled', e.disabledCommands != null, 'Deaktiviert',
                                     'Wenn diese Option aktiviert ist, kann der Befehl nicht im Chat verwendet werden.'))
                                 // Callback function to be called once we hit the save button on the modal.
@@ -182,15 +182,16 @@ $(function() {
                             let commandPermission = $('#command-permission'),
                                 commandCost = $('#command-cost'),
                                 commandReward = $('#command-reward'),
-                                commandCooldown = $('#command-cooldown'),
-                                commandCooldownGlobal = $('#command-cooldown-global').is(':checked'),
+                                commandCooldownGlobal = $('#command-cooldown-global'),
+                                commandCooldownUser = $('#command-cooldown-user'),
                                 commandDisabled = $('#command-disabled').is(':checked');
 
                             // Handle each input to make sure they have a value.
                             switch (false) {
                                 case helpers.handleInputNumber(commandCost):
                                 case helpers.handleInputNumber(commandReward):
-                                case helpers.handleInputNumber(commandCooldown):
+                                case helpers.handleInputNumber(commandCooldownGlobal, -1):
+                                case helpers.handleInputNumber(commandCooldownUser, -1):
                                     break;
                                 default:
                                     // Save command information here and close the modal.
@@ -202,7 +203,7 @@ $(function() {
                                         updateCommandDisabled(command, commandDisabled, function () {
                                             // Add the cooldown to the cache.
                                             socket.wsEvent('default_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
-                                                ['add', command, commandCooldown.val(), String(commandCooldownGlobal)], function() {
+                                                ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function() {
                                                 // Edit the command permission.
                                                 socket.sendCommand('default_command_permisison_update', 'permcomsilent ' + command + ' ' +
                                                     helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function() {

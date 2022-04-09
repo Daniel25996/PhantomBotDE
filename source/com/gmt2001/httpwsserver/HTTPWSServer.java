@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,6 +102,7 @@ public final class HTTPWSServer {
      * @param sslFile The path to a Java Keystore (.jks) file that contains a Private Key and Certificate Trust Chain or {@code null} to disable
      * SSL/TLS support
      * @param sslPass The password to the .jks file specified in {@code sslFile} or {@code null} if not needed or not using SSL/TLS support
+     * @param botName The bot name to use for the DN of the self-signed certificate
      * @return An initialized {@link HTTPWSServer}
      */
     public static synchronized HTTPWSServer instance(String ipOrHostname, int port, boolean useHttps, String sslFile, String sslPass, String botName) {
@@ -121,6 +122,7 @@ public final class HTTPWSServer {
      * @param sslFile The path to a Java Keystore (.jks) file that contains a Private Key and Certificate Trust Chain or {@code null} to disable
      * SSL/TLS support
      * @param sslPass The password to the .jks file specified in {@code sslFile} or {@code null} if not needed or not using SSL/TLS support
+     * @param botName The bot name to use for the DN of the self-signed certificate
      */
     private HTTPWSServer(String ipOrHostname, int port, boolean useHttps, String sslFile, String sslPass, String botName) {
         try {
@@ -182,27 +184,42 @@ public final class HTTPWSServer {
         return this.sslEnabled || PhantomBot.instance().getProperties().getPropertyAsBoolean("proxybypasshttps", false);
     }
 
-    private void generateAutoSsl() {
+    void generateAutoSsl() {
         this.generateAutoSsl(PhantomBot.instance().getBotName());
+    }
+
+    void generateAutoSsl(boolean forceNew) {
+        this.generateAutoSsl(PhantomBot.instance().getBotName(), forceNew);
+    }
+
+    void generateAutoSsl(String botName) {
+        this.generateAutoSsl(botName, false);
     }
 
     /**
      * Manages generation of the AutoSsl certificate
+     *
+     * @param botName The bot name to use in the certificates DN
+     * @param forceNew If true, forces a brand new key pair to be generated
      */
-    private void generateAutoSsl(String botName) {
+    void generateAutoSsl(String botName, boolean forceNew) {
         try {
-            KeyPair kp;
-            Key key = ks.getKey("phantombot", "pbselfsign".toCharArray());
-            if (key instanceof PrivateKey) {
-                // Get certificate of public key
-                Certificate cert = ks.getCertificate("phantombot");
+            KeyPair kp = null;
+            if (!forceNew) {
+                Key key = ks.getKey("phantombot", "pbselfsign".toCharArray());
+                if (key instanceof PrivateKey) {
+                    // Get certificate of public key
+                    Certificate cert = ks.getCertificate("phantombot");
 
-                // Get public key
-                PublicKey publicKey = cert.getPublicKey();
+                    // Get public key
+                    PublicKey publicKey = cert.getPublicKey();
 
-                // Return a key pair
-                kp = new KeyPair(publicKey, (PrivateKey) key);
-            } else {
+                    // Return a key pair
+                    kp = new KeyPair(publicKey, (PrivateKey) key);
+                }
+            }
+
+            if (kp == null) {
                 kp = SelfSignedX509CertificateGenerator.generateKeyPair(SelfSignedX509CertificateGenerator.RECOMMENDED_KEY_SIZE);
             }
 
@@ -212,7 +229,7 @@ public final class HTTPWSServer {
 
             ks.setKeyEntry("phantombot", kp.getPrivate(), "pbselfsign".toCharArray(), new Certificate[]{cert});
 
-            try (OutputStream outputStream = Files.newOutputStream(Paths.get(sslFile))) {
+            try ( OutputStream outputStream = Files.newOutputStream(Paths.get(sslFile))) {
                 ks.store(outputStream, "pbselfsign".toCharArray());
             }
 
@@ -236,7 +253,7 @@ public final class HTTPWSServer {
      * @throws UnrecoverableKeyException
      */
     private void reloadSslContext() throws IOException, NoSuchAlgorithmException, CertificateException, KeyStoreException, UnrecoverableKeyException {
-        try (InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
+        try ( InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
             ks.load(inputStream, this.sslPass.toCharArray());
 
             KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");

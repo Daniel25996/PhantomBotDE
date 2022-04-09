@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+    Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -71,12 +71,29 @@
                             <div class="form-group">
                                 <label for="auction-timer">Timer (Sekunden)</label>
                                 <input type="number" min="0" class="form-control" id="auction-timer" value="0"
-                                    data-toggle="tooltip" title="Wie lange die Auktion geöffnet sein soll. 0 ist bis zum manuellen Schließen."/>
+                                    data-toggle="tooltip" title="How long the auction should be opened for. 0 is until manually closed."/>
+                            </div>
+
+                            <!-- Extension Time -->
+                            <div class="form-group">
+                                <label for="auction-extTime">Verlängerungszeit (Sekunden)</label>
+                                <input type="number" min="0" class="form-control" id="auction-extTime" value="15"
+                                    data-toggle="tooltip" title="Die Dauer, um die die Auktion verlängert wird, wenn ein Benutzer in den letzten 10 Sekunden bietet."/>
+                            </div>
+
+                            <!-- Extension Time -->
+                            <div class="pretty p-icon">
+                                <input type="checkbox" id="auction-isPoints" checked="true"
+                                    data-toggle="tooltip" title="Soll die Auktion das Punktesystem des Bots verwenden?"/>
+                                <div class="state p-default">
+                                    <i class="icon fa fa-check"></i>
+                                    <label>Use Points</label>
+                                </div>
                             </div>
 
                             <!-- Show results -->
                             <div class="form-group" style="padding-top: 50px; text-align: center;">
-                                <p style="font-size: 25px;"><b>Höchstbietender:</b> <span style="font-size: 20px;" id="auction-top-bidder">PhantomBotDE</span>
+                                <p style="font-size: 25px;"><b>Höchstbietender:</b> <span style="font-size: 20px;" id="auction-top-bidder">Kein Gebot erhalten</span>
                                     <b><span style="margin-left: 10%;">Punkte:</span></b> <span style="font-size: 20px;" id="auction-points">0</span></p>
                             </div>
                         </div>

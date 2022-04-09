@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,11 +34,24 @@ public class HttpOptionalSslHandler extends OptionalSslHandler {
     HttpOptionalSslHandler(SslContext sslContext) {
         super(sslContext);
     }
-    
+
     @Override
     protected ChannelHandler newNonSslHandler(ChannelHandlerContext context) {
         context.pipeline().addBefore("pagehandler", "httpsslredirect", new HttpSslRedirectHandler());
         context.pipeline().addBefore("wshandler", "wssslerror", new WsSslErrorHandler());
         return null;
+    }
+
+    /**
+     * Handles exceptions that are thrown up the stack
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param cause The exception
+     */
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        if (cause.getMessage().contains("no cipher suites in common")) {
+            HTTPWSServer.instance().generateAutoSsl(true);
+        }
     }
 }

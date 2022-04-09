@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -331,12 +331,14 @@
         for (i = 0; i < keys.length; i++) {
             var json = JSON.parse($.inidb.get('blackList', keys[i]));
 
-            if (json != null) {
+            if (json !== null) {
                 if (json.isRegex) {
                     try {
                         json.phrase = new RegExp(json.phrase.replace('regex:', ''));
                     } catch (ex) {
-                        // Failed to create regex, ignore this and don't make it a blacklist.
+                        // Failed to create regex, use as non-regex.
+                        json.phrase = json.phrase.replace('regex:', '').toLowerCase();
+                        json.isRegex = false;
                         continue;
                     }
                 } else {

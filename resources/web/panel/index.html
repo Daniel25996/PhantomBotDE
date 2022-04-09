@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+    Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -405,8 +405,8 @@
                     </li>
 
                     <!-- Third tab -->
-                    <li class="disabled">
-                        <a class="disabled" href="#third-side-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-cogs"></i></a>
+                    <li>
+                        <a href="#third-side-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-cogs"></i></a>
                     </li>
                 </ul>
 
@@ -414,21 +414,15 @@
                 <div class="tab-content">
                     <!-- First tab. -->
                     <div id="main-side-tab" class="tab-pane active">
-                        <h4 class="control-sidebar-heading">Layout-Optionen</h4>
+                        <h4 class="control-sidebar-heading">Tools</h4>
 
                         <div class="form-group">
                             <div class="control-sidebar-subheading">
-                                <div class="pretty p-icon pull-right" style="margin-right: 0;">
-                                    <input type="checkbox" id="dark-mode-toggle"/>
-                                    <div class="state p-default">
-                                        <i class="icon fa fa-check"></i>
-                                        <label></label>
-                                    </div>
-                                </div>
-                                <label for="dark-mode-toggle">Dunkler Modus</label>
+                                <button type="button" class="btn btn-primary pull-right disabled" id="restart-bot-btn" data-candisable="true">Execute</button>
+                                <label for="restart-bot-btn">Neustart</label>
                             </div>
 
-                            <p>Aktivieren Sie den dunklen Modus des Panels.</p>
+                            <p>Den Bot neustarten.</p>
                         </div>
                     </div>
 
@@ -487,7 +481,18 @@
                         <h4 class="control-sidebar-heading">Allgemeine Einstellungen</h4>
 
                         <div class="form-group">
+                            <div class="control-sidebar-subheading">
+                                <div class="pretty p-icon pull-right" style="margin-right: 0;">
+                                    <input type="checkbox" id="dark-mode-toggle"/>
+                                    <div class="state p-default">
+                                        <i class="icon fa fa-check"></i>
+                                        <label></label>
+                                    </div>
+                                </div>
+                                <label for="dark-mode-toggle">Dark Mode</label>
+                            </div>
 
+                            <p>Activate the panel's dark mode.</p>
                         </div>
                     </div>
                 </div>

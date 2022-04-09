@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,16 +28,17 @@ import javax.crypto.spec.SecretKeySpec;
  *
  * @author Søren Poulsen and gmt2001
  */
-public class HMAC {
+public final class HMAC {
 
     private HMAC() {
     }
 
     /**
      * Calculates an HMAC-SHA256
+     *
      * @param secretKey The secret key
      * @param message The message to calculate the mac on
-     * @return 
+     * @return
      */
     public static byte[] calcHmacSha256(byte[] secretKey, byte[] message) {
         byte[] hmacSha256 = null;
@@ -56,9 +57,10 @@ public class HMAC {
 
     /**
      * Calculates an HMAC-SHA256 and returns the MAC as a hex-encoded string
+     *
      * @param secretKey The secret key
      * @param message The message to calculate the mac on
-     * @return 
+     * @return
      */
     public static String calcHmacSha256(String secretKey, String message) {
         return String.format("%064x", new BigInteger(1, calcHmacSha256(secretKey.getBytes(), message.getBytes())));
@@ -66,6 +68,7 @@ public class HMAC {
 
     /**
      * Calculates an HMAC-SHA256 and compares it to an existing MAC
+     *
      * @param secretKey The secret key
      * @param message The message to calculate the mac on
      * @param mac The MAC to compare to
@@ -77,6 +80,7 @@ public class HMAC {
 
     /**
      * Calculates an HMAC-SHA256 and compares it to an existing MAC
+     *
      * @param secretKey The secret key
      * @param message The message to calculate the mac on
      * @param mac The MAC to compare to

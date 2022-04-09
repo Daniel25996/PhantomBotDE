@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,9 @@
         if ($.equalsIgnoreCase(sender, $.botName)) {
             return;
         }
+        if ($.isTwitchBot(sender.toLowerCase())) {
+			return;
+		}
         if ($.isOnline($.channelName) && welcomeEnabled && (welcomeMessage || welcomeMessageFirst)) {
             var lastUserMessage = $.getIniDbNumber('welcomeLastUserMessage', sender),
                 firstTimeChatter = lastUserMessage === undefined,

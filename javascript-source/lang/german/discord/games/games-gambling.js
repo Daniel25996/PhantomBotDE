@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ $.lang.register('discord.gambling.error.max', 'Du kannst maximal $1 Setzen.');
 $.lang.register('discord.gambling.error.min', 'Du musst mindestens $1 Setzen.');
 $.lang.register('discord.gambling.lost', '$1 rollte eine $2 und verliert $3 von $4. $5'); // Verwende $4 für die verbleibenden Punkte des Benutzers
 $.lang.register('discord.gambling.won', '$1 rollte eine $2 und gewinnt $3! $5'); // Verwende $4 für die verbleibenden Punkte des Benutzers
-$.lang.register('discord.gambling.usage', 'Verwendung: !gamble [Betrag]');
+$.lang.register('discord.gambling.usage', 'Verwendung: !gamble [Betrag / all / half]');
 $.lang.register('discord.gambling.set.max.usage', 'Verwendung: !gambling setmax [Betrag]');
 $.lang.register('discord.gambling.set.max', 'Maximalen Einsatz geändert: $1!');
 $.lang.register('discord.gambling.set.min.usage', 'Verwendung: !gambling setmin [Betrag]');

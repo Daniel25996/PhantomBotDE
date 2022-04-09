@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,17 @@ $.lang.register('quotesystem.add.success', 'Neues Zitat von $1 mit der ID #$2 hi
 $.lang.register('quotesystem.del.usage', 'Verwedung: !delquote [Zitat ID]');
 $.lang.register('quotesystem.del.success', 'Zitat $1 wurde gelöscht. Es sind noch $2 Zitate vorhanden.');
 $.lang.register('quotesystem.del.404', 'Zitat $1 konnte nicht gelöscht werden... Bist du sicher, dass es existiert?');
-$.lang.register('quotesystem.get.success', '[(id)] "(quote)", von (user) ((date))'); // Tags = (id) (quote) (user) (game) (date) //
+$.lang.register('quotesystem.get.success', '[(id)] "(quote)", von (user) ((date))'); // Tags = (id) (quote) (user) (userrank) (game) (date) //
 $.lang.register('quotesystem.get.404', 'Kann Zitat  $1 nicht finden... Bist du sicher, dass es existiert?');
 $.lang.register('quotesystem.edit.usage', 'Verwendung: !editquote [Zitat ID] [Nutzer|Kategorie|Zitat] Text...]');
 $.lang.register('quotesystem.edit.user.success', 'Benutzername im Zitat von $1, zu $2 geändert.');
 $.lang.register('quotesystem.edit.game.success', 'Kategorie in Zitat von $1, zu $2 geändert.');
 $.lang.register('quotesystem.edit.quote.success', 'Zitat in Zitat von $1, zu $2 geändert.');
 $.lang.register('quotesystem.edit.404', 'Kann Zitat $1 nicht finden... Bist du sicher, dass es existiert?');
-$.lang.register('quotesystem.quotemessage.usage', 'Verwendung: !quotemessage [Nachricht] (Tags: (id) (quote) (user) (game) (date))');
+$.lang.register('quotesystem.quotemessage.usage', 'Verwendung: !quotemessage [Nachricht] (Tags: (id) (quote) (user) (userrank) (game) (date))');
 $.lang.register('quotesystem.quotemessage.success', 'Nachricht zur Verwendung mit Zitaten geändert.');
+$.lang.register('quotesystem.quotedateformat.usage', 'Verwendung: !quotedateformat [Format] - Suche in der Java 11-Dokumentation nach SimpleDateFormat, um Informationen zum Format zu erhalten. Aktuelles Format: $1');
+$.lang.register('quotesystem.quotedateformat.success', 'Das für Zitate verwendete Datumsformat wurde geändert.');
 $.lang.register('quotesystem.searchquote.usage', 'Verwendung: !searchquote [Text] (Muss eine Mindestlänge von 5 Zeichen haben.)');
 $.lang.register('quotesystem.searchquote.404', 'Es konnten keine Übereinstimmungen gefunden werden.');
 $.lang.register('quotesystem.searchquote.found', 'Zitat IDs mit Übereinstimmungen: $1');

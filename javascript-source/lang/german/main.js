@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -303,9 +303,11 @@ $.lang.register('console.received.slowmode.start', 'Nachricht von jtv über den 
 $.lang.register('console.received.subscriberonly.end', 'Nachricht von jtv über die Beendigung des Nur-Abonnenten-Modus erhalten.');
 $.lang.register('console.received.subscriberonly.start', 'Nachricht von jtv über den Start des Nur-Abonnenten-Modus erhalten.');
 $.lang.register('cooldown.set.togglemodcooldown', 'Die Befehl-Abklingzeit wurde $1 für Moderatoren.');
-$.lang.register('cooldown.coolcom.usage', 'Verwendung: !coolcom [Befehl] [Sekunden] [Typ (global / user)] - Wenn du -1 für die Sekunden verwenden, wird die Abklingzeit entfernt.');
+$.lang.register('cooldown.coolcom.usage', 'Verwendung: !coolcom [Befehl] [Sekunden / global=Sekunden / user=Sekunden] [global=Sekunden / user=Sekunden] - Wenn du -1 für die Sekunden verwenden, wird die Abklingzeit entfernt. Nur die Angabe von Sekunden geht von global aus, nur wenn kein sekundäres Argument angegeben wird!');
 $.lang.register('cooldown.coolcom.err', 'Die minimale Abklingzeit, die eingestellt werden kann, beträgt 5 Sekunden.');
-$.lang.register('cooldown.coolcom.set', 'Abklingzeit für Befehl !$1 wurde auf $2 Sekunden gesetzt.');
+$.lang.register('cooldown.coolcom.setGlobal', 'Abklingzeit für Befehl !$1 wurde global auf $2 Sekunden gesetzt.');
+$.lang.register('cooldown.coolcom.setUser', 'Abklingzeit für Befehl !$1 wurde individuell für jeden Benutzer auf $2 Sekunden gesetzt.');
+$.lang.register('cooldown.coolcom.setCombo', 'Abklingzeit für Befehl !$1 wurde global auf $2 Sekunden und zu $3 Sekunden für jeden Benutzer individuell gesetzt.');
 $.lang.register('cooldown.coolcom.remove', 'Abklingzeit für Befehl !$1 wurde entfernt.');
 $.lang.register('cooldown.cooldown.usage', 'Verwendung: !cooldown [togglemoderators / setdefault]');
 $.lang.register('cooldown.default.set', 'Die Standardabklingzeit für Befehle ohne diese, wurde auf $1 Sekunden gesetzt.');
@@ -349,7 +351,8 @@ $.lang.register('init.mod.toggle.price.msg.off', 'Die Preisnachricht wurde deakt
 $.lang.register('init.mod.toggle.price.msg.on', 'Die Preisnachricht wurde aktiviert.');
 $.lang.register('init.toggle.cooldown.msg.on', 'Die Abklingzeit-Meldung wurden aktiviert.');
 $.lang.register('init.toggle.cooldown.msg.off', 'Die Abklingzeit-Meldung wurden deaktiviert.');
-$.lang.register('init.cooldown.msg', 'Befehl "!$1" befindet sich noch im Cooldown. ($2 Sekunden)');
+$.lang.register('init.cooldown.msg.global', 'Befehl !$1 befindet sich noch im globalen Cooldown. ($2 Sekunden übrig)');
+$.lang.register('init.cooldown.msg.user', 'Befehl !$1 ist für dich noch im Cooldown. ($2 Sekunden übrig)');
 $.lang.register('lang.curlang', 'Die aktuelle Sprache ist $1!');
 $.lang.register('lang.lang.404', 'Diese Sprachdatei existiert nicht!');
 $.lang.register('lang.lang.changed', 'Sprache geändert zu $1!');

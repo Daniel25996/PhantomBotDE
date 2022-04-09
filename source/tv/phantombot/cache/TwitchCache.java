@@ -1,7 +1,7 @@
 /* astyle --style=java --indent=spaces=4 --mode=java */
 
  /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import tv.phantombot.event.twitch.clip.TwitchClipEvent;
 import tv.phantombot.event.twitch.gamechange.TwitchGameChangeEvent;
 import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
 import tv.phantombot.event.twitch.titlechange.TwitchTitleChangeEvent;
+import tv.phantombot.twitch.api.Helix;
 
 /**
  * TwitchCache Class
@@ -88,6 +89,10 @@ public class TwitchCache implements Runnable {
             return instance;
         }
         return instance;
+    }
+
+    public static TwitchCache instance() {
+        return instance(PhantomBot.instance().getChannelName());
     }
 
     static {
@@ -167,7 +172,7 @@ public class TwitchCache implements Runnable {
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.println("TwitchCache::run: Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
+                com.gmt2001.Console.err.println("TwitchCache::run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
             }
         }
     }
@@ -271,7 +276,7 @@ public class TwitchCache implements Runnable {
                         this.streamCreatedAt = streamObj.getJSONObject("stream").getString("created_at");
                     } catch (ParseException | JSONException ex) {
                         success = false;
-                        com.gmt2001.Console.err.println("TwitchCache::updateCache: Falsches Datum von Twitch, kann nicht für die Stream-Uptime konvertiert werden (" + streamObj.getJSONObject("stream").getString("created_at") + ")");
+                        com.gmt2001.Console.err.println("TwitchCache::updateCache: Bad date from Twitch, cannot convert for stream uptime (" + streamObj.getJSONObject("stream").getString("created_at") + ")");
                         com.gmt2001.Console.debug.printStackTrace(ex);
                     }
 
@@ -293,7 +298,8 @@ public class TwitchCache implements Runnable {
                 if (streamObj.has("message")) {
                     com.gmt2001.Console.err.println("TwitchCache::updateCache: " + streamObj.getString("message"));
                 } else {
-                    com.gmt2001.Console.debug.println("TwitchCache::updateCache: Fehler beim Aktualisieren.");
+                    com.gmt2001.Console.debug.println("TwitchCache::updateCache: Failed to update.");
+                    com.gmt2001.Console.debug.println(streamObj.toString());
                 }
             }
         } catch (JSONException ex) {
@@ -393,7 +399,7 @@ public class TwitchCache implements Runnable {
                 if (streamObj.has("message")) {
                     com.gmt2001.Console.err.println("TwitchCache::updateCache: " + streamObj.getString("message"));
                 } else {
-                    com.gmt2001.Console.debug.println("TwitchCache::updateCache: Aktualisierung fehlgeschlagen.");
+                    com.gmt2001.Console.debug.println("TwitchCache::updateCache: Failed to update.");
                 }
             }
         } catch (IOException | JSONException ex) {
@@ -567,5 +573,13 @@ public class TwitchCache implements Runnable {
 
     public void updateViewerCount(int viewers) {
         this.viewerCountPS = viewers;
+    }
+
+    public void updateGame() {
+        JSONObject channelInfo = Helix.instance().getChannelInformationAsync(UsernameCache.instance().getID(this.channel)).block();
+
+        if (channelInfo != null && channelInfo.has("data") && channelInfo.getJSONArray("data").length() > 0) {
+            this.gameTitle = channelInfo.getJSONArray("data").getJSONObject(0).optString("game_name");
+        }
     }
 }

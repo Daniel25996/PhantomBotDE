@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,14 +27,14 @@
 /**
  * PhantomBot v3.5.0
  */
-(function() {
+(function () {
     var modules,
-        versions,
-        sounds,
-        i;
+            versions,
+            sounds,
+            i;
 
     /** New setup */
-    if ($.changed == true && $.changed != null && $.changed != undefined && !$.inidb.exists('updates', 'installedNewBot') && $.inidb.get('updates', 'installedNewBot') != 'true') {
+    if ($.changed !== undefined && $.changed !== null && $.changed === true && !$.inidb.GetBoolean('updates', '', 'installedNewBot')) {
         $.consoleLn('');
         $.consoleLn('Initialisiere PhantomBot Version ' + $.version + ' zum ersten Mal...');
 
@@ -125,22 +125,22 @@
         modules = "";
         versions = "";
         $.changed = false;
-        $.inidb.set('updates', 'installedNewBot', 'true');
+        $.inidb.SetBoolean('updates', '', 'installedNewBot', true);
         $.consoleLn('Initialisierung abgeschlossen!');
         $.consoleLn('');
     }
 
     /* version 3.3.0 updates */
-    if (!$.inidb.exists('updates', 'installedv3.3.0') || $.inidb.get('updates', 'installedv3.3.0') != 'true') {
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.3.0')) {
         $.consoleLn('Starte PhantomBot Update 3.3.0 Update...');
 
         $.consoleLn('Aktualisieren der Schlüsselwörter...');
         var keys = $.inidb.GetKeyList('keywords', ''),
-            newKeywords = [],
-            key,
-            json,
-            i,
-            strippedKeys = {};
+                newKeywords = [],
+                key,
+                json,
+                i,
+                strippedKeys = {};
 
         for (i = 0; i < keys.length; i++) {
             key = keys[i];
@@ -153,9 +153,9 @@
                 json.isCaseSensitive = false;
             }
             if (strippedKeys.hasOwnProperty(key)) {
-                throw 'Die Schlüsselwortliste konnte nicht aktualisiert werden. Das Schlüsselwort "' +  key +
-                      '" existiert sowohl als Regex als auch als einfaches Schlüsselwort. ' +
-                      "Bitte lösen Sie den Konflikt und starte den Phantombot neu.";
+                throw 'Die Schlüsselwortliste konnte nicht aktualisiert werden. Das Schlüsselwort "' + key +
+                        '" existiert sowohl als Regex als auch als einfaches Schlüsselwort. ' +
+                        "Bitte lösen Sie den Konflikt und starte den Phantombot neu.";
             }
             strippedKeys[key] = true;
             newKeywords.push({
@@ -171,27 +171,27 @@
         }
 
         $.consoleLn('PhantomBot Update 3.3.0 abgeschlossen!');
-        $.inidb.set('updates', 'installedv3.3.0', 'true');
+        $.inidb.SetBoolean('updates', '', 'installedv3.3.0', true);
     }
 
     /* version 3.3.6 updates */
-    if (!$.inidb.exists('updates', 'installedv3.3.6') || $.inidb.get('updates', 'installedv3.3.6') != 'true') {
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.3.6')) {
         $.consoleLn('Starte PhantomBot Update 3.3.6 Updates...');
 
         $.inidb.set('modules', './systems/welcomeSystem.js', 'false');
 
         $.consoleLn('PhantomBot Update 3.3.6 abgeschlossen!');
-        $.inidb.set('updates', 'installedv3.3.6', 'true');
+        $.inidb.SetBoolean('updates', '', 'installedv3.3.6', true);
     }
 
     /* version 3.4.1 updates */
-    if (!$.inidb.exists('updates', 'installedv3.4.1') || $.inidb.get('updates', 'installedv3.4.1') != 'true') {
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.4.1')) {
         $.consoleLn('Starte PhantomBot Update 3.4.1 Updates...');
 
         var keys = $.inidb.GetKeyList('keywords', ''),
-        i,
-        coolkey,
-        json;
+                i,
+                coolkey,
+                json;
 
         for (i = 0; i < keys.length; i++) {
             json = JSON.parse($.inidb.get('keywords', keys[i]));
@@ -208,26 +208,26 @@
         }
 
         $.consoleLn('PhantomBot Update 3.4.1 abgeschlossen!');
-        $.inidb.set('updates', 'installedv3.4.1', 'true');
+        $.inidb.SetBoolean('updates', '', 'installedv3.4.1', true);
     }
 
     /* version 3.4.8 updates */
-    if (!$.inidb.exists('updates', 'installedv3.4.8') || $.inidb.get('updates', 'installedv3.4.8') != 'true') {
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.4.8')) {
         $.consoleLn('Starte PhantomBot Update 3.4.8 Updates...');
 
         if ($.inidb.FileExists('notices') || $.inidb.FileExists('noticeSettings')) {
             $.consoleLn('Updating timers...');
             var noticeReqMessages = $.getIniDbNumber('noticeSettings', 'reqmessages'),
-                noticeInterval = $.getIniDbNumber('noticeSettings', 'interval'),
-                noticeToggle = $.getIniDbBoolean('noticeSettings', 'noticetoggle'),
-                noticeOffline = $.getIniDbBoolean('noticeSettings', 'noticeOfflineToggle'),
-                noticeKeys = $.inidb.GetKeyList('notices', ''),
-                noticeIdx,
-                notice,
-                notices = [],
-                disabled = [],
-                disabledKey,
-                noticeTimer;
+                    noticeInterval = $.getIniDbNumber('noticeSettings', 'interval'),
+                    noticeToggle = $.getIniDbBoolean('noticeSettings', 'noticetoggle'),
+                    noticeOffline = $.getIniDbBoolean('noticeSettings', 'noticeOfflineToggle'),
+                    noticeKeys = $.inidb.GetKeyList('notices', ''),
+                    noticeIdx,
+                    notice,
+                    notices = [],
+                    disabled = [],
+                    disabledKey,
+                    noticeTimer;
 
             noticeKeys.sort();
 
@@ -241,7 +241,7 @@
                     notices.push($.jsString(notice));
                     disabledKey = noticeKeys[noticeIdx] + '_disabled';
                     if ($.inidb.exists('notices', disabledKey)) {
-                        disabled.push($.inidb.GetBoolean('notices', '',disabledKey));
+                        disabled.push($.inidb.GetBoolean('notices', '', disabledKey));
                     } else {
                         disabled.push(false);
                     }
@@ -268,81 +268,101 @@
 
 
         $.consoleLn('PhantomBot Update 3.4.8 abgeschlossen!');
-        $.inidb.set('updates', 'installedv3.4.8', 'true');
+        $.inidb.SetBoolean('updates', '', 'installedv3.4.8', true);
     }
 
     /* version 3.5.0 updates */
-    if (!$.inidb.exists('updates', 'installedv3.5.0') || $.inidb.get('updates', 'installedv3.5.0') != 'true') {
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.5.0')) {
         $.consoleLn('Starte PhantomBot Update 3.5.0 Updates...');
 
         // Remove org.mozilla.javascript entries in phantombot_time
         var keys = $.inidb.GetKeyList('time', ''),
-        i;
+                i;
+
+        $.consoleLn('Kontrolliere ' + keys.length + ' Zeiteinträge für schlechte Schlüssel...');
 
         for (i = 0; i < keys.length; i++) {
-            if ($.javaString(keys[i]) === null || $.javaString(keys[i]) === undefined || $.javaString(keys[i]).startsWith('org.mozilla.javascript')) {
-                $.inidb.RemoveKey('time', '', keys[i]);
+            var key = $.javaString(keys[i]);
+            if (key === null || key === undefined || key.startsWith('org.mozilla.javascript')) {
+                $.inidb.RemoveKey('time', '', key);
+            }
+            if (i % 100 === 0) {
+                $.consoleLn('Überprüfe noch die Zeiteinträge ' + i + '/' + keys.length + '...');
             }
         }
 
         $.consoleLn('PhantomBot Update 3.5.0 abgeschlossen!');
-        $.inidb.set('updates', 'installedv3.5.0', 'true');
+        $.inidb.SetBoolean('updates', '', 'installedv3.5.0', true);
     }
 
-    /**
-     * @function getTableContents
-     * @param {string} tableName
-     * @returns {Array}
-     */
-    function getTableContents(tableName) {
-        var contents = [],
-            keyList = $.inidb.GetKeyList(tableName, ''),
-            temp,
-            i;
+    /* version 3.6.0 updates */
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.0')) {
+        $.consoleLn('Starte PhantomBot Update 3.6.0 Updates...');
 
-        for (i in keyList) {
+        // Convert cooldowns to separate global and user cooldowns
+        var cooldowns = $.inidb.GetKeyList('cooldown', ''),
+                json,
+                i;
 
-            // Handle Exceptions per table
-            switch (tableName) {
-                // Ignore rows with less than 600 seconds (10 minutes)
-                case 'time':
-                    temp = parseInt($.inidb.get(tableName, keyList[i]));
-                    if (temp >= 600) {
-                        contents[keyList[i]] = $.inidb.get(tableName, keyList[i]);
-                    }
-                    break;
 
-                    // Ignore rows with less than 10 points
-                case 'points':
-                    temp = parseInt($.inidb.get(tableName, keyList[i]));
-                    if (temp >= 10) {
-                        contents[keyList[i]] = $.inidb.get(tableName, keyList[i]);
-                    }
-                    break;
+        for (i in cooldowns) {
+            json = JSON.parse($.inidb.get('cooldown', cooldowns[i]));
 
-                    // Put the rows in by default
-                default:
-                    contents[keyList[i]] = $.inidb.get(tableName, keyList[i]);
-                    break;
+            var globalSec,
+                userSec,
+                curSec = parseInt(json.seconds);
+
+            if (json.isGlobal.toString().equals('true')) {
+                globalSec = curSec;
+                userSec = -1;
+            } else {
+                globalSec = -1;
+                userSec = curSec;
             }
+
+            $.inidb.set('cooldown', cooldowns[i], JSON.stringify({
+                command: String(json.command),
+                globalSec: globalSec,
+                userSec: userSec
+            }));
         }
 
-        return contents;
-    }
-
-    /**
-     * @function setTableContents
-     * @param {string} tableName
-     * @param {Array} contents
-     */
-    function restoreTableContents(tableName, contents) {
-        var i;
-
-
-        for (i in contents) {
-            $.inidb.set(tableName, i, contents[i]);
+        if ($.inidb.exists('settings', 'quoteMessage')) {
+            $.inidb.set('settings', 'quoteMessage', $.inidb.get('settings', 'quoteMessage').replace('(user)', '(userrank)'));
         }
 
-        $.inidb.SaveAll(true);
+        // Convert cooldowns to separate global and user cooldowns
+        var cooldowns = $.inidb.GetKeyList('discordCooldown', ''),
+                json,
+                i;
+
+
+        for (i in cooldowns) {
+            json = JSON.parse($.inidb.get('discordCooldown', cooldowns[i]));
+
+            var globalSec,
+                userSec,
+                curSec = parseInt(json.seconds);
+
+            if (json.isGlobal.toString().equals('true')) {
+                globalSec = curSec;
+                userSec = -1;
+            } else {
+                globalSec = -1;
+                userSec = curSec;
+            }
+
+            $.inidb.set('discordCooldown', cooldowns[i], JSON.stringify({
+                command: String(json.command),
+                globalSec: globalSec,
+                userSec: userSec
+            }));
+        }
+
+        //Send cooldown messages in discord channel? (default=false)
+        $.inidb.SetBoolean('discordCooldownSettings', '', 'coolDownMsgEnabled', false);
+
+        $.consoleLn('PhantomBot Update 3.6.0 abgeschlossen!');
+        $.inidb.SetBoolean('updates', '', 'installedv3.6.0', true);
     }
 })();

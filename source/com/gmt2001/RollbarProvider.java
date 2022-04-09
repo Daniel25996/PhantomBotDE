@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ import tv.phantombot.twitch.api.TwitchValidate;
  *
  * @author gmt2001
  */
-public class RollbarProvider implements AutoCloseable {
+public final class RollbarProvider implements AutoCloseable {
 
     private static final RollbarProvider INSTANCE = new RollbarProvider();
     private static final String ACCESS_TOKEN = "@access.token@";
@@ -433,7 +433,7 @@ public class RollbarProvider implements AutoCloseable {
         return this.rollbar;
     }
 
-    public boolean getEnabled() {
+    public boolean isEnabled() {
         return this.enabled;
     }
 
@@ -641,7 +641,9 @@ public class RollbarProvider implements AutoCloseable {
     @Override
     public void close() {
         try {
-            this.rollbar.close(true);
+            if (this.rollbar != null) {
+                this.rollbar.close(true);
+            }
         } catch (Exception ex) {
             ex.printStackTrace(System.err);
         }

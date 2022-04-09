@@ -17,7 +17,12 @@
 package com.gmt2001;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,7 +33,7 @@ import java.util.stream.Stream;
  *
  * @author gmt2001
  */
-public class JSFileSystem {
+public final class JSFileSystem {
 
     private JSFileSystem() {
     }
@@ -137,7 +142,7 @@ public class JSFileSystem {
         List<String> files = CreateStringList();
 
         if (IsDirectory(path)) {
-            try (Stream<Path> fileStream = Files.find(Paths.get(path), 1, (p, a) -> p.getFileName().toString().contains(needle) && !p.getFileName().toString().equals("."))) {
+            try ( Stream<Path> fileStream = Files.find(Paths.get(path), 1, (p, a) -> p.getFileName().toString().contains(needle) && !p.getFileName().toString().equals("."), FileVisitOption.FOLLOW_LINKS)) {
                 fileStream.forEach(p -> files.add(p.getFileName().toString()));
             }
         }

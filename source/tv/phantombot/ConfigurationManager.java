@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@ public class ConfigurationManager {
         /* Load up the bot info from the bot login file */
         try {
             if (new File(BOTLOGIN_TXT_LOCATION).exists()) {
-                try (FileInputStream inputStream = new FileInputStream(BOTLOGIN_TXT_LOCATION)) {
+                try ( FileInputStream inputStream = new FileInputStream(BOTLOGIN_TXT_LOCATION)) {
                     startProperties.load(inputStream);
                 }
             } else {
@@ -298,7 +298,7 @@ public class ConfigurationManager {
             // Twitch oauth.
             do {
                 com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("2. Du brauchst nun einen OAuth-Token, damit der Bot chatten kann.\r\n");
+                com.gmt2001.Console.out.print("2. Du brauchst nun einen temporären OAuth-Token, damit der Bot chatten kann.\r\n");
                 com.gmt2001.Console.out.print("Bitte beachte, dass dieser OAuth-Token generiert werden muss, während du mit dem Twitch-Konto des Bot angemeldet bist.\r\n");
                 com.gmt2001.Console.out.print("Wenn du nicht als Bot angemeldet bist, gehe bitte auf https://twitch.tv/ und melde dich als Bot an.\r\n");
                 com.gmt2001.Console.out.print("Den OAuth-Token des Bot erhältst du hier: https://phantombot.github.io/PhantomBot/oauth/\r\n");
@@ -310,13 +310,18 @@ public class ConfigurationManager {
             // api oauth.
             do {
                 com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("3. Du brauchst nun den Channel OAuth-Token, damit der Bot den Titel und die Kategorie ändern kann.\r\n");
-                com.gmt2001.Console.out.print("Bitte beachte, dass dieser OAuth-Token generiert werden muss, während du mit dem Caster-Konto angemeldet bist.\r\n");
-                com.gmt2001.Console.out.print("Wenn du nicht als Caster angemeldet bist, gehe bitte auf https://twitch.tv/ und melde dich als Caster an.\r\n");
-                com.gmt2001.Console.out.print("Hol dir deinen OAuth-Token hier: https://phantombot.github.io/PhantomBot/oauth/\r\n");
-                com.gmt2001.Console.out.print("Bitte gebe den OAuth-Token ein: ");
+                com.gmt2001.Console.out.print("3. Nachdem diese Einrichtung abgeschlossen ist, müsst due die automatische Aktualisierung der OAuth-Token einrichten.\r\n");
+                com.gmt2001.Console.out.print("Du wirst auch das Kanal-OAuth-Token für den Bot einrichten, um den Titel und die Kategorie ändern zu können.\r\n");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("Bitte beachte, dass das BOT-Token für das Konto bestimmt ist, dass im Chat angezeigt wird.\r\n");
+                com.gmt2001.Console.out.print("Bitte beachte, dass der CASTER-Token für das Konto des Senders für API-Anforderungen gilt.\r\n");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("Der Link zur Einrichtungsseite ist hier: http://127.0.0.1:25000/oauth/\r\n");
+                com.gmt2001.Console.out.print("Oder rufe die entsprechende URL auf, wenn der Bot remote gehostet wird\r\n");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("Bitte beachte, dass du diese Einrichtung zuerst abschließen musst, bevor du auf diese Seite zugreifen kannst\r\n");
 
-                startProperties.setProperty(PROP_API_OAUTH, System.console().readLine().trim());
+                startProperties.setProperty(PROP_API_OAUTH, startProperties.getProperty(PROP_OAUTH, "null"));
             } while (startProperties.getProperty(PROP_API_OAUTH, "").length() <= 0);
 
             // Channel name.
@@ -345,9 +350,13 @@ public class ConfigurationManager {
 
             com.gmt2001.Console.out.print("\r\n");
             com.gmt2001.Console.out.print("PhantomBot wird in 10 Sekunden gestartet.\r\n");
-            com.gmt2001.Console.out.print("Wenn du den Bot lokal betreiben möchtest, kannst Du hier auf das Control Panel zugreifen: http://localhost:25000/panel \r\n");
+            com.gmt2001.Console.out.print("Wenn du den Bot lokal betreiben möchtest, kannst Du hier auf das Control Panel zugreifen: http://localhost:25000/ \r\n");
             com.gmt2001.Console.out.print("Wenn du den Bot auf einem Server betreibst, stelle sicher, dass du die folgenden Ports öffnest: \r\n");
-            com.gmt2001.Console.out.print("25000, 25003 und 25004. Du musst 'localhost' auf deine Server-IP ändern, um auf das Panel zugreifen zu können. \r\n");
+            com.gmt2001.Console.out.print("25000. Du musst 'localhost' auf deine Server-IP ändern, um auf das Panel zugreifen zu können. \r\n");
+            com.gmt2001.Console.out.print("\r\n");
+            com.gmt2001.Console.out.print("Du kannst jetzt das automatisch aktualisierende OAuth-Token-System einrichten, du benötigst den\r\n");
+            com.gmt2001.Console.out.print("Benutzername und das Passwort für das Webpanel, die du oben festgelegt hast, um auf die Seite zuzugreifen.\r\n");
+            com.gmt2001.Console.out.print("\r\n");
 
             Thread.sleep(10000);
 
