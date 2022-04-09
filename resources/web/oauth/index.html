@@ -148,7 +148,7 @@
                                         Klicke den Disketten-Icon am Ende der Zeile, um die Client-ID und das Client-Geheimnis zu speichern: <i id="saveclient" class="fas fa-save"></i>
                                     </li>
                                     <li>
-                                        Re-Autorisiere den Bot und Broadcaster mit den Schaltfl&auml;chen unten
+                                        Re-Autorisiere den Bot <span id="auththebroadcaster">und Broadcaster </span>mit den Schaltfl&auml;chen unten
                                     </li>
                                     <li id="broadcasteroauthinstructions" class="hide">
                                         Lasse den Broadcaster sein OAuth durchf&uuml;hren
@@ -159,7 +159,7 @@
                                             <li>Klicke auf <i>Verwalten</i> neben der passenden Anwendung</li>
                                             <li>Klicke neben der bestehenden <i>OAuth Redirect URLs</i> Box auf die <i>Hinzuf&uuml;gen</i> Schaltfläche</li>
                                             <li>F&uuml;ge diese URL in das neue leere Feld ein, das angezeigt wird <input type="text" id="selfurlbroadcaster" class="form-control" readonly="readonly"></li>
-                                            <li>Klicke auf <i>Hinzuf&uuml;gen</i></li>
+                                            <li>Klicke auf <i>Speichern</i></li>
                                             <li>Klicke dann unten auf <i>Speichern</i></li>
                                             <li>Klicke hier, um ein Sendepasswort f&uuml;r diese Seite zu generieren: <i id="resetbroadcastertoken" class="fas fa-sync"></i></li>
                                             <li>Lasse den Broadcaster diesen Link besuchen <input type="text" id="selfurlbroadcastervisit" class="form-control" readonly="readonly"></li>
@@ -177,7 +177,7 @@
                                 <br />
                                 <br />
                                 <div>
-                                    Klicke unten auf <span id="connectone">eine der </span> <div class="text-bold" style="display: inline;">Verbinde mit Twitch</div> Schaltfl&auml;che<span id="connectplural">n</span> und du wirst zu Twitch.tv weitergeleitet, um den Bot zu autorisieren, um in deinem Namen Anfragen zu stellen.
+                                    Klicke unten auf <span id="connectone">eine der </span> <div class="text-bold" style="display: inline;">Verbinde mit Twitch</div> Schaltfl&auml;che<span id="connectplural">s</span> und du wirst zu Twitch.tv weitergeleitet, um den Bot zu autorisieren, um in deinem Namen Anfragen zu stellen.
                                     <br />
                                     <div style="padding-left: 25px;">
                                         <ul>
@@ -459,7 +459,7 @@
                                             if (data.startsWith('false')) {
                                                 $('#error-box').removeClass('hide');
                                                 $('#success-error-br').removeClass('hide');
-                                                $('#error-box').html('Fehler bim autorisieren und speichern vom ' + window.sessionStorage.getItem('statetype') + ' Token: ' + data.substring(6));
+                                                $('#error-box').html('Fehler beim autorisieren und speichern vom ' + window.sessionStorage.getItem('statetype') + ' Token: ' + data.substring(6));
                                             } else if (data === 'true') {
                                                 $('#error-box').removeClass('hide');
                                                 $('#success-error-br').removeClass('hide');

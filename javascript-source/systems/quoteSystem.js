@@ -48,7 +48,7 @@
      */
     function saveQuote(username, quote) {
         var newKey = $.inidb.GetKeyList('quotes', '').length,
-            game = ($.getGame($.channelName)).isBlank() ? $.getGame($.channelName) : "Irgendeine Kategorie");
+            game = (!$.javaString($.getGame($.channelName)).isBlank() ? $.getGame($.channelName) : "Irgendeine Kategorie");
 
         if ($.inidb.exists('quotes', newKey)) {
             newKey++;

@@ -310,8 +310,8 @@ public class ConfigurationManager {
             // api oauth.
             do {
                 com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("3. Nachdem diese Einrichtung abgeschlossen ist, müsst due die automatische Aktualisierung der OAuth-Token einrichten.\r\n");
-                com.gmt2001.Console.out.print("Du wirst auch das Kanal-OAuth-Token für den Bot einrichten, um den Titel und die Kategorie ändern zu können.\r\n");
+                com.gmt2001.Console.out.print("3. Nachdem diese Einrichtung abgeschlossen ist, musst du die automatische Aktualisierung der OAuth-Token einrichten.\r\n");
+                com.gmt2001.Console.out.print("Du musst auch das Kanal-OAuth-Token für den Bot einrichten, um den Titel und die Kategorie ändern zu können.\r\n");
                 com.gmt2001.Console.out.print("\r\n");
                 com.gmt2001.Console.out.print("Bitte beachte, dass das BOT-Token für das Konto bestimmt ist, dass im Chat angezeigt wird.\r\n");
                 com.gmt2001.Console.out.print("Bitte beachte, dass der CASTER-Token für das Konto des Senders für API-Anforderungen gilt.\r\n");

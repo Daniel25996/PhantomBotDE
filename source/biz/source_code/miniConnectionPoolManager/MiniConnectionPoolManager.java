@@ -60,7 +60,7 @@ public class MiniConnectionPoolManager {
         private static final long serialVersionUID = 1;
 
         public TimeoutException() {
-            super("Timeout beim Warten auf eine freie Datenbankverbindung.");
+            super("Timeout while waiting for a free database connection.");
         }
 
         public TimeoutException(String msg) {
@@ -94,7 +94,7 @@ public class MiniConnectionPoolManager {
         } catch (SQLException e) {
         }
         if (maxConnections < 1) {
-            throw new IllegalArgumentException("Ungültiger maxConnections-Wert.");
+            throw new IllegalArgumentException("Invalid maxConnections value.");
         }
         semaphore = new Semaphore(maxConnections, true);
         recycledConnections = new LinkedList<>();
@@ -143,7 +143,7 @@ public class MiniConnectionPoolManager {
         // This routine is unsynchronized, because semaphore.tryAcquire() may block.
         synchronized (this) {
             if (isDisposed) {
-                throw new IllegalStateException("Verbindungspool wurde verworfen.");
+                throw new IllegalStateException("Connection pool has been disposed.");
             }
         }
         try {
@@ -151,7 +151,7 @@ public class MiniConnectionPoolManager {
                 throw new TimeoutException();
             }
         } catch (InterruptedException e) {
-            throw new RuntimeException("Beim Warten auf eine Datenbankverbindung unterbrochen.", e);
+            throw new RuntimeException("Interrupted while waiting for a database connection.", e);
         }
         boolean ok = false;
         try {
@@ -167,7 +167,7 @@ public class MiniConnectionPoolManager {
 
     private synchronized Connection getConnection3() throws SQLException {
         if (isDisposed) {                                       // test again within synchronized lock
-            throw new IllegalStateException("Verbindungspool wurde verworfen.");
+            throw new IllegalStateException("Connection pool has been disposed.");
         }
         PooledConnection pconn;
         if (!recycledConnections.isEmpty()) {
@@ -225,12 +225,12 @@ public class MiniConnectionPoolManager {
                 try {
                     Thread.sleep(250);
                 } catch (InterruptedException e) {
-                    throw new RuntimeException("Beim Warten auf eine gültige Datenbankverbindung unterbrochen.", e);
+                    throw new RuntimeException("Interrupted while waiting for a valid database connection.", e);
                 }
             }
             time = System.currentTimeMillis();
             if (time >= timeoutTime) {
-                throw new TimeoutException("Zeitüberschreitung beim Warten auf eine gültige Datenbankverbindung.");
+                throw new TimeoutException("Timeout while waiting for a valid database connection.");
             }
         }
     }
@@ -315,7 +315,7 @@ public class MiniConnectionPoolManager {
         try {
             pconn.close();
         } catch (SQLException e) {
-            log("Fehler beim Schließen der Datenbankverbindung: " + e.toString());
+            log("Error while closing database connection: " + e.toString());
         }
     }
 
