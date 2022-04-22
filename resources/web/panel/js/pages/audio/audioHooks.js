@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Function that querys all of the data we need.
+// Function that queries all of the data we need.
 $(run = function() {
     // Check if the module is enabled.
     socket.getDBValue('audio_module', 'modules', './systems/audioPanelSystem.js', function(e) {
@@ -24,10 +24,11 @@ $(run = function() {
             // Disable the tab selection.
             $('#audiohooks_t, #audiocommands_t').addClass('disabled').parent().addClass('disabled');
             return;
-        } else {
-            // Enable the tab selection.
-            $('#audiohooks_t, #audiocommands_t').removeClass('disabled').parent().removeClass('disabled');
         }
+
+        // Enable the tab selection.
+        $('#audiohooks_t, #audiocommands_t').removeClass('disabled').parent().removeClass('disabled');
+
 
         // Get all audio hooks.
         socket.getDBTableValues('get_audio_hooks', 'audio_hooks', function(results) {
@@ -195,8 +196,7 @@ $(run = function() {
 
             // On edit button.
             table.on('click', '.btn-warning', function() {
-                let command = $(this).data('command'),
-                    t = $(this);
+                let command = $(this).data('command');
 
                 // Get all the info about the command.
                 socket.getDBValues('audio_command_edit', {
@@ -258,7 +258,7 @@ $(run = function() {
                                 }, function() {
                                     // Add the cooldown to the cache.
                                     socket.wsEvent('audio_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
-                                    ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function() {
+                                    ['add', command, commandCooldownGlobal.val(), commandCooldownUser.val()], function() {
                                         // Update command permission.
                                         socket.sendCommand('edit_command_permission_cmd', 'permcomsilent ' + command + ' ' +
                                             helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function() {
@@ -410,10 +410,10 @@ $(function() {
                     .append(helpers.getInputGroup('command-reward', 'number', 'Belohnung', '0', '0',
                         'Belohnung in Punkten, die der Benutzer beim Ausführen des Befehls erhalten soll.'))
                     // Append input box for the global command cooldown.
-                    .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Globale Abklingzeit (Sekunden)', '-1', cooldownJson.globalSec,
+                    .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Globale Abklingzeit (Sekunden)', '-1', undefined,
                         'Globale Abklingzeit des Befehls in Sekunden. -1 Verwendet die botweiten Einstellungen.'))
                     // Append input box for per-user cooldown.
-                    .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', cooldownJson.userSec,
+                    .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', undefined,
                         'Abklingzeit des Befehls pro Benutzer in Sekunden. -1 entfernt die Abklingzeit pro Benutzer.'))
             })), function() {
                 let commandName = $('#command-name'),

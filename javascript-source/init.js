@@ -310,7 +310,7 @@
             } catch (ex) {
                 var errmsg;
                 try {
-                    errmsg = 'Fehler mit Event-Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']'
+                    errmsg = 'Fehler mit Event-Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']';
                 } catch (ex2) {
                     errmsg = 'Fehler mit Event-Handler [' + hookName + '] Script [' + hook.handlers[i].scriptName + ']';
                 }
@@ -644,6 +644,7 @@
             }
 
             if (!$.discord.getCommandChannelAllowed(command, channelName, channelId)) {
+                $.consoleLn('[Discord] Befehl wird nicht verarbeitet ' + command + ' wegen !channelcom');
                 return;
             }
 

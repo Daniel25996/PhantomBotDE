@@ -528,47 +528,6 @@ $(function() {
         });
     });
 
-    // Greeting settings.
-    $('#greetingSystemSettings').on('click', function() {
-        socket.getDBValues('alerts_get_greeting_settings', {
-            tables: ['greeting', 'greeting'],
-            keys: ['autoGreetEnabled', 'cooldown']
-        }, true, function(e) {
-            helpers.getModal('greeting-alert', 'Einstellungen für Begrüßungsnachrichten', 'Speichern', $('<form/>', {
-                'role': 'form'
-            })
-            // Add the toggle for greeting alerts.
-            .append(helpers.getDropdownGroup('greeting-toggle', 'Begrüßungsnachrichten aktivieren', (e.autoGreetEnabled === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
-                'Wenn Benutzer eine Nachricht einstellen dürfen sollen, wenn sie dem Kanal beitreten.'))
-            // Add the input for the greeting reward.
-            .append(helpers.getInputGroup('greeting-cooldown', 'number', 'Abklingzeit der Begrüßung (Stunden)', '', (parseInt(e.cooldown) / 36e5),
-                'Wie lang die Begrüßungsnachricht pro Benutzer in Stunden ist. Das Minimum beträgt 5 Stunden.')),
-            function() { // Callback once the user clicks save.
-                let greetingToggle = $('#greeting-toggle').find(':selected').text() === 'Ja',
-                    greetingCooldown = $('#greeting-cooldown');
-
-                // Make sure the user has someone in each box.
-                switch (false) {
-                    case helpers.handleInputNumber(greetingCooldown, 5):
-                        break;
-                    default:
-                        socket.updateDBValues('alerts_update_greeting_settings', {
-                            tables: ['greeting', 'greeting'],
-                            keys: ['autoGreetEnabled', 'cooldown'],
-                            values: [greetingToggle, (parseInt(greetingCooldown.val()) * 36e5)]
-                        }, function() {
-                            socket.sendCommand('alerts_update_greeting_settings_cmd', 'greetingspanelupdate', function() {
-                                // Close the modal.
-                                $('#greeting-alert').modal('toggle');
-                                // Alert the user.
-                                toastr.success('Begrüßungsnachricht Einstellungen erfolgreich aktualisiert!');
-                            });
-                        });
-                }
-            }).modal('toggle');
-        });
-    });
-
     // Welcome esettings.
     $('#welcomeSystemSettings').on('click', function() {
         const updateDisabled = function(disabledUsers, welcomeDisabled, callback) {

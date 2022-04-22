@@ -187,7 +187,7 @@ public class EmotesCache implements Runnable {
         }
 
         com.gmt2001.Console.debug.println("Verschiebe das Emote JSON-Objekt auf den EventBus");
-        EventBus.instance().post(new EmotesGetEvent(null, bttvJsonResult, bttvLocalJsonResult, ffzJsonResult, ffzLocalJsonResult));
+        EventBus.instance().postAsync(new EmotesGetEvent(null, bttvJsonResult, bttvLocalJsonResult, ffzJsonResult, ffzLocalJsonResult));
     }
 
     public void kill() {

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Function that querys all of the data we need.
+// Function that queries all of the data we need.
 $(run = function() {
     // Query all commands.
     socket.getDBTableValues('discord_commands_get_all', 'discordPermcom', function(results) {
@@ -37,11 +37,11 @@ $(run = function() {
                     }
 
                     // Get all permissions for commands, this is slow, might need to make it better later.
-                    let permJson = JSON.parse(results[i].value);
-                    let perms = {
+                    let permJson = JSON.parse(results[i].value),
+                        perms = {
                         'permissions': [],
                         'roles': []
-                    }
+                    };
 
                     for (let j = 0; j < permObj.roles.length; j++) {
                         if (permJson.roles.indexOf(permObj.roles[j]._id) > -1) {
@@ -129,17 +129,16 @@ $(run = function() {
 
                 // On edit button.
                 table.on('click', '.btn-warning', function() {
-                    let command = $(this).data('command'),
-                        t = $(this);
+                    let command = $(this).data('command');
 
                     // Get all the info about the command.
                     socket.getDBValues('default_command_edit', {
                         tables: ['discordPricecom', 'discordPermcom', 'discordAliascom', 'discordChannelcom', 'discordCooldown', 'discordPermsObj'],
                         keys: [command, command, command, command, command, 'obj']
                     }, function(e) {
-                        let cooldownJson = (e.discordCooldown === null ? { isGlobal: 'true', seconds: 0 } : JSON.parse(e.discordCooldown));
-                        let perm = JSON.parse(e.discordPermcom);
-                        let perms = JSON.parse(e.discordPermsObj);
+                        let cooldownJson = (e.discordCooldown === null ? { globalSec: -1, userSec: -1 } : JSON.parse(e.discordCooldown)),
+                            perm = JSON.parse(e.discordPermcom),
+                            perms = JSON.parse(e.discordPermsObj);
 
                         // Get advance modal from our util functions in /utils/helpers.js
                         helpers.getAdvanceModal('edit-command', 'Befehl Bearbeiten', 'Speichern', $('<form/>', {
@@ -166,22 +165,22 @@ $(run = function() {
                             'html': $('<form/>', {
                                     'role': 'form'
                                 })
-                                // Append input box for the command cost.
-                                .append(helpers.getInputGroup('command-cost', 'number', 'Kosten', '0', helpers.getDefaultIfNullOrUndefined(e.discordPricecom, '0'),
-                                    'Kosten in Punkten, die dem Benutzer bei der Ausführung des Befehls abgezogen werden.'))
-                                // Append input box for the command channel.
-                                .append(helpers.getInputGroup('command-channel', 'text', 'Kanal', '#commands', helpers.getDefaultIfNullOrUndefined(e.discordChannelcom, ''),
-                                    'Kanal, in dem dieser Befehl funktionieren soll. Trennen Sie mit Leerzeichen und Komma für mehrere. Wenn leer, funktioniert der Befehl in allen Kanälen.'))
-                                // Append input box for the command alias.
-                                .append(helpers.getInputGroup('command-alias', 'text', 'Alias', '!ex', helpers.getDefaultIfNullOrUndefined(e.discordAliascom, ''),
-                                    'Ein weiterer Befehlsname, der auch diesen Befehl auslöst.'))
-                                // Append input box for the global command cooldown.
-                                .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Globale Abklingzeit (Sekunden)', '-1', cooldownJson.globalSec,
-                                    'Globale Abklingzeit des Befehls in Sekunden. -1 Verwendet die botweiten Einstellungen.'))
-                                // Append input box for per-user cooldown.
-                                .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', cooldownJson.userSec,
-                                    'Abklingzeit des Befehls pro Benutzer in Sekunden. -1 entfernt die Abklingzeit pro Benutzer.'))
-                                // Callback function to be called once we hit the save button on the modal.
+                            // Append input box for the command cost.
+                            .append(helpers.getInputGroup('command-cost', 'number', 'Kosten', '0', helpers.getDefaultIfNullOrUndefined(e.discordPricecom, '0'),
+                                'Kosten in Punkten, die dem Benutzer bei der Ausführung des Befehls abgezogen werden.'))
+                            // Append input box for the command channel.
+                            .append(helpers.getInputGroup('command-channel', 'text', 'Kanal', '#commands', helpers.getDefaultIfNullOrUndefined(e.discordChannelcom, ''),
+                                'Kanal, in dem dieser Befehl funktionieren soll. Trennen Sie mit Leerzeichen und Komma für mehrere. Wenn leer, funktioniert der Befehl in allen Kanälen.'))
+                            // Append input box for the command alias.
+                            .append(helpers.getInputGroup('command-alias', 'text', 'Alias', '!ex', helpers.getDefaultIfNullOrUndefined(e.discordAliascom, ''),
+                                'Ein weiterer Befehlsname, der auch diesen Befehl auslöst.'))
+                            // Append input box for the global command cooldown.
+                            .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Globale Abklingzeit (Sekunden)', '-1', cooldownJson.globalSec,
+                                'Globale Abklingzeit des Befehls in Sekunden. -1 Verwendet die botweiten Einstellungen.'))
+                            // Append input box for per-user cooldown.
+                            .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', cooldownJson.userSec,
+                                'Abklingzeit des Befehls pro Benutzer in Sekunden. -1 entfernt die Abklingzeit pro Benutzer.'))
+                            // Callback function to be called once we hit the save button on the modal.
                         })), function() {
                             let commandName = $('#command-name'),
                                 commandPermissions = $('#command-permission option'),
@@ -258,7 +257,7 @@ $(run = function() {
                                                     commandChannel.val(), commandAlias.val(), commandCost.val()], new Function());
                                             }, 5e2);
                                         });
-                                });
+                                    });
                             }
                         }).on('shown.bs.modal', function(e) {
                             $('#command-permission').select2();

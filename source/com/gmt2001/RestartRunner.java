@@ -17,31 +17,30 @@
 package com.gmt2001;
 
 import com.gmt2001.httpwsserver.WebSocketFrameHandler;
+import java.io.IOException;
+import java.util.concurrent.Executors;
 import net.engio.mbassy.listener.Handler;
 import org.json.JSONStringer;
-import tv.phantombot.PhantomBot;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
-
-import java.io.IOException;
-import java.util.concurrent.Executors;
 
 /**
  * Restarts the bot, if configured appropriately
  *
  * @author gmt2001
  */
-public class RestartRunner implements Listener {
+public final class RestartRunner implements Listener {
 
     private static final RestartRunner INSTANCE = new RestartRunner();
+    private boolean registered = false;
 
     /**
      * Constructor
      */
     @SuppressWarnings("LeakingThisInConstructor")
     private RestartRunner() {
-        EventBus.instance().register(this);
     }
 
     /**
@@ -51,6 +50,15 @@ public class RestartRunner implements Listener {
      */
     public static RestartRunner instance() {
         return INSTANCE;
+    }
+
+    public void register() {
+        if (this.registered) {
+            return;
+        }
+
+        EventBus.instance().register(this);
+        this.registered = true;
     }
 
     /**
@@ -78,8 +86,8 @@ public class RestartRunner implements Listener {
      * @return
      */
     public boolean canRestart() {
-        return PhantomBot.instance() != null && PhantomBot.instance().getProperties().containsKey("restartcmd")
-                && !PhantomBot.instance().getProperties().getProperty("restartcmd").isBlank();
+        return CaselessProperties.instance().containsKey("restartcmd")
+                && !CaselessProperties.instance().getProperty("restartcmd").isBlank();
     }
 
     /**
@@ -107,7 +115,7 @@ public class RestartRunner implements Listener {
 
             Executors.newSingleThreadExecutor().execute(() -> {
                 try {
-                    int exitCode = Runtime.getRuntime().exec(String.format(cmd, PhantomBot.instance().getProperties().getProperty("restartcmd"))).waitFor();
+                    int exitCode = Runtime.getRuntime().exec(String.format(cmd, CaselessProperties.instance().getProperty("restartcmd"))).waitFor();
                     if (exitCode == 0) {
                         JSONStringer jsonObject = new JSONStringer();
                         jsonObject.object().key("query_id").value("restart-bot-result").key("results").object()

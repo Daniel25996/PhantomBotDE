@@ -33,32 +33,31 @@ $(run = function () {
     function getChannelSelector(id, title, placeholder, value, tooltip, allowedChannelTypes) {
         if (discordChannels === null) {
             return helpers.getInputGroup(id, 'text', title, placeholder, value, tooltip);
-        } else {
-            let data = [];
+        }
+        let data = [];
 
-            for (const [category, channels] of Object.entries(discordChannels)) {
-                let entry = {};
-                entry.title = channels.name;
-                entry.options = [];
+        for (const [category, channels] of Object.entries(discordChannels)) {
+            let entry = {};
+            entry.title = channels.name;
+            entry.options = [];
 
-                for (const [channel, info] of Object.entries(channels)) {
-                    if (channel === 'name') {
-                        continue;
-                    }
-
-                    entry.options.push({
-                        'name': info.name,
-                        'value': channel,
-                        'selected': channel === value,
-                        'disabled': !allowedChannelTypes.includes(info.type)
-                    });
+            for (const [channel, info] of Object.entries(channels)) {
+                if (channel == 'name') {
+                    continue;
                 }
 
-                data.push(entry);
+                entry.options.push({
+                    'name': info.name,
+                    'value': channel,
+                    'selected': channel == value,
+                    'disabled': !allowedChannelTypes.includes(info.type)
+                });
             }
 
-            return helpers.getDropdownGroupWithGrouping(id, title, data, tooltip);
+            data.push(entry);
         }
+
+        return helpers.getDropdownGroupWithGrouping(id, title, data, tooltip);
     }
 
     function discordChannelTemplate(fchannel) {
@@ -68,7 +67,7 @@ $(run = function () {
         if (fchannel.id) {
             for (const [category, channels] of Object.entries(discordChannels)) {
                 for (const [channel, info] of Object.entries(channels)) {
-                    if (fchannel.id === channel) {
+                    if (fchannel.id == channel) {
                         switch (info.type) {
                             case 'GUILD_NEWS':
                                 return $('<span><i class="fa fa-bullhorn fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
@@ -155,28 +154,27 @@ $(run = function () {
 
             // On delete button.
             table.on('click', '.btn-danger', function () {
-                const command = $(this).data('command'),
+                const   command = $(this).data('command'),
                         row = $(this).parents('tr');
 
                 // Ask the user if he want to remove the command.
                 helpers.getConfirmDeleteModal('custom_command_modal_remove', 'Sind Sie sicher, dass Sie den Befehl !' + command + ' entfernen möchten?', true,
-                        'Der Befehl !' + command + ' wurde erfolgreich entfernt!', function () {
-                            socket.removeDBValues('rm_discord_command', {
-                                tables: ['discordCommands', 'discordPermcom', 'discordCooldown', 'discordChannelcom', 'discordPricecom', 'discordAliascom'],
-                                keys: [command, command, command, command, command, command]
-                            }, function () {
-                                socket.wsEvent('discord', './discord/commands/customCommands.js', 'remove', [command], function () {
-                                    // Remove the table row.
-                                    table.row(row).remove().draw(false);
-                                });
+                    'Der Befehl !' + command + ' wurde erfolgreich entfernt!', function () {
+                        socket.removeDBValues('rm_discord_command', {
+                            tables: ['discordCommands', 'discordPermcom', 'discordCooldown', 'discordChannelcom', 'discordPricecom', 'discordAliascom'],
+                            keys: [command, command, command, command, command, command]
+                        }, function () {
+                            socket.wsEvent('discord', './discord/commands/customCommands.js', 'remove', [command], function () {
+                                // Remove the table row.
+                                table.row(row).remove().draw(false);
                             });
                         });
+                    });
             });
 
             // On edit button.
             table.on('click', '.btn-warning', function () {
-                const command = $(this).data('command'),
-                        t = $(this);
+                const command = $(this).data('command');
 
                 // Get all the info about the command.
                 socket.getDBValues('custom_command_edit', {
@@ -191,46 +189,46 @@ $(run = function () {
                     helpers.getAdvanceModal('edit-command', 'Befehl Bearbeiten', 'Speichern', $('<form/>', {
                         'role': 'form'
                     })
-                            // Append input box for the command name. This one is disabled.
-                            .append(helpers.getInputGroup('command-name', 'text', 'Befehl', '', '!' + command, 'Name des Befehls. Dieser kann nicht bearbeitet werden.', true))
-                            // Append a text box for the command response.
-                            .append(helpers.getTextAreaGroup('command-response', 'text', 'Antwort', '', e.discordCommands, 'Antwort des Befehls.'))
-                            // Append a select option for the command permission.
-                            .append(helpers.getMultiDropdownGroup('command-permission', 'Zulässige Rollen und Berechtigungen', [
-                                {
-                                    'title': 'Berechtigungen',
-                                    'options': perm.permissions
-                                },
-                                {
-                                    'title': 'Rollen',
-                                    'selected': perm.roles,
-                                    'options': perms.roles
-                                }
-                            ], 'Welche Rollen dürfen diesen Befehl ausführen? Die Administratorberechtigung ist Personen mit der Administratorberechtigung, die für ihre Rolle in Discord ausgewählt wurde'))
-                            // Add an advance section that can be opened with a button toggle.
-                            .append($('<div/>', {
-                                'class': 'collapse',
-                                'id': 'advance-collapse',
-                                'html': $('<form/>', {
-                                    'role': 'form'
-                                })
-                                        // Append input box for the command cost.
-                                        .append(helpers.getInputGroup('command-cost', 'number', 'Kosten', '0', helpers.getDefaultIfNullOrUndefined(e.discordPricecom, '0'),
-                                                'Kosten in Punkten, die dem Benutzer bei der Ausführung des Befehls abgezogen werden.'))
-                                        // Append input box for the command channel.
-                                        .append(getChannelSelector('command-channel', 'text', 'Kanal', '#commands', helpers.getDefaultIfNullOrUndefined(e.discordChannelcom, ''),
-                                                'Kanal, in dem dieser Befehl funktionieren soll. Trennen Sie mit Leerzeichen und Komma für mehrere. Wenn leer, funktioniert der Befehl in allen Kanälen.', allowedChannelTypes))
-                                        // Append input box for the command alias.
-                                        .append(helpers.getInputGroup('command-alias', 'text', 'Alias', '!ex', helpers.getDefaultIfNullOrUndefined(e.discordAliascom, ''),
-                                                'Ein weiterer Befehlsname, der auch diesen Befehl auslöst.'))
-                                        // Append input box for the global command cooldown.
-                                         .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Globale Abklingzeit (Sekunden)', '-1', cooldownJson.globalSec,
-                                                'Globale Abklingzeit des Befehls in Sekunden. -1 Verwendet die botweiten Einstellungen.'))
-                                        // Append input box for per-user cooldown.
-                                        .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', cooldownJson.userSec,
-                                                'Abklingzeit des Befehls pro Benutzer in Sekunden. -1 entfernt die Abklingzeit pro Benutzer.'))
-                                        // Callback function to be called once we hit the save button on the modal.
-                            })), function () {
+                    // Append input box for the command name. This one is disabled.
+                    .append(helpers.getInputGroup('command-name', 'text', 'Befehl', '', '!' + command, 'Name des Befehls. Dieser kann nicht bearbeitet werden.', true))
+                    // Append a text box for the command response.
+                    .append(helpers.getTextAreaGroup('command-response', 'text', 'Antwort', '', e.discordCommands, 'Antwort des Befehls.'))
+                    // Append a select option for the command permission.
+                    .append(helpers.getMultiDropdownGroup('command-permission', 'Zulässige Rollen und Berechtigungen', [
+                        {
+                            'title': 'Berechtigungen',
+                            'options': perm.permissions
+                        },
+                        {
+                            'title': 'Rollen',
+                            'selected': perm.roles,
+                            'options': perms.roles
+                        }
+                    ], 'Welche Rollen dürfen diesen Befehl ausführen? Die Administratorberechtigung ist Personen mit der Administratorberechtigung, die für ihre Rolle in Discord ausgewählt wurde'))
+                    // Add an advance section that can be opened with a button toggle.
+                    .append($('<div/>', {
+                        'class': 'collapse',
+                        'id': 'advance-collapse',
+                        'html': $('<form/>', {
+                            'role': 'form'
+                        })
+                        // Append input box for the command cost.
+                        .append(helpers.getInputGroup('command-cost', 'number', 'Kosten', '0', helpers.getDefaultIfNullOrUndefined(e.discordPricecom, '0'),
+                                'Kosten in Punkten, die dem Benutzer bei der Ausführung des Befehls abgezogen werden.'))
+                        // Append input box for the command channel.
+                        .append(getChannelSelector('command-channel', 'text', 'Kanal', '#commands', helpers.getDefaultIfNullOrUndefined(e.discordChannelcom, ''),
+                                'Kanal, in dem dieser Befehl funktionieren soll. Trennen Sie mit Leerzeichen und Komma für mehrere. Wenn leer, funktioniert der Befehl in allen Kanälen.', allowedChannelTypes))
+                        // Append input box for the command alias.
+                        .append(helpers.getInputGroup('command-alias', 'text', 'Alias', '!ex', helpers.getDefaultIfNullOrUndefined(e.discordAliascom, ''),
+                                'Ein weiterer Befehlsname, der auch diesen Befehl auslöst.'))
+                            // Append input box for the global command cooldown.
+                            .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Globale Abklingzeit (Sekunden)', '-1', cooldownJson.globalSec,
+                                'Globale Abklingzeit des Befehls in Sekunden. -1 Verwendet die botweiten Einstellungen.'))
+                        // Append input box for per-user cooldown.
+                        .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', cooldownJson.userSec,
+                                'Abklingzeit des Befehls pro Benutzer in Sekunden. -1 entfernt die Abklingzeit pro Benutzer.'))
+                        // Callback function to be called once we hit the save button on the modal.
+                    })), function () {
                         let commandName = $('#command-name'),
                             commandResponse = $('#command-response'),
                             commandPermissions = $('#command-permission option'),
@@ -304,11 +302,10 @@ $(run = function () {
                                         helpers.setTimeout(function () {
                                             // Add the command to the cache.
                                             socket.wsEvent('discord', './discord/commands/customCommands.js', '',
-                                                    [commandName.val(), JSON.stringify(permObj),
-                                                        commandChannel.val(), commandAlias.val(), commandCost.val()], new Function());
+                                                    [commandName.val(), JSON.stringify(permObj), commandChannel.val(), commandAlias.val(), commandCost.val()], new Function());
                                         }, 5e2);
                                     });
-                            });
+                                });
                         }
                     }).on('shown.bs.modal', function (e) {
                         refreshChannels(function () {
@@ -346,42 +343,42 @@ $(function () {
     function getChannelSelector(id, title, placeholder, value, tooltip, allowedChannelTypes) {
         if (discordChannels === null) {
             return helpers.getInputGroup(id, 'text', title, placeholder, value, tooltip);
-        } else {
-            let data = [];
+        }
+        let data = [];
 
-            for (const [category, channels] of Object.entries(discordChannels)) {
-                let entry = {};
-                entry.title = channels.name;
-                entry.options = [];
+        for (const [category, channels] of Object.entries(discordChannels)) {
+            let entry = {};
+            entry.title = channels.name;
+            entry.options = [];
 
-                for (const [channel, info] of Object.entries(channels)) {
-                    if (channel === 'name') {
-                        continue;
-                    }
-
-                    entry.options.push({
-                        'name': info.name,
-                        'value': channel,
-                        'selected': channel === value,
-                        'disabled': !allowedChannelTypes.includes(info.type)
-                    });
+            for (const [channel, info] of Object.entries(channels)) {
+                if (channel == 'name') {
+                    continue;
                 }
 
-                data.push(entry);
+                entry.options.push({
+                    'name': info.name,
+                    'value': channel,
+                    'selected': channel == value,
+                    'disabled': !allowedChannelTypes.includes(info.type)
+                });
             }
 
-            return helpers.getDropdownGroupWithGrouping(id, title, data, tooltip);
+            data.push(entry);
         }
+
+        return helpers.getDropdownGroupWithGrouping(id, title, data, tooltip);
     }
 
     function discordChannelTemplate(fchannel) {
         if (discordChannels === undefined || discordChannels === null) {
             return $('<span><i class="fa fa-triangle-exclamation fa-lg" style="margin-right: 5px;" /> Unable retrieve channel list</span>');
         }
+
         if (fchannel.id) {
             for (const [category, channels] of Object.entries(discordChannels)) {
                 for (const [channel, info] of Object.entries(channels)) {
-                    if (fchannel.id === channel) {
+                    if (fchannel.id == channel) {
                         switch (info.type) {
                             case 'GUILD_NEWS':
                                 return $('<span><i class="fa fa-bullhorn fa-lg" style="margin-right: 5px;" /> ' + info.name + '</span>');
@@ -418,48 +415,48 @@ $(function () {
             helpers.getAdvanceModal('add-command', 'Befehl hinzufügen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
-                    // Append input box for the command name.
-                    .append(helpers.getInputGroup('command-name', 'text', 'Befehl', '!beispiel'))
-                    // Append a text box for the command response.
-                    .append(helpers.getTextAreaGroup('command-response', 'text', 'Antwort', 'Antwort Beispiel!'))
-                    // Append a select option for the command permission.
-                    .append(helpers.getMultiDropdownGroup('command-permission', 'Zulässige Rollen und Berechtigungen', [
-                        {
-                            'title': 'Berechtigungen',
-                            'options': [{
-                                    'name': 'Administrators',
-                                    'selected': 'true'
-                                }]
-                        },
-                        {
-                            'title': 'Roles',
-                            'options': perms.roles
-                        }
-                    ], 'Welche Rollen dürfen diesen Befehl ausführen? Die Administratorberechtigung ist Personen mit der Administratorberechtigung, die für ihre Rolle in Discord ausgewählt wurde.'))
-                    // Add an advance section that can be opened with a button toggle.
-                    .append($('<div/>', {
-                        'class': 'collapse',
-                        'id': 'advance-collapse',
-                        'html': $('<form/>', {
-                            'role': 'form'
-                        })
-                                // Append input box for the command cost.
-                                .append(helpers.getInputGroup('command-cost', 'number', 'Kosten', '0', '0',
-                                        'Kosten in Punkten, die dem Benutzer bei der Ausführung des Befehls abgezogen werden.'))
-                                // Append input box for the command channel.
-                                .append(getChannelSelector('command-channel', 'Kanal', '#commands', '',
-                                        'Kanal, in dem dieser Befehl funktionieren soll. Trennen Sie mit Leerzeichen und Komma für mehrere. Wenn leer, funktioniert der Befehl in allen Kanälen.', allowedChannelTypes))
-                                // Append input box for the command alias.
-                                .append(helpers.getInputGroup('command-alias', 'text', 'Alias', '!ex', '',
-                                        'Ein weiterer Befehlsname, der auch diesen Befehl auslöst.'))
-                                    // Append input box for the global command cooldown.
-                                    .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Globale Abklingzeit (Sekunden)', '-1', undefined,
-                                    'Globale Abklingzeit des Befehls in Sekunden. -1 Verwendet die botweiten Einstellungen.')
-                                // Append input box for per-user cooldown.
-                                .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', undefined,
-                                    'Abklingzeit des Befehls pro Benutzer in Sekunden. -1 entfernt die Abklingzeit pro Benutzer.')))
-                                // Callback function to be called once we hit the save button on the modal.
-                    })), function () {
+            // Append input box for the command name.
+            .append(helpers.getInputGroup('command-name', 'text', 'Befehl', '!beispiel'))
+            // Append a text box for the command response.
+            .append(helpers.getTextAreaGroup('command-response', 'text', 'Antwort', 'Antwort Beispiel!'))
+            // Append a select option for the command permission.
+            .append(helpers.getMultiDropdownGroup('command-permission', 'Zulässige Rollen und Berechtigungen', [
+                {
+                    'title': 'Berechtigungen',
+                    'options': [{
+                            'name': 'Administrators',
+                            'selected': 'true'
+                        }]
+                },
+                {
+                    'title': 'Roles',
+                    'options': perms.roles
+                }
+            ], 'Welche Rollen dürfen diesen Befehl ausführen? Die Administratorberechtigung ist Personen mit der Administratorberechtigung, die für ihre Rolle in Discord ausgewählt wurde.'))
+            // Add an advance section that can be opened with a button toggle.
+            .append($('<div/>', {
+                'class': 'collapse',
+                'id': 'advance-collapse',
+                'html': $('<form/>', {
+                    'role': 'form'
+                })
+                // Append input box for the command cost.
+                .append(helpers.getInputGroup('command-cost', 'number', 'Kosten', '0', '0',
+                    'Kosten in Punkten, die dem Benutzer bei der Ausführung des Befehls abgezogen werden.'))
+                // Append input box for the command channel.
+                .append(getChannelSelector('command-channel', 'Kanal', '#commands', '',
+                    'Kanal, in dem dieser Befehl funktionieren soll. Trennen Sie mit Leerzeichen und Komma für mehrere. Wenn leer, funktioniert der Befehl in allen Kanälen.', allowedChannelTypes))
+                // Append input box for the command alias.
+                .append(helpers.getInputGroup('command-alias', 'text', 'Alias', '!ex', '',
+                    'Ein weiterer Befehlsname, der auch diesen Befehl auslöst.'))
+                // Append input box for the global command cooldown.
+                .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Globale Abklingzeit (Sekunden)', '-1', undefined,
+                    'Globale Abklingzeit des Befehls in Sekunden. -1 Verwendet die botweiten Einstellungen.')
+                // Append input box for per-user cooldown.
+                .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', undefined,
+                    'Abklingzeit des Befehls pro Benutzer in Sekunden. -1 entfernt die Abklingzeit pro Benutzer.')))
+                // Callback function to be called once we hit the save button on the modal.
+            })), function () {
                 let commandName = $('#command-name'),
                     commandResponse = $('#command-response'),
                     commandPermissions = $('#command-permission option'),
@@ -528,7 +525,7 @@ $(function () {
                                 }
 
                                 socket.wsEvent('custom_discord_command_cooldown_ws', './discord/core/commandCoolDown.js', null,
-                                        ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function () {
+                                    ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function () {
 
                                     // Reload the table.
                                     run();
@@ -541,8 +538,7 @@ $(function () {
                                     helpers.setTimeout(function () {
                                         // Add the command to the cache.
                                         socket.wsEvent('discord', './discord/commands/customCommands.js', '',
-                                                [commandName.val(), JSON.stringify(permObj),
-                                                    commandChannel.val(), commandAlias.val(), commandCost.val()], new Function());
+                                                [commandName.val(), JSON.stringify(permObj), commandChannel.val(), commandAlias.val(), commandCost.val()], new Function());
                                     }, 5e2);
                                 });
                             });

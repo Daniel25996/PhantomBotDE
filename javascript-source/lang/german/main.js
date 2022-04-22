@@ -330,10 +330,11 @@ $.lang.register('init.module.usage.enable', 'Verwendung: !module enable [Modulpf
 $.lang.register('init.module.delete.usage', 'Verwendung: !module delete [Modulname] - Löscht Eintrag aus der Datenbank! Verwende für Module, die von der Festplatte entfernt wurden!');
 $.lang.register('init.module.delete.success', 'Modul aus der Datenbank gelöscht: $1');
 $.lang.register('init.module.delete.404', 'Modul nicht in der Datenbank gefunden: $1');
-$.lang.register('init.reconnect', 'Wiederverbinden zu $1');
-$.lang.register('init.rejoin', 'Wiedereinstieg in den Kanal.');
-$.lang.register('init.disconnect', 'Trennen von $1');
+$.lang.register('init.reconnect', 'Wiederverbinden zu TMI, Host TMI und PubSub');
+$.lang.register('init.disconnect', 'Fahre herunter');
 $.lang.register('init.usage', '!$1 [reconnect / disconnect]');
+$.lang.register('init.forceonline', 'Online-Status erzwingen');
+$.lang.register('init.forceoffline', 'Offline-Status erzwingen');
 $.lang.register('init.connected.msg', 'Verbindungsnachricht gesetzt auf: $1');
 $.lang.register('init.connected.msg.usage', '!$1 connectmessage [Nachricht]');
 $.lang.register('init.connected.msg.removed', 'Verbindungsnachricht entfernt!');

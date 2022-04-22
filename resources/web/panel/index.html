@@ -189,9 +189,16 @@
 
                             <!-- Alerts tab -->
                             <li class="treeview">
-                                <a href="#alerts.html" data-folder="alerts">
+                                <a href="#" data-folder="alerts">
                                     <i class="fa fa-bullhorn"></i> <span> Alarme</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
                                 </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="#alerts.html" data-folder="alerts"><i class="fa fa-circle-o"></i> Chat-Benachrichtigungen</a></li>
+                                    <li><a href="#greetings.html" data-folder="alerts"><i class="fa fa-circle-o"></i> Benutzergrüße</a></li>
+                                </ul>
                             </li>
 
                             <!-- Soon -->
@@ -418,7 +425,7 @@
 
                         <div class="form-group">
                             <div class="control-sidebar-subheading">
-                                <button type="button" class="btn btn-primary pull-right disabled" id="restart-bot-btn" data-candisable="true">Execute</button>
+                                <button type="button" class="btn btn-primary pull-right disabled" id="restart-bot-btn" data-candisable="true">Ausführen</button>
                                 <label for="restart-bot-btn">Neustart</label>
                             </div>
 

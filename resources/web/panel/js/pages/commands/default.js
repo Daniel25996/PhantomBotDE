@@ -173,9 +173,9 @@ $(function() {
                                 .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Globale Abklingzeit (Sekunden)', '-1', cooldownJson.globalSec,
                                     'Globale Abklingzeit des Befehls in Sekunden. -1 Verwendet die botweiten Einstellungen.'))
                                 // Append input box for per-user cooldown.
-                                    .append(helpers.getCheckBox('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', cooldownJson.userSec,
-                                        'Abklingzeit des Befehls pro Benutzer in Sekunden. -1 entfernt die Abklingzeit pro Benutzer.'))
-                                .append(helpers.getCheckBox('command-disabled', e.disabledCommands != null, 'Deaktiviert',
+                                .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', cooldownJson.userSec,
+                                    'Abklingzeit des Befehls pro Benutzer in Sekunden. -1 entfernt die Abklingzeit pro Benutzer.'))
+                                .append(helpers.getCheckBox('command-disabled', e.disabledCommands !== null, 'Deaktiviert',
                                     'Wenn diese Option aktiviert ist, kann der Befehl nicht im Chat verwendet werden.'))
                                 // Callback function to be called once we hit the save button on the modal.
                         })), function() {
@@ -203,7 +203,7 @@ $(function() {
                                         updateCommandDisabled(command, commandDisabled, function () {
                                             // Add the cooldown to the cache.
                                             socket.wsEvent('default_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
-                                                ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function() {
+                                                ['add', command, commandCooldownGlobal.val(), commandCooldownUser.val()], function() {
                                                 // Edit the command permission.
                                                 socket.sendCommand('default_command_permisison_update', 'permcomsilent ' + command + ' ' +
                                                     helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function() {

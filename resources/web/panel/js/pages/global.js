@@ -28,11 +28,13 @@ $(function () {
 
     // the button that restarts the bot, if configured
     $('#restart-bot-btn').on('click', function () {
-        toastr.info('Starte den Bot neu...', 'Restart', {timeOut: 30});
-        socket.wsEvent('restart-bot', 'RestartRunner', '', [], function(e) {});
+        if (!$('#restart-bot-btn').hasClass('disabled')) {
+            toastr.info('Starte den Bot neu...', 'Restart', {timeOut: 3000});
+            socket.wsEvent('restart-bot', 'RestartRunner', '', [], function (e) {});
+        }
     });
 
-    socket.addListener('restart-bot-result', function(e) {
+    socket.addListener('restart-bot-result', function (e) {
         if (e.code === -3) {
             if (e.success) {
                 $('#restart-bot-btn').removeClass('disabled');
@@ -40,17 +42,17 @@ $(function () {
                 $('#restart-bot-btn').addClass('disabled');
             }
         } else if (e.success) {
-            toastr.success('Neustart erfolgreich', 'Restart', {timeOut: 30});
+            toastr.success('Neustart erfolgreich', 'Restart', {timeOut: 3000});
         } else if (e.code === -2) {
-            toastr.error('Neustart mit einer Ausnahme fehlgeschlagen. Die Ausnahme kann in den Kernfehlerprotokollen gefunden werden', 'Restart', {timeOut: 30});
+            toastr.error('Neustart mit einer Ausnahme fehlgeschlagen. Die Ausnahme kann in den Kernfehlerprotokollen gefunden werden', 'Restart', {timeOut: 3000});
         } else if (e.code === -1) {
-            toastr.error('Neustart fehlgeschlagen. OS kann nicht ermittelt werden oder OS wird nicht unterstützt', 'Restart', {timeOut: 30});
+            toastr.error('Neustart fehlgeschlagen. OS kann nicht ermittelt werden oder OS wird nicht unterstützt', 'Restart', {timeOut: 3000});
         } else {
-            toastr.error('Neustart fehlgeschlagen. Der Interpreter hat den Beendigungscode zurückgegeben ' + e.code, 'Restart', {timeOut: 30});
+            toastr.error('Neustart fehlgeschlagen. Der Interpreter hat den Beendigungscode zurückgegeben ' + e.code, 'Restart', {timeOut: 3000});
         }
     });
 
-    socket.wsEvent('restart-bot-check', 'RestartRunner', '', [], function(e) {});
+    socket.wsEvent('restart-bot-check', 'RestartRunner', '', [], function (e) {});
 
     // the button that signs out.
     $('#sign-out-btn').on('click', function () {
