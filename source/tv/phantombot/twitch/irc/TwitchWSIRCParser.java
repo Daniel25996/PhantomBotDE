@@ -256,7 +256,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         int offset = 0;
 
         if (CaselessProperties.instance().getPropertyAsBoolean("ircdebug", false)) {
-            com.gmt2001.Console.debug.println(">" + rawMessage);
+            com.gmt2001.Console.debug.println(">" + rawMessage.trim());
         }
 
         if (rawMessage.startsWith("PONG")) {
@@ -365,7 +365,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         this.send("JOIN #" + channelName);
 
         // Log in the console that web joined.
-        com.gmt2001.Console.out.println("Channel Joined [#" + channelName + "]");
+        com.gmt2001.Console.out.println("Kanal beigetreten[#" + channelName + "]");
 
         // Port the channel joined event.
         eventBus.postAsync(new IrcJoinCompleteEvent(session));

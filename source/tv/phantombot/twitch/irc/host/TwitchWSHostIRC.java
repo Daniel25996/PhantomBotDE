@@ -259,7 +259,7 @@ public class TwitchWSHostIRC {
          */
         public boolean connectWSS() {
             try {
-                com.gmt2001.Console.out.println("Connecting to Twitch WS-IRC Server (SSL, Host) [" + this.uri.getHost() + "]");
+                com.gmt2001.Console.out.println("Verbinden mit Twitch WS-IRC Server (SSL, Host) [" + this.uri.getHost() + "]");
                 this.connecting = true;
                 return this.client.connect();
             } catch (IllegalStateException | InterruptedException ex) {
@@ -326,7 +326,7 @@ public class TwitchWSHostIRC {
                 // This is to make sure the caster created the oauth with his channel account and not the bot's.
                 if (message.contains("002 " + this.channelName + " :")) {
                     this.connected = true;
-                    com.gmt2001.Console.out.println("Connected to Twitch Host Data Feed");
+                    com.gmt2001.Console.out.println("Verbunden mit Twitch Host Data Feed");
 
                     Executors.newSingleThreadScheduledExecutor().schedule(() -> {
                         EventBus.instance().postAsync(new TwitchHostsInitializedEvent());
@@ -338,7 +338,7 @@ public class TwitchWSHostIRC {
                     com.gmt2001.Console.out.println("");
                     com.gmt2001.Console.out.println("Falscher API OAuth erkannt.");
                     com.gmt2001.Console.out.println("Der API OAuth gehört zu einem anderen Konto.");
-                    com.gmt2001.Console.out.println("Bitte beziehe den neuen API OAuth mit deinem Kanal-Account über das Panel");
+                    com.gmt2001.Console.out.println("Bitte beziehe den neuen API OAuth mit deinem Kanalkonto über das Panel");
                     com.gmt2001.Console.out.println("Deaktiviere jetzt das Hostmodul.");
                     com.gmt2001.Console.out.println("");
                     PhantomBot.instance().getDataStore().set("modules", "./handlers/hostHandler.js", "false");

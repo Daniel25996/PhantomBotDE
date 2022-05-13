@@ -116,6 +116,8 @@ public class TwitchClientCredentialsFlow {
 
         if (result.has("error")) {
             com.gmt2001.Console.err.println(result.toString());
+        } else if (!result.has("access_token") || !result.has("expires_in")) {
+            com.gmt2001.Console.err.println("Fehler beim Abrufen von App (EventSub) OAuth, Token oder Expiration fehlte: " + result.toString());
         } else {
             Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
             c.add(Calendar.SECOND, result.getInt("expires_in"));

@@ -342,10 +342,10 @@ $(function () {
             .append(helpers.getInputGroup('command-reward', 'number', 'Belohnung', '0', '0',
                 'Belohnung in Punkten, die der Benutzer beim Ausführen des Befehls erhalten soll.'))
             // Append input box for the global command cooldown.
-            .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Globale Abklingzeit (Sekunden)', '-1', undefined,
+            .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Globale Abklingzeit (Sekunden)', '-1', '-1',
                 'Globale Abklingzeit des Befehls in Sekunden. -1 Verwendet die botweiten Einstellungen.')
             // Append input box for per-user cooldown.
-            .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', undefined,
+            .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', '-1',
                 'Abklingzeit des Befehls pro Benutzer in Sekunden. -1 entfernt die Abklingzeit pro Benutzer.')))
             .append(helpers.getCheckBox('command-disabled', false, 'Deaktiviert',
                 'Wenn diese Option aktiviert ist, kann der Befehl nicht im Chat verwendet werden.'))

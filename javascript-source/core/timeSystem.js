@@ -114,7 +114,7 @@
      * @return {String}
      */
     function getLocalTime() {
-        var dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        var dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "CET")));
         return dateFormat.format(new java.util.Date());
     }
@@ -522,7 +522,7 @@
     /**
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./core/timeSystem.js', 'streamertime');
         $.registerChatCommand('./core/timeSystem.js', 'timezone', 1);
         $.registerChatCommand('./core/timeSystem.js', 'time');

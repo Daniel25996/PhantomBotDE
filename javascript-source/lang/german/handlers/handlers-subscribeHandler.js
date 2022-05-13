@@ -62,3 +62,6 @@ $.lang.register('subscribehandler.sub.msg.noreward.set', 'Neue Abonnement-Willko
 $.lang.register('subscribehandler.sub.msg.noreward.usage', 'Verwendung: !submessage [Nachricht] - Tag: (name)');
 $.lang.register('subscribehandler.resubemote.set', 'Neues Abonneneten-Emote festgelegt.');
 $.lang.register('subscribehandler.resubemote.usage', 'Verwendung: !resubemote [Emotename]');
+$.lang.register('subscribehandler.namesubplan.usage', 'Verwendung: !namesubplan [1|2|3|prime] (Name des Plans)');
+$.lang.register('subscribehandler.namesubplan.show', 'Der aktuelle Name für die Abonnementstufe $1 ist: $2');
+$.lang.register('subscribehandler.namesubplan.set', 'Der Name für die Abonnementstufe $1 wurde geändert in: $2');

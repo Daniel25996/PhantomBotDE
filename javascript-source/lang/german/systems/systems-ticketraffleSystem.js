@@ -20,6 +20,7 @@ $.lang.register('ticketrafflesystem.err.missing.syntax', 'Verwendung: !traffle o
 $.lang.register('ticketrafflesystem.msg.need.to.be.following', 'Du musst dem Kanal folgen, um teilnehmen zu können.');
 $.lang.register('ticketrafflesystem.raffle.opened', 'Die Ticket-Verlosung ist nun geöffnet! Kaufe bis zu $1 Tickets mit !tickets - du kannst mehrmals kaufen. Tickets kosten $2. $3');
 $.lang.register('ticketrafflesystem.err.raffle.not.opened', 'Derzeit ist keine Ticket-Verlosung geöffnet!');
+$.lang.register('ticketrafflesystem.draw.usage', 'Verwendung: !traffle draw [Anzahl (Standard=1)] [Loyalitäts Punktepreis (Standard = 0)]');
 $.lang.register('ticketrafflesystem.err.already.drawn', 'Die Gewinner:innen wurden bereits ausgelost.');
 $.lang.register('ticketrafflesystem.raffle.closed', 'Die Ticketverlosung ist nun beendet. Verwende "!traffle draw", um die Gewinnenden zu ziehen.');
 $.lang.register('ticketrafflesystem.raffle.closed.and.draw', 'Die Ticketverlosung ist nun geschlossen.');

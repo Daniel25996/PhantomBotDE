@@ -740,7 +740,15 @@
 
     function test(str, regex) {
         regex.lastIndex = 0;
-        return regex.test(str);
+        try {
+            return regex.test(str);
+        } catch (e) {
+            if (e.indexOf('Funktionstest kann nicht gefunden werden') >= 0) {
+                return $.javaString(str).contains(regex);
+            } else {
+                throw e;
+            }
+        }
     }
 
     function regexExec(str, regex) {

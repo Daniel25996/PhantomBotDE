@@ -78,6 +78,10 @@ function alertFollow(announceFollows, followToggle, s, follower, followReward, f
     function runFollows() {
         if (!followQueue.isEmpty() && (lastFollow + (followDelay * 1e3)) < $.systemTime()) {
             var s = followQueue.poll();
+            if (s === null) {
+                return;
+            }
+
             if (s.match(/\(alert [,.\w\W]+\)/g)) {
                 var filename = s.match(/\(alert ([,.\w\W]+)\)/)[1];
                 $.alertspollssocket.alertImage(filename);

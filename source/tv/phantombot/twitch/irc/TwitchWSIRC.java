@@ -121,7 +121,7 @@ public class TwitchWSIRC implements WsClientFrameHandler {
      */
     public boolean connectWSS() {
         try {
-            com.gmt2001.Console.out.println("Connecting to Twitch WS-IRC Server (SSL) [" + this.uri.getHost() + "]");
+            com.gmt2001.Console.out.println("Verbinden mit Twitch WS-IRC Server (SSL) [" + this.uri.getHost() + "]");
             this.connected = false;
             this.connecting = true;
             return this.client.connect();

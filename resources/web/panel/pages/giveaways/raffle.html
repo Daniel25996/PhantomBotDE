@@ -52,7 +52,8 @@
                             <div id="raffle-list">
                                 <table class="table table-hover table-custom" id="raffle-table" style="width: 100%;">
                                 	<tr>
-                                        <th style="width: 100%;">Benutzername</th>
+                                        <th style="width: 100%;">Einträge</th>
+                                        <th style="width: 100%;">Gewinner</th>
                                     </tr>
                                 </table>
                             </div>
@@ -133,6 +134,25 @@
                                 <input type="number" min="1" max="10" class="form-control" id="raffle-sub" value="1"
                                     data-toggle="tooltip" title="Wie oft kann ein Abonnent mehr gewinnen."/>
                             </div>
+
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Ziehoptionen</h3>
+                            </div>
+
+                            <!-- Draw amount -->
+                            <div class="form-group">
+                                <label for="raffle-draw">Ziehe Anzahl</label>
+                                <input type="number" min="1" class="form-control" id="raffle-draw" value="1"
+                                    data-toggle="tooltip" title="Die Anzahl der zu ziehenden Gewinner."/>
+                            </div>
+
+                            <!-- Prize -->
+                            <div class="form-group">
+                                <label for="raffle-prize">Preis</label>
+                                <input type="number" min="0" class="form-control" id="raffle-prize" value="0"
+                                    data-toggle="tooltip" title="Die Anzahl der Treuepunkte, die jedem Gewinner gutgeschrieben werden."/>
+                            </div>
+
                         </div>
 
                         <!-- Footer with buttons -->

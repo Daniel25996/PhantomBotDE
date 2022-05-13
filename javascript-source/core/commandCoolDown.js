@@ -33,11 +33,11 @@
 
     const   Type = {
                 User: 'user',
-                Global: 'global',
+                Global: 'global'
             },
             Operation = {
                 UnSet: -1,
-                UnChanged: 0,
+                UnChanged: 0
             };
 
     /*
@@ -140,8 +140,10 @@
             useDefault = false;
 
         if (cooldown !== undefined) {
+            var hasCooldown = false;
 
             if (cooldown.globalSec !== Operation.UnSet) {
+                hasCooldown = true;
                 isGlobal = true;
                 if (cooldown.globalTime > $.systemTime()) {
                     maxCoolDown = getTimeDif(cooldown.globalTime);
@@ -151,6 +153,7 @@
             }
 
             if (cooldown.userSec !== Operation.UnSet) {
+                hasCooldown = true;
                 if (cooldown.userTimes[username] !== undefined && cooldown.userTimes[username] > $.systemTime()) {
                     var userCoolDown = getTimeDif(cooldown.userTimes[username]);
                     if(userCoolDown > maxCoolDown) {
@@ -161,9 +164,11 @@
                     set(command, useDefault, cooldown.userSec, username);
                 }
             }
-            return [maxCoolDown, isGlobal];
-        }
 
+            if (hasCooldown) {
+                return [maxCoolDown, isGlobal];
+            }
+        }
 
         if (defaultCooldowns[command] !== undefined && defaultCooldowns[command] > $.systemTime()) {
             maxCoolDown = getTimeDif(defaultCooldowns[command]);
@@ -178,7 +183,6 @@
     function getTimeDif(cooldownSec) {
         return (cooldownSec - $.systemTime() > 1000 ? Math.ceil(((cooldownSec - $.systemTime()) / 1000)) : 1);
     }
-
 
     function exists(command) {
         return defaultCooldowns[command] !== undefined || cooldowns[command] !== undefined;
@@ -199,6 +203,10 @@
         if (useDefault) {
             defaultCooldowns[command] = finishTime;
             return;
+        }
+
+        if (!exists(command)) {
+            add(command, Operation.UnChanged, Operation.UnChanged);
         }
 
         if (username === undefined) {
@@ -274,8 +282,8 @@
             secsU   = Operation.UnChanged;
 
         if(!isNaN(parseInt(type1)) && second === undefined) { //Only assume this is global if no secondary action is present
-            type1 = Type.Global;
             secsG = parseInt(type1);
+            type1 = Type.Global;
         } else if ((!type1.equalsIgnoreCase(Type.Global) && !type1.equalsIgnoreCase(Type.User)) || isNaN(parseInt(action1[1]))) {
             $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.usage'));
             return;

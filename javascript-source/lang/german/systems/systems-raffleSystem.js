@@ -22,7 +22,10 @@ $.lang.register('rafflesystem.open.points', 'Eine Verlosung ist nun geöffnet! T
 $.lang.register('rafflesystem.open', 'Eine Verlosung ist nun geöffnet! Tippe $1 um an der Verlosung teilzunehmen$2! $3');
 $.lang.register('rafflesystem.close.error.closed', 'Derzeit ist keine Verlosung im Gange.');
 $.lang.register('rafflesystem.close.success', 'Die Verlosung ist nun geschlossen! Es werden keine Personen mehr angenommen!');
-$.lang.register('rafflesystem.winner', 'Gewinner:in dieser Verlosung ist $1! $2');
+$.lang.register('rafflesystem.winner.single', 'Gewinner:in dieser Verlosung ist $1! $2');
+$.lang.register('rafflesystem.winner.multiple', 'Gewinner:innen dieses Raffles sind $1!');
+$.lang.register('rafflesystem.winner.single.award', 'Gewinner:in wurde ausgezeichnet: $1!');
+$.lang.register('rafflesystem.winner.multiple.award', 'Die Gewinner:innen wurden ausgezeichnet: $1 jeder!');
 $.lang.register('rafflesystem.whisper.winner', 'Du hast eine Verlosung im Kanal von $1 gewonnen!');
 $.lang.register('rafflesystem.repick.error', 'Es sind keine weiteren Teilnehmenden in der Liste vorhanden.');
 $.lang.register('rafflesystem.enter.404', 'Du nimmst an dieser Verlosung bereits teil!');
@@ -31,6 +34,7 @@ $.lang.register('rafflesystem.enter.subscriber', 'Du musst Abonnent:in sein, um 
 $.lang.register('rafflesystem.enter.points', 'Du hast nicht genug $1, um an dieser Verlosung teilzunehmen.');
 $.lang.register('rafflesystem.enter.time', 'Du bist noch nicht lange genug in diesem Kanal, um an dieser Verlosung teilzunehmen.');
 $.lang.register('rafflesystem.usage', 'Verwendung: !raffle [open / close / draw / results / subscriberbonus/ regularbonus / whisperwinner]');
+$.lang.register('rafflesystem.draw.usage', 'Verwendung: !raffle draw [Anzahl (Standard = 1)] [Preispunkte (Standard = 0)]');
 $.lang.register('rafflesystem.results', 'Eine Verlosung ist bereits im Gange! Schlüsselwort: $1 - Teilnehmende: $2');
 $.lang.register('rafflesystem.fee', ' - Beitrittsgebühr: $1');
 $.lang.register('rafflesystem.subbonus.usage', 'Verwendung: !raffle subscriberbonus [1-10]');
@@ -48,6 +52,7 @@ $.lang.register('rafflesystem.common.following', 'und du musst dem Kanal folgen'
 $.lang.register('rafflesystem.common.timer', 'Die Verlosung endet in $1 Minuten.');
 $.lang.register('rafflesystem.common.message', 'nicht mehr');
 $.lang.register('rafflesystem.open.keyword-exists', 'Das Schlüsselwort darf kein existierender Befehl sein: $1');
+$.lang.register('rafflesystem.winner.404', 'Konnte keine Gewinner auswählen. Niemand hat an dieser Verlosung teilgenommen.');
 $.lang.register('rafflesystem.winner.404', 'Gewinner:in kann nicht ermitteln werden. Niemand hat bei der Verlosung teilgenommen.');
 $.lang.register('rafflesystem.isfollowing', '[Follower]');
 $.lang.register('rafflesystem.isnotfollowing', '[Kein Follower]');

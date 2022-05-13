@@ -21,12 +21,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.function.Supplier;
+import org.apache.commons.lang3.SystemUtils;
 
 public class ConfigurationManager {
 
     private static final String BOTLOGIN_TXT_LOCATION = "./config/botlogin.txt";
-    private static final String PANEL_STANDARD_USER = "panel";
-    private static final String PANEL_STANDARD_PASSWORD = "panel";
     private static final String OUAUTH_PREFIX = "oauth:";
 
     public static final String PROP_ENVOVERRIDE = "ENVOVERRIDE";
@@ -61,7 +60,7 @@ public class ConfigurationManager {
 
     static CaselessProperties getConfiguration() {
         /* List of properties that must exist. */
-        String[] requiredProperties = new String[]{PROP_OAUTH, PROP_CHANNEL, PROP_OWNER, PROP_USER};
+        String[] requiredProperties = new String[]{PROP_PANEL_USER, PROP_PANEL_PASSWORD, PROP_CHANNEL, PROP_OWNER, PROP_USER};
         String requiredPropertiesErrorMessage;
 
         /* Properties configuration */
@@ -117,8 +116,9 @@ public class ConfigurationManager {
         changed |= generateDefaultValues(startProperties);
 
         /* Make a new botlogin with the botName, oauth or channel is not found */
-        if (startProperties.getProperty(PROP_USER) == null || startProperties.getProperty(PROP_OAUTH) == null || startProperties.getProperty(PROP_CHANNEL) == null) {
-            doSetup(startProperties);
+        if (doSetup(startProperties, startProperties.getProperty(PROP_USER, "").isBlank(), startProperties.getProperty(PROP_CHANNEL, "").isBlank(),
+                startProperties.getProperty(PROP_OAUTH, "").isBlank(),
+                startProperties.getProperty(PROP_PANEL_USER, "").isBlank() || startProperties.getProperty(PROP_PANEL_PASSWORD, "").isBlank())) {
             changed = true;
             newSetup = true;
         }
@@ -175,12 +175,6 @@ public class ConfigurationManager {
         changed |= setDefaultIfMissing(startProperties, PROP_WEBAUTH, ConfigurationManager::generateWebAuth, "Es wurde ein neuer Webauth-Schlüssel generiert für " + BOTLOGIN_TXT_LOCATION);
         /* Check to see if there's a webOAuthRO set */
         changed |= setDefaultIfMissing(startProperties, PROP_WEBAUTH_RO, ConfigurationManager::generateWebAuth, "Es wurde ein neuer Webauth-Leseschlüssel generiert für " + BOTLOGIN_TXT_LOCATION);
-        /* Check to see if there's a panelUsername set */
-        changed |= setDefaultIfMissing(startProperties, PROP_PANEL_USER, PANEL_STANDARD_USER,
-                "Kein Panel-Benutzername, mit Standardwert von '" + PANEL_STANDARD_USER + "' für das Control Panel und den YouTube Player.");
-        /* Check to see if there's a panelPassword set */
-        changed |= setDefaultIfMissing(startProperties, PROP_PANEL_PASSWORD, PANEL_STANDARD_PASSWORD,
-                "Kein Panel-Passwort, mit dem Standardwert von'" + PANEL_STANDARD_PASSWORD + "' für Control Panel und YouTube Player.");
         /* Check to see if there's a youtubeOAuth set */
         changed |= setDefaultIfMissing(startProperties, PROP_YTAUTH, ConfigurationManager::generateWebAuth, "Neuer YouTube Websocket-Schlüssel wurde generiert für " + BOTLOGIN_TXT_LOCATION);
         /* Check to see if there's a youtubeOAuthThro set */
@@ -265,102 +259,134 @@ public class ConfigurationManager {
         return properties.getPropertyAsBoolean(propertyName, defaulValue);
     }
 
-    private static void doSetup(CaselessProperties startProperties) {
+    private static boolean doSetup(CaselessProperties startProperties, boolean user, boolean channel, boolean oauth, boolean panel) {
         try {
+            if (!user && !channel && !oauth && !panel) {
+                return false;
+            }
+
+            boolean interactive = System.getProperty("interactive") != null;
 
             com.gmt2001.Console.out.print("\r\n");
             com.gmt2001.Console.out.print("Willkommen beim PhantomBotDE Setup Prozess!\r\n");
             com.gmt2001.Console.out.print("\r\n");
 
-            final String os = System.getProperty("os.name").toLowerCase();
-
-            // Detect Windows, MacOS, Linux or any other operating system.
-            if (os.startsWith("win")) {
-                com.gmt2001.Console.out.print("PhantomBot hat festgestellt, dass auf Ihrem Gerät Windows ausgeführt wird.\r\n");
-                com.gmt2001.Console.out.print("Hier ist die Installationsanleitung für Windows: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/windows");
-            } else if (os.startsWith("mac")) {
-                com.gmt2001.Console.out.print("PhantomBot hat festgestellt, dass auf Ihrem Gerät macOS läuft.\r\n");
-                com.gmt2001.Console.out.print("Hier ist die Installationsanleitung für macOS: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/macos");
+            if (RepoVersion.isDocker()) {
+                com.gmt2001.Console.out.print("PhantomBot hat festgestellt, dass Docker auf deinem Gerät ausgeführt wird.\r\n");
+                com.gmt2001.Console.out.print("Wir empfehlen die Verwendung unserer offiziellen docker-compose.yml für die Einrichtung\r\n");
+                com.gmt2001.Console.out.print("die zunächst benötigten Variablen: https://github.com/PhantomBot/PhantomBot/blob/master/docker-compose.yml\r\n");
+                com.gmt2001.Console.out.print("\r\n");
+                com.gmt2001.Console.out.print("Wenn du möchtest, dass dein PhantomBot Docker-Container automatisch aktualisiert wird,\r\n");
+                com.gmt2001.Console.out.print("Wir empfehlen die Verwendung von Ouroboros: https://github.com/gmt2001/ouroboros\r\n");
+            } else if (SystemUtils.IS_OS_WINDOWS) {
+                com.gmt2001.Console.out.print("PhantomBot hat festgestellt, dass auf deinem Gerät Windows ausgeführt wird.\r\n");
+                com.gmt2001.Console.out.print("Hier ist die Einrichtungsanleitung für Windows: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/windows");
+            } else if (SystemUtils.IS_OS_LINUX) {
+                com.gmt2001.Console.out.print("PhantomBot hat festgestellt, dass auf deinem Gerät Linux ausgeführt wird.\r\n");
+                com.gmt2001.Console.out.print("Hier ist die Einrichtungsanleitung für Ubuntu: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/ubuntu\r\n");
+                com.gmt2001.Console.out.print("Hier ist die Einrichtungsanleitung für CentOS: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/centos");
+            } else if (SystemUtils.IS_OS_MAC) {
+                com.gmt2001.Console.out.print("PhantomBot hat festgestellt, dass auf deinem Gerät macOS ausgeführt wird.\r\n");
+                com.gmt2001.Console.out.print("Hier ist die Einrichtungsanleitung für macOS: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/macos");
+            } else if (SystemUtils.IS_OS_FREE_BSD || SystemUtils.IS_OS_NET_BSD || SystemUtils.IS_OS_OPEN_BSD) {
+                com.gmt2001.Console.out.print("PhantomBot hat festgestellt, dass auf deinem Gerät BSD ausgeführt wird.\r\n");
+                com.gmt2001.Console.out.print("Entschuldigung, wir haben keine Einrichtungsanleitungen für dieses Betriebssystem.\r\n");
+            } else if (SystemUtils.IS_OS_UNIX) {
+                com.gmt2001.Console.out.print("PhantomBot hat festgestellt, dass auf Ihrem Gerät Unix ausgeführt wird.\r\n");
+                com.gmt2001.Console.out.print("Entschuldigung, wir haben keine Einrichtungsanleitungen für dieses Betriebssystem.\r\n");
             } else {
-                com.gmt2001.Console.out.print("PhantomBot hat festgestellt, dass auf Ihrem Gerät Linux läuft.\r\n");
-                com.gmt2001.Console.out.print("Hier ist die Installationsanleitung für Ubuntu: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/ubuntu\r\n");
-                com.gmt2001.Console.out.print("Hier ist die Installationsanleitung für CentOS: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/centos");
+                com.gmt2001.Console.out.print("PhantomBot kann den Betriebssystemtyp nicht erkennen.\r\n");
+                com.gmt2001.Console.out.print("Entschuldigung, wir haben keine Einrichtungsanleitungen für dieses Betriebssystem.\r\n");
             }
 
             com.gmt2001.Console.out.print("\r\n\r\n\r\n");
 
-            // Bot name.
-            do {
-                com.gmt2001.Console.out.print("1. Bitte gib den Twitch-Benutzernamen des Bot ein: ");
+            if (user) {
+                if (!interactive) {
+                    com.gmt2001.Console.out.print("Der Bot-Benutzername ist nicht eingerichtet, bitte führe die\r\n");
+                    com.gmt2001.Console.out.print("erste Ausführung im interaktiven Modus durch (launch.bat/launch.sh)\r\n");
+                    com.gmt2001.Console.out.print("oder sehe dir unsere offizielle docker-compose.yml\r\n");
+                    com.gmt2001.Console.out.print("für Umgebungsvariablen an, wenn du Docker verwendest.\r\n");
+                    PhantomBot.exitError();
+                }
+                // Bot name.
+                do {
+                    com.gmt2001.Console.out.print("1. Bitte gebe den Twitch-Benutzernamen des Bots ein: ");
 
-                startProperties.setProperty("user", System.console().readLine().trim().toLowerCase());
-            } while (startProperties.getProperty("user", "").length() <= 0);
+                    startProperties.setProperty("user", System.console().readLine().trim().toLowerCase());
+                } while (startProperties.getProperty("user", "").length() <= 0);
+            }
 
-            // Twitch oauth.
-            do {
+            if (channel) {
+                if (!interactive) {
+                    com.gmt2001.Console.out.print("Der Kanalname des Broadcasters ist nicht eingerichtet, bitte führe die\r\n");
+                    com.gmt2001.Console.out.print("erste Ausführung im interaktiven Modus durch (launch.bat/launch.sh)\r\n");
+                    com.gmt2001.Console.out.print("oder sehe dir unsere offizielle docker-compose.yml\r\n");
+                    com.gmt2001.Console.out.print("für Umgebungsvariablen an, wenn du Docker verwendest.\r\n");
+                    PhantomBot.exitError();
+                }
+                // Channel name.
+                do {
+                    com.gmt2001.Console.out.print("\r\n");
+                    com.gmt2001.Console.out.print("2. Bitte gebe den Namen des Twitch-Kanals ein, dem der Bot beitreten soll: ");
+
+                    startProperties.setProperty(PROP_CHANNEL, System.console().readLine().trim());
+                } while (startProperties.getProperty(PROP_CHANNEL, "").length() <= 0);
+            }
+
+            if (panel) {
+                if (!interactive) {
+                    com.gmt2001.Console.out.print("Die Panel-Anmeldung ist nicht eingerichtet, bitte führe die\r\n");
+                    com.gmt2001.Console.out.print("erste Ausführung im interaktiven Modus durch (launch.bat/launch.sh)\r\n");
+                    com.gmt2001.Console.out.print("oder sehe dir unsere offizielle docker-compose.yml\r\n");
+                    com.gmt2001.Console.out.print("für Umgebungsvariablen an, wenn du Docker verwendest.\n");
+                    PhantomBot.exitError();
+                }
+                // Panel username.
+                do {
+                    com.gmt2001.Console.out.print("\r\n");
+                    com.gmt2001.Console.out.print("3. Bitte gebe einen Benutzernamen für das Webpanel ein: ");
+
+                    startProperties.setProperty(PROP_PANEL_USER, System.console().readLine().trim());
+                } while (startProperties.getProperty(PROP_PANEL_USER, "").length() <= 0);
+
+                // Panel password.
+                do {
+                    com.gmt2001.Console.out.print("\r\n");
+                    com.gmt2001.Console.out.print("4. Bitte geben Sie ein Passwort für das Webpanel ein: ");
+
+                    startProperties.setProperty(PROP_PANEL_PASSWORD, System.console().readLine().trim());
+                } while (startProperties.getProperty(PROP_PANEL_PASSWORD, "").length() <= 0);
+            }
+
+            if (oauth) {
                 com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("2. Du brauchst nun einen temporären OAuth-Token, damit der Bot chatten kann.\r\n");
-                com.gmt2001.Console.out.print("Bitte beachte, dass dieser OAuth-Token generiert werden muss, während du mit dem Twitch-Konto des Bot angemeldet bist.\r\n");
-                com.gmt2001.Console.out.print("Wenn du nicht als Bot angemeldet bist, gehe bitte auf https://twitch.tv/ und melde dich als Bot an.\r\n");
-                com.gmt2001.Console.out.print("Den OAuth-Token des Bot erhältst du hier: https://phantombot.github.io/PhantomBot/oauth/\r\n");
-                com.gmt2001.Console.out.print("Bitte gib den OAuth-Token des Bots ein: ");
-
-                startProperties.setProperty(PROP_OAUTH, System.console().readLine().trim());
-            } while (startProperties.getProperty(PROP_OAUTH, "").length() <= 0);
-
-            // api oauth.
-            do {
+                com.gmt2001.Console.out.print("5. Nachdem diese Einrichtung abgeschlossen ist, musst du die automatische Aktualisierung der OAuth-Token einrichten.\r\n");
                 com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("3. Nachdem diese Einrichtung abgeschlossen ist, musst du die automatische Aktualisierung der OAuth-Token einrichten.\r\n");
-                com.gmt2001.Console.out.print("Du musst auch das Kanal-OAuth-Token für den Bot einrichten, um den Titel und die Kategorie ändern zu können.\r\n");
+                com.gmt2001.Console.out.print("Du musst einen Chat-OAuth-Token einrichten, damit der Bot Nachrichten im Twitch-Chat senden kann.\r\n");
+                com.gmt2001.Console.out.print("Du musst auch ein Kanal OAuth-Token für den Bot einrichten, damit der Bot den Titel und die Kategorie ändern kann.\r\n");
                 com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("Bitte beachte, dass das BOT-Token für das Konto bestimmt ist, dass im Chat angezeigt wird.\r\n");
-                com.gmt2001.Console.out.print("Bitte beachte, dass der CASTER-Token für das Konto des Senders für API-Anforderungen gilt.\r\n");
+                com.gmt2001.Console.out.print("Bitte beachte, dass das BOT-Token für das Konto gilt, das im Chat angezeigt wird.\r\n");
+                com.gmt2001.Console.out.print("Bitte beachte, dass das CASTER-Token für das Konto des Broadcasters für API-Anfragen bestimmt ist.\r\n");
                 com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("Der Link zur Einrichtungsseite ist hier: http://127.0.0.1:25000/oauth/\r\n");
-                com.gmt2001.Console.out.print("Oder rufe die entsprechende URL auf, wenn der Bot remote gehostet wird\r\n");
+                com.gmt2001.Console.out.print("Der Link zur Einrichtungsseite ist hier: http://localhost:25000/oauth/\r\n");
+                com.gmt2001.Console.out.print("Oder rufen Sie die entsprechende URL auf, wenn Ihr Bot remote gehostet wird.\r\n");
                 com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("Bitte beachte, dass du diese Einrichtung zuerst abschließen musst, bevor du auf diese Seite zugreifen kannst\r\n");
-
-                startProperties.setProperty(PROP_API_OAUTH, startProperties.getProperty(PROP_OAUTH, "null"));
-            } while (startProperties.getProperty(PROP_API_OAUTH, "").length() <= 0);
-
-            // Channel name.
-            do {
-                com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("4. Bitte gib den Namen des Twitch-Kanals ein, dem der Bot beitreten soll: ");
-
-                startProperties.setProperty(PROP_CHANNEL, System.console().readLine().trim());
-            } while (startProperties.getProperty(PROP_CHANNEL, "").length() <= 0);
-
-            // Panel username.
-            do {
-                com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("5. Bitte gebe einen benutzerdefinierten Benutzernamen für das Web-Panel ein: ");
-
-                startProperties.setProperty(PROP_PANEL_USER, System.console().readLine().trim());
-            } while (startProperties.getProperty(PROP_PANEL_USER, "").length() <= 0);
-
-            // Panel password.
-            do {
-                com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("6. Bitte gebe ein benutzerdefiniertes Passwort für das Web-Panel ein: ");
-
-                startProperties.setProperty(PROP_PANEL_PASSWORD, System.console().readLine().trim());
-            } while (startProperties.getProperty(PROP_PANEL_PASSWORD, "").length() <= 0);
+                com.gmt2001.Console.out.print("Bitte beachte, dass du diesen Schritt ausführen musst, damit der Bot vollständig gestartet werden kann.\r\n");
+            }
 
             com.gmt2001.Console.out.print("\r\n");
-            com.gmt2001.Console.out.print("PhantomBot wird in 10 Sekunden gestartet.\r\n");
-            com.gmt2001.Console.out.print("Wenn du den Bot lokal betreiben möchtest, kannst Du hier auf das Control Panel zugreifen: http://localhost:25000/ \r\n");
-            com.gmt2001.Console.out.print("Wenn du den Bot auf einem Server betreibst, stelle sicher, dass du die folgenden Ports öffnest: \r\n");
-            com.gmt2001.Console.out.print("25000. Du musst 'localhost' auf deine Server-IP ändern, um auf das Panel zugreifen zu können. \r\n");
+            com.gmt2001.Console.out.print("\r\n");
+            com.gmt2001.Console.out.print("PhantomBot startet den Webserver in 10 Sekunden.\r\n");
+            com.gmt2001.Console.out.print("Wenn du den Bot lokal betreibst, kannst du hier auf das Control Panel zugreifen: http://localhost:25000/\r\n");
+            com.gmt2001.Console.out.print("Wenn du den Bot auf einem Server betreibst, stelle sicher, dass du die folgenden Ports öffnest: 25000\r\n");
+            com.gmt2001.Console.out.print("Dann musst du 'localhost' auf deine Server-IP ändern, um auf das Panel zugreifen zu können.\r\n");
             com.gmt2001.Console.out.print("\r\n");
             com.gmt2001.Console.out.print("Du kannst jetzt das automatisch aktualisierende OAuth-Token-System einrichten, du benötigst den\r\n");
             com.gmt2001.Console.out.print("Benutzername und das Passwort für das Webpanel, die du oben festgelegt hast, um auf die Seite zuzugreifen.\r\n");
             com.gmt2001.Console.out.print("\r\n");
 
             Thread.sleep(10000);
-
         } catch (InterruptedException ex) {
             com.gmt2001.Console.debug.println("Der Standbymodus konnte nicht im Setup aktiviert werden: " + ex.getMessage());
             Thread.currentThread().interrupt();
@@ -369,6 +395,8 @@ public class ConfigurationManager {
             com.gmt2001.Console.out.println("[ERROR] PhantomBotDE konnte nicht eingerichtet werden. Wird beendet...");
             PhantomBot.exitError();
         }
+
+        return true;
     }
 
     /* gen a oauth */
