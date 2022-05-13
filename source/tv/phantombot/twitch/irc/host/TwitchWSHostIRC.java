@@ -91,7 +91,7 @@ public class TwitchWSHostIRC {
             this.twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(this.twitchIRCWSS));
             if (!this.twitchWSHostIRCWS.connectWSS()) {
                 this.lastConnectSuccess = false;
-                com.gmt2001.Console.err.println("Unable to connect to Twitch Data Host Feed");
+                com.gmt2001.Console.err.println("Es kann keine Verbindung zum Twitch Data Host Feed hergestellt werden");
             } else {
                 this.lastConnectSuccess = true;
             }
@@ -123,8 +123,8 @@ public class TwitchWSHostIRC {
             try {
                 if (!this.backoff.GetIsBackingOff()) {
                     this.shutdown();
-                    com.gmt2001.Console.out.println("Delaying next connection (Host) attempt to prevent spam, " + (this.backoff.GetNextInterval() / 1000) + " seconds...");
-                    com.gmt2001.Console.warn.println("Delaying next reconnect (Host) " + (this.backoff.GetNextInterval() / 1000) + " seconds...", true);
+                    com.gmt2001.Console.out.println("Verzögern des nächsten Verbindungsversuchs (Host), um Spam zu verhindern, " + (this.backoff.GetNextInterval() / 1000) + " Sekunden...");
+                    com.gmt2001.Console.warn.println("Verzögern der nächsten Wiederverbindung (Host) " + (this.backoff.GetNextInterval() / 1000) + " Sekunden...", true);
                     this.backoff.BackoffAsync(() -> {
                         this.connect();
                         if (!this.lastConnectSuccess) {
@@ -209,14 +209,14 @@ public class TwitchWSHostIRC {
 
                 // if we sent a ping longer than 3 minutes ago, send another one.
                 if (System.currentTimeMillis() > (this.lastPing + 180000)) {
-                    com.gmt2001.Console.debug.println("Sending a PING to Twitch.");
+                    com.gmt2001.Console.debug.println("Senden eines PING an Twitch.");
                     this.lastPing = System.currentTimeMillis();
                     this.client.send("PING");
 
                     // If Twitch's last pong was more than 3.5 minutes ago, close our connection.
                 } else if (System.currentTimeMillis() > (this.lastPong + 210000)) {
-                    com.gmt2001.Console.out.println("Closing our connection with Twitch (Host) since no PONG got sent back.");
-                    com.gmt2001.Console.warn.println("Closing our connection with Twitch (Host) since no PONG got sent back.", true);
+                    com.gmt2001.Console.out.println("Wir schließen unsere Verbindung mit Twitch (Host), da kein PONG zurückgesendet wurde.");
+                    com.gmt2001.Console.warn.println("Wir schließen unsere Verbindung mit Twitch (Host), da kein PONG zurückgesendet wurde.", true);
                     this.twitchWSHostIRC.reconnect();
                 }
             }, 10, 30, TimeUnit.SECONDS);
@@ -292,14 +292,14 @@ public class TwitchWSHostIRC {
             // Reconnect if the bot isn't shutting down.
             if (!reason.equals("bye")) {
                 if (!this.connecting) {
-                    com.gmt2001.Console.warn.println("Lost connection with Twitch (Host), caused by: ");
+                    com.gmt2001.Console.warn.println("Verbindungsabbruch mit Twitch (Host), verursacht durch: ");
                     com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "]");
 
                     this.connecting = true;
                     this.twitchWSHostIRC.reconnect();
                 }
             } else {
-                com.gmt2001.Console.out.println("Connection to Twitch WS-IRC (Host) was closed...");
+                com.gmt2001.Console.out.println("Verbindung zu Twitch WS-IRC (Host) wurde geschlossen...");
                 com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "]");
             }
         }

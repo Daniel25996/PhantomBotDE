@@ -95,7 +95,7 @@ public class TwitchSession extends MessageQueue {
             } else {
                 if (!isretry) {
                     try {
-                        com.gmt2001.Console.warn.println("Tried to send message before connecting to Twitch, trying again in 5 seconds...");
+                        com.gmt2001.Console.warn.println("Es wurde versucht, eine Nachricht zu senden, bevor eine Verbindung zu Twitch hergestellt wurde, und es wird in 5 Sekunden erneut versucht...");
                         Thread.sleep(5000);
                         this.sendRaw(message, true);
                     } catch (InterruptedException ex2) {
@@ -105,7 +105,7 @@ public class TwitchSession extends MessageQueue {
         } catch (NotYetConnectedException ex) {
             if (!isretry) {
                 try {
-                    com.gmt2001.Console.warn.println("Tried to send message before connecting to Twitch, trying again in 5 seconds...");
+                    com.gmt2001.Console.warn.println("Es wurde versucht, eine Nachricht zu senden, bevor eine Verbindung zu Twitch hergestellt wurde, und es wird in 5 Sekunden erneut versucht...");
                     Thread.sleep(5000);
                     this.sendRaw(message, true);
                     return;
@@ -145,14 +145,14 @@ public class TwitchSession extends MessageQueue {
             this.twitchWSIRC = new TwitchWSIRC(new URI("wss://irc-ws.chat.twitch.tv"), this.channelName, this.botName, this.oAuth, this);
             if (!this.twitchWSIRC.connectWSS()) {
                 this.lastConnectSuccess = false;
-                com.gmt2001.Console.err.println("Error when connecting to Twitch.");
+                com.gmt2001.Console.err.println("Fehler beim Verbinden mit Twitch.");
             } else {
                 this.lastConnectSuccess = true;
             }
         } catch (URISyntaxException ex) {
             this.lastConnectSuccess = false;
             com.gmt2001.Console.err.printStackTrace(ex);
-            com.gmt2001.Console.err.println("TwitchWSIRC URI Failed");
+            com.gmt2001.Console.err.println("TwitchWSIRC URI Fehlgeschlagen");
         }
         return this;
     }

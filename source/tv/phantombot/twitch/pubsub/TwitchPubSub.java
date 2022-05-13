@@ -446,22 +446,22 @@ public class TwitchPubSub {
                 if (TwitchValidate.instance().hasAPIScope("channel:moderate")) {
                     String[] type = new String[]{"chat_moderator_actions." + (TwitchValidate.instance().getAPIUserID().equalsIgnoreCase("" + this.channelId) ? this.channelId : this.botId) + "." + this.channelId};
                     this.subscribeToTopics(type, "moderator");
-                    com.gmt2001.Console.out.println("Verbunden mit dem Twitch-Moderations-Datenfeed");
+                    com.gmt2001.Console.out.println("Twitch Moderation Data Feed anfordern");
                 }
 
                 if (TwitchValidate.instance().hasAPIScope("channel:read:redemptions")) {
                     String[] type2 = new String[]{"channel-points-channel-v1." + this.channelId};
                     this.subscribeToTopics(type2, "redemptions");
-                    com.gmt2001.Console.out.println("Verbunden mit Twitch Channel Points Data Feed");
+                    com.gmt2001.Console.out.println("Twitch Channel Points Data Feed anfordern");
                 }
 
                 String[] type3 = new String[]{"video-playback-by-id." + this.channelId};
                 this.subscribeToTopics(type3, "streamupdown");
-                com.gmt2001.Console.out.println("Verbunden mit Twitch Stream Up/Down Data Feed");
+                com.gmt2001.Console.out.println("Twitch Stream Up/Down Data Feed anfordern");
 
                 String[] type4 = new String[]{"following." + this.channelId};
                 this.subscribeToTopics(type4, "following");
-                com.gmt2001.Console.out.println("Verbunden mit Twitch Follow Data Feed");
+                com.gmt2001.Console.out.println("Twitch Follow Data Feed anfordern");
             } catch (JSONException ex) {
                 com.gmt2001.Console.err.logStackTrace(ex);
             }
@@ -477,12 +477,12 @@ public class TwitchPubSub {
             com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "]");
 
             if (!this.hasModerator && !this.hasRedemptions) {
-                com.gmt2001.Console.out.println("Disconnected from Twitch PubSub due to no valid topic subscriptions");
+                com.gmt2001.Console.out.println("Wegen fehlender gültiger Themenabonnements von Twitch PubSub getrennt");
                 return;
             }
 
             if (!reason.equals("bye")) {
-                com.gmt2001.Console.out.println("Lost connection to Twitch PubSub, retrying soon...");
+                com.gmt2001.Console.out.println("Verbindung zu Twitch PubSub verloren, versuche es bald erneut...");
                 this.twitchPubSub.reconnect();
             }
         }

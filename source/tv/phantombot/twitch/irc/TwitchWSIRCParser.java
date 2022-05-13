@@ -163,7 +163,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
     @Override
     public void onError(Throwable thrwbl) {
         com.gmt2001.Console.err.printStackTrace(thrwbl);
-        com.gmt2001.Console.err.println("GiftSubTracker threw an exception and is being disconnected...");
+        com.gmt2001.Console.err.println("GiftSubTracker hat eine Ausnahme ausgelöst und wird getrennt ...");
     }
 
     /**
