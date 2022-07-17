@@ -17,13 +17,13 @@
 
 $.lang.register('discord.streamhandler.usage', 'Verwendung: !streamhandler [toggleonline / onlinemessage / toggleoffline / offlinemessage / togglegame / gamemessage / togglebotstatus / channel / toggledeletemessage]');
 $.lang.register('discord.streamhandler.online.toggle', 'Online Benachrichtigung wurde $1.');
-$.lang.register('discord.streamhandler.online.message.usage', 'Verwendung: !streamhandler onlinemessage [Benachrichtigung] - Tags: (name)');
+$.lang.register('discord.streamhandler.online.message.usage', 'Verwendung: !streamhandler onlinemessage [Nachricht] - Tags: (name)');
 $.lang.register('discord.streamhandler.online.message.set', 'Online Benachrichtigung geändert zu: $1');
 $.lang.register('discord.streamhandler.offline.toggle', 'Offline Benachrichtigung wurde $1.');
-$.lang.register('discord.streamhandler.offline.message.usage', 'Verwendung: !streamhandler offlinemessage [Benachrichtigung] - Tags: (name)');
+$.lang.register('discord.streamhandler.offline.message.usage', 'Verwendung: !streamhandler offlinemessage [Nachricht] - Tags: (name)');
 $.lang.register('discord.streamhandler.offline.message.set', 'Offline Benachrichtigung geändert zu: $1');
 $.lang.register('discord.streamhandler.game.toggle', 'Benachrichtigung bei Kategoriewechsel wurde $1');
-$.lang.register('discord.streamhandler.game.message.usage', 'Verwendung: !streamhandler gamemessage [Benachrichtigung] - Tags: (name) (url)');
+$.lang.register('discord.streamhandler.game.message.usage', 'Verwendung: !streamhandler gamemessage [Nachricht] - Tags: (name) (url)');
 $.lang.register('discord.streamhandler.game.message.set', 'Benachrichtigung bei Kategoriewechsel wurde geändert zu: $1');
 $.lang.register('discord.streamhandler.channel.usage', 'Verwendung: !streamhandler channel [Kanalname]');
 $.lang.register('discord.streamhandler.channel.set', 'Stream-Ankündigungen werden nun im Kanal $1 gemacht.');

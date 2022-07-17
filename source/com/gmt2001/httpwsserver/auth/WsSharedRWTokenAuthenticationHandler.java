@@ -77,7 +77,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param frame The {@link WebSocketFrame} to check
-     * @return {@code true} if authenticated, {@code false} otherwise. When returning {@code false}, this method will also reply with the appropriate
+     * @return, this method will also reply with the appropriate
      * frames to continue the authentication sequence, or an {@code Unauthorized} frame if authentication has been fully attempted and failed
      */
     @Override
@@ -132,9 +132,9 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
 
         if (!ctx.channel().attr(ATTR_AUTHENTICATED).get()) {
             com.gmt2001.Console.debug.println("wsauthfail");
-            com.gmt2001.Console.debug.println("Erwartet (rw): >" + readWriteToken + "<");
-            com.gmt2001.Console.debug.println("Erwartet (r): >" + readOnlyToken + "<");
-            com.gmt2001.Console.debug.println("Habe: >" + astr + "<");
+            com.gmt2001.Console.debug.println("Expected (rw): >" + readWriteToken + "<");
+            com.gmt2001.Console.debug.println("Expected (r): >" + readOnlyToken + "<");
+            com.gmt2001.Console.debug.println("Got: >" + astr + "<");
             if (ctx.channel().attr(ATTR_AUTH_ATTEMPTS).get() >= maxAttempts) {
                 WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
                 ctx.close();

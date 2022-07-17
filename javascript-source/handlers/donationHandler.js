@@ -49,12 +49,12 @@
         }
 
         if (!$.isDirectory(donationAddonDir)) {
-            $.consoleDebug('>> Erstelle Spenden-Handler Verzeichnis: ' + donationAddonDir);
+            $.consoleDebug('>> Creating Donation Handler Directory: ' + donationAddonDir);
             $.mkDir(donationAddonDir);
         }
 
-        $.consoleLn('>> Aktiviere StreamLabs spenden Ankündigung');
-        $.log.event('Spenden Ankündigung aktiviert');
+        $.consoleLn('>> Enabling StreamLabs donation announcements');
+        $.log.event('Donation announcements enabled');
         announceDonationsAllowed = true;
     });
 
@@ -111,7 +111,7 @@
 
             if (donationSay.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
                 if (!$.audioHookExists(donationSay.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                    $.log.error('Audio-Hook konnte nicht wiedergegeben werden: Audio-Hook existiert nicht.');
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
                 } else {
                     $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 }
@@ -127,8 +127,8 @@
         if (donationGroup) {
             $.inidb.incr('donations', donationUsername.toLowerCase(), parseInt(donationAmount.toFixed(2)));
             if ($.inidb.exists('donations', donationUsername.toLowerCase()) && $.inidb.get('donations', donationUsername.toLowerCase()) >= donationGroupMin) {
-                if ($.getUserGroupId(donationUsername.toLowerCase()) > 3) {
-                    $.setUserGroupById(donationUsername.toLowerCase(), '4');
+                if ($.getUserGroupId(donationUsername.toLowerCase()) > $.PERMISSION.Donator) {
+                    $.setUserGroupById(donationUsername.toLowerCase(), $.PERMISSION.Donator);
                 }
             }
         }
@@ -256,7 +256,7 @@
      * @event initReady
      */
     $.bind('initReady', function () {
-        $.registerChatCommand('./handlers/donationHandler.js', 'streamlabs', 1);
+        $.registerChatCommand('./handlers/donationHandler.js', 'streamlabs', $.PERMISSION.Admin);
     });
 
     $.donationpanelupdate = donationpanelupdate;

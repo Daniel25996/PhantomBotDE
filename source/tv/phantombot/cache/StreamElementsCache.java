@@ -17,8 +17,8 @@
 package tv.phantombot.cache;
 
 import com.scaniatv.StreamElementsAPIv2;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,8 +34,8 @@ public class StreamElementsCache implements Runnable {
     private static final Map<String, StreamElementsCache> instances = new ConcurrentHashMap<>();
     private final Thread updateThread;
     private Map<String, JSONObject> cache = new ConcurrentHashMap<>();
-    private Date timeoutExpire = new Date();
-    private Date lastFail = new Date();
+    private Instant timeoutExpire = Instant.now();
+    private Instant lastFail = Instant.now();
     private boolean firstUpdate = true;
     private boolean killed = false;
     private int numfail = 0;
@@ -43,7 +43,8 @@ public class StreamElementsCache implements Runnable {
     /**
      * Used to call and start this instance.
      *
-     * @param {String} channel Channel to run the cache for.
+     * @param channel Channel to run the cache for.
+     * @return
      */
     public static StreamElementsCache instance(String channel) {
         StreamElementsCache instance = instances.get(channel);
@@ -58,7 +59,7 @@ public class StreamElementsCache implements Runnable {
     /**
      * Starts this class on a new thread.
      *
-     * @param {String} channel Channel to run the cache for.
+     * @param channel Channel to run the cache for.
      */
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private StreamElementsCache() {
@@ -73,7 +74,8 @@ public class StreamElementsCache implements Runnable {
     /**
      * Checks if the donation has been cached.
      *
-     * @return {boolean}
+     * @param donationID
+     * @return
      */
     public boolean exists(String donationID) {
         return cache.containsKey(donationID);
@@ -82,7 +84,7 @@ public class StreamElementsCache implements Runnable {
     /**
      * Returns the current cache count (size/length),
      *
-     * @return {Integer}
+     * @return
      */
     public int count() {
         return cache.size();
@@ -92,14 +94,12 @@ public class StreamElementsCache implements Runnable {
      * Checks the amount of time we failed when calling the api to avoid abusing it.
      */
     private void checkLastFail() {
-        Calendar cal = Calendar.getInstance();
-        numfail = (lastFail.after(new Date()) ? numfail + 1 : 1);
+        numfail = (lastFail.isAfter(Instant.now()) ? numfail + 1 : 1);
 
-        cal.add(Calendar.MINUTE, 1);
-        lastFail = cal.getTime();
+        lastFail = Instant.now().plus(1, ChronoUnit.MINUTES);
 
         if (numfail > 5) {
-            timeoutExpire = cal.getTime();
+            timeoutExpire = Instant.now().plus(1, ChronoUnit.MINUTES);
         }
     }
 
@@ -112,12 +112,12 @@ public class StreamElementsCache implements Runnable {
         try {
             Thread.sleep(20 * 1000);
         } catch (InterruptedException ex) {
-            com.gmt2001.Console.debug.println("StreamElementsCache.run: Der Initial-Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
+            com.gmt2001.Console.debug.println("StreamElementsCache.run: Failed to execute initial sleep [InterruptedException]: " + ex.getMessage());
         }
 
         while (!killed) {
             try {
-                if (new Date().after(timeoutExpire)) {
+                if (Instant.now().isAfter(timeoutExpire)) {
                     this.updateCache();
                 }
             } catch (Exception ex) {
@@ -128,7 +128,7 @@ public class StreamElementsCache implements Runnable {
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.debug.println("StreamElementsCache.run: Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
+                com.gmt2001.Console.debug.println("StreamElementsCache.run: Failed to sleep [InterruptedException]: " + ex.getMessage());
             }
         }
     }
@@ -157,7 +157,7 @@ public class StreamElementsCache implements Runnable {
                 }
             } else {
                 if (jsonResult.has("error") && jsonResult.getString("error").equalsIgnoreCase("Unauthorized")) {
-                    com.gmt2001.Console.err.println("StreamElementsCache.updateCache: Falscher JWT-Token, deaktiviere das StreamElements-Modul.");
+                    com.gmt2001.Console.err.println("StreamElementsCache.updateCache: Bad JWT token disabling the StreamElements module.");
                     PhantomBot.instance().getDataStore().SetString("modules", "", "./handlers/streamElementsHandler.js", "false");
                     killed = true;
                 }
@@ -184,7 +184,7 @@ public class StreamElementsCache implements Runnable {
     /**
      * Sets the current cache.
      *
-     * @param {Map} Cache
+     * @param cache
      */
     public void setCache(Map<String, JSONObject> cache) {
         this.cache = cache;
@@ -193,7 +193,7 @@ public class StreamElementsCache implements Runnable {
     /**
      * Returns the current cache.
      *
-     * @return {Map} Current cache.
+     * @return Current cache.
      */
     public Map<String, JSONObject> getCache() {
         return cache;

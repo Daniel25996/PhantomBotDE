@@ -18,11 +18,11 @@ package com.gmt2001;
 
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
-import com.gmt2001.httpclient.HttpUrl;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.QueryStringDecoder;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.time.ZoneOffset;
 import java.util.Calendar;
@@ -86,7 +86,7 @@ public class TwitchAuthorizationCodeFlow {
         return this.refreshTokens(refreshTransaction, bot, api);
     }
 
-    private boolean refreshTokens(Transaction refreshTransaction, boolean bot, boolean api) {
+    private synchronized boolean refreshTokens(Transaction refreshTransaction, boolean bot, boolean api) {
         boolean changed = false;
         if (bot) {
             boolean botchanged = this.refreshBotOAuth(refreshTransaction);
@@ -100,8 +100,8 @@ public class TwitchAuthorizationCodeFlow {
 
         if (changed) {
             refreshTransaction.commit();
-            com.gmt2001.Console.debug.println("Gespeicherte oauth=" + CaselessProperties.instance().getProperty("oauth") + " refresh=" + CaselessProperties.instance().getProperty("refresh") + " oauthexpires=" + CaselessProperties.instance().getProperty("oauthexpires"));
-            com.gmt2001.Console.debug.println("Gespeicherte apioauth=" + CaselessProperties.instance().getProperty("apioauth") + " apirefresh=" + CaselessProperties.instance().getProperty("apirefresh") + " apiexpires=" + CaselessProperties.instance().getProperty("apiexpires"));
+            com.gmt2001.Console.debug.println("Saved oauth=" + CaselessProperties.instance().getProperty("oauth") + " refresh=" + CaselessProperties.instance().getProperty("refresh") + " oauthexpires=" + CaselessProperties.instance().getProperty("oauthexpires"));
+            com.gmt2001.Console.debug.println("Saved apioauth=" + CaselessProperties.instance().getProperty("apioauth") + " apirefresh=" + CaselessProperties.instance().getProperty("apirefresh") + " apiexpires=" + CaselessProperties.instance().getProperty("apiexpires"));
             TwitchValidate.instance().updateChatToken(CaselessProperties.instance().getProperty("oauth"));
             TwitchValidate.instance().updateAPIToken(CaselessProperties.instance().getProperty("apioauth"));
         }
@@ -125,8 +125,8 @@ public class TwitchAuthorizationCodeFlow {
                 refreshTransaction.setProperty("refresh", result.getString("refresh_token"));
                 refreshTransaction.setProperty("oauthexpires", c.getTimeInMillis() + "");
 
-                com.gmt2001.Console.out.println("Bot-Token aktualisiert");
-                com.gmt2001.Console.debug.println("Neue oauth=" + result.getString("access_token") + " refresh=" + result.getString("refresh_token") + " oauthexpires=" + c.getTimeInMillis() + "");
+                com.gmt2001.Console.out.println("Refreshed the bot token");
+                com.gmt2001.Console.debug.println("New oauth=" + result.getString("access_token") + " refresh=" + result.getString("refresh_token") + " oauthexpires=" + c.getTimeInMillis() + "");
                 changed = true;
             }
         } else {
@@ -153,12 +153,12 @@ public class TwitchAuthorizationCodeFlow {
                 refreshTransaction.setProperty("apirefresh", result.getString("refresh_token"));
                 refreshTransaction.setProperty("apiexpires", c.getTimeInMillis() + "");
 
-                com.gmt2001.Console.out.println("Broadcaster-Token aktualisiert");
+                com.gmt2001.Console.out.println("Refreshed the broadcaster token");
                 com.gmt2001.Console.debug.println("New apioauth=" + result.getString("access_token") + " apirefresh=" + result.getString("refresh_token") + " apiexpires=" + c.getTimeInMillis() + "");
                 changed = true;
             }
         } else {
-            com.gmt2001.Console.debug.println("Aktualisieren übersprungen " + (CaselessProperties.instance().containsKey("apirefresh") ? "t" : "f")
+            com.gmt2001.Console.debug.println("skipped refresh " + (CaselessProperties.instance().containsKey("apirefresh") ? "t" : "f")
                     + (CaselessProperties.instance().containsKey("apirefresh") && !CaselessProperties.instance().getProperty("apirefresh").isBlank() ? "t" : "f"));
         }
 
@@ -188,7 +188,7 @@ public class TwitchAuthorizationCodeFlow {
                     && CaselessProperties.instance().getProperty("clientsecret") != null && !CaselessProperties.instance().getProperty("clientsecret").isBlank()) {
                 data = CaselessProperties.instance().getProperty("clientid").getBytes();
             } else {
-                com.gmt2001.Console.debug.println("fehlende ID oder Geheimnis");
+                com.gmt2001.Console.debug.println("missing id or secret");
                 data = "false".getBytes();
             }
 
@@ -223,7 +223,7 @@ public class TwitchAuthorizationCodeFlow {
                     || (!qsd.parameters().get("type").get(0).equals("bot") && !qsd.parameters().get("type").get(0).equals("broadcaster"))
                     || CaselessProperties.instance().getProperty("clientid") == null || CaselessProperties.instance().getProperty("clientid").isBlank()
                     || CaselessProperties.instance().getProperty("clientsecret") == null || CaselessProperties.instance().getProperty("clientsecret").isBlank()) {
-                com.gmt2001.Console.debug.println("ungültiger Parameter");
+                com.gmt2001.Console.debug.println("invalid parameter");
                 com.gmt2001.Console.debug.println(!qsd.parameters().containsKey("code") + " " + !qsd.parameters().containsKey("type") + " " + !qsd.parameters().containsKey("redirect_uri")
                         + " " + (CaselessProperties.instance().getProperty("clientsecret") == null) + " " + (CaselessProperties.instance().getProperty("clientid") == null));
                 try {
@@ -300,7 +300,7 @@ public class TwitchAuthorizationCodeFlow {
 
     private static JSONObject doRequest(String path, Map<String, String> query) {
         try {
-            HttpUrl url = HttpUrl.fromUri(BASE_URL, path).withQuery(query);
+            URI url = URI.create(BASE_URL + path + HttpClient.createQuery(query));
             HttpHeaders headers = HttpClient.createHeaders(HttpMethod.POST, true);
 
             HttpClientResponse response = HttpClient.post(url, headers, "");
@@ -308,7 +308,7 @@ public class TwitchAuthorizationCodeFlow {
             com.gmt2001.Console.debug.println(response.responseCode());
 
             return response.jsonOrThrow();
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             com.gmt2001.Console.debug.printStackTrace(ex);
             return new JSONObject("{\"error\": \"Internal\",\"message\":\"" + ex.toString() + "\",\"status\":0}");
         }

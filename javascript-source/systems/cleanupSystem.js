@@ -31,17 +31,17 @@
                 count = 0,
                 i;
 
-            $.consoleLn('>>> Prozess wird gestartet, dies kann einige Minuten dauern...');
+            $.consoleLn('>>> Process is starting this might take a few minutes...');
             running = true;
             for (i in keys) {
                 if (parseInt($.inidb.get('time', keys[i])) <= time) {
-                    $.consoleLn('>> Entferne ' + keys[i] + ' aus der Zeittabelle mit ' + $.inidb.get('time', keys[i]) + ' Zeiten.');
+                    $.consoleLn('>> Removing ' + keys[i] + ' from the time table with ' + $.inidb.get('time', keys[i]) + ' time.');
                     $.inidb.del('time', keys[i]);
                     count++;
                 }
             }
-            $.consoleLn('> Vorgang abgeschlossen. ' + count + ' Nutzer wurden aus der Zeittabelle entfernt.');
-            $.log.file(logName, '' + 'Die Aufräumarbeiten für die Zeittabelle liefen von ' + sender + '. (Entfernte ' + count + ' Nutzer aus der Zeittabelle.)');
+            $.consoleLn('> Process done. ' + count + ' users have been removed from the times table.');
+            $.log.file(logName, '' + 'Cleanup ran for the time table by ' + sender + '. (Removed ' + count + ' users from the time table)');
             running = false;
             return;
         }
@@ -52,17 +52,17 @@
                 count = 0,
                 i;
 
-            $.consoleLn('>>> Prozess wird gestartet dies kann einige Minuten dauern...');
+            $.consoleLn('>>> Process is starting this might take a few minutes...');
             running = true;
             for (i in keys) {
                 if (parseInt($.inidb.get('points', keys[i])) <= points) {
-                    $.consoleLn('>> Entferne ' + keys[i] + ' von der Punktetabelle ' + $.inidb.get('points', keys[i]) + ' Punkten.');
+                    $.consoleLn('>> Removing ' + keys[i] + ' from the points table with ' + $.inidb.get('points', keys[i]) + ' points.');
                     $.inidb.del('points', keys[i]);
                     count++;
                 }
             }
-            $.consoleLn('> Vorgang abgeschlossen. ' + count + ' Nutzer wurden aus der Punktetabelle entfernt.');
-            $.log.file(logName, '' + 'Die Bereinigung der Punktetabelle lief von ' + sender + '. (Entfernte ' + count + ' Nutzer aus der Punktetabelle.)');
+            $.consoleLn('> Process done. ' + count + ' users have been removed from the points table.');
+            $.log.file(logName, '' + 'Cleanup ran for the points table by ' + sender + '. (Removed ' + count + ' users from the points table)');
             running = false;
             return;
         }
@@ -74,7 +74,7 @@
                 t,
                 i;
 
-            $.consoleLn('>>> Prozess wird gestartet dies kann einige Minuten dauern...');
+            $.consoleLn('>>> Process is starting this might take a few minutes...');
             running = true;
             for (i in keys) {
                 t = ($.inidb.exists('time', keys[i]) ? parseInt($.inidb.get('time', keys[i])) : 0);
@@ -85,16 +85,16 @@
                     $.inidb.del('lastseen', keys[i]);
                     $.inidb.del('followed', keys[i]);
                     $.inidb.del('visited', keys[i]);
-                    $.consoleLn('>> Entferne ' + keys[i] + ' aus der Datenbank.');
+                    $.consoleLn('>> Removed ' + keys[i] + ' from the database.');
                     count++;
                 }
             }
-            $.consoleLn('> Vorgang abgeschlossen. ' + count + ' Nutzer wurden aus der Datenbank entfernt.');
-            $.log.file(logName, '' + 'Bereinigung lief von ' + sender + '. (Entfernte ' + count + ' Nutzer aus der Datenbank)');
+            $.consoleLn('> Process done. ' + count + ' users have been removed from the database.');
+            $.log.file(logName, '' + 'Cleanup ran by ' + sender + '. (Removed ' + count + ' users from the database)');
             running = false;
             return;
         }
-        $.log.error('Befehle: cleanup [time / points / all] [Anzahl der Zeit in Sekunden oder Punkte wenn Punkte gereinigt werden]');
+        $.log.error('commands: cleanup [time / points / all] [amount of time in seconds or points if cleaning points]');
     };
 
     /**
@@ -128,6 +128,6 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./systems/cleanupSystem.js', 'cleanup', 1);
+        $.registerChatCommand('./systems/cleanupSystem.js', 'cleanup', $.PERMISSION.Admin);
     });
 })();

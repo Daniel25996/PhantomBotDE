@@ -185,7 +185,7 @@ $(function() {
                 // Set bonus.
                 socket.sendCommand('set_give_all', 'pointsallpanel ' + amount.val(), function() {
                     // Alert the user.
-                    toastr.success('Hat allen erfolgreich Punkte gegeben!');
+                    toastr.success('Erfolgreich allen Punkte gegeben!');
 
                     // Reset box values.
                     amount.val('');
@@ -259,7 +259,7 @@ $(function() {
                     });
             }
         } else {
-            let groups = ['caster', 'administrator', 'moderator', 'subscriber', 'donator', 'regular', 'viewer'],
+            let groups = ['caster', 'administrator', 'moderator', 'subscriber', 'donator', 'regular', 'viewer'], //Hardcoded in order to keep the logic and still have consistent ordering
                 temp = [];
 
             // Make sure that all groups have a value.
@@ -282,7 +282,7 @@ $(function() {
             // Update the DB.
             socket.updateDBValues('update_group_payout_online', {
                 tables: ['grouppoints', 'grouppoints', 'grouppoints', 'grouppoints', 'grouppoints', 'grouppoints', 'grouppoints'],
-                keys: ['Caster', 'Administrator', 'Moderator', 'Abonnent', 'Spender', 'Stammzuschauer', 'Zuschauer'],
+                keys: ['Caster', 'Administrator', 'Moderator', 'Subscriber', 'Donator', 'Regular', 'Viewer'],
                 values: temp
             }, function() {
                 temp = [];
@@ -295,7 +295,7 @@ $(function() {
                 // Update the DB.
                 socket.updateDBValues('update_group_payout_offline', {
                     tables: ['grouppointsoffline', 'grouppointsoffline', 'grouppointsoffline', 'grouppointsoffline', 'grouppointsoffline', 'grouppointsoffline', 'grouppointsoffline'],
-                    keys: ['Caster', 'Administrator', 'Moderator', 'Abonnent', 'Spender', 'Stammzuschauer', 'Zuschauer'],
+                    keys: ['Caster', 'Administrator', 'Moderator', 'Subscriber', 'Donator', 'Regular', 'Viewer'],
                     values: temp
                 }, function() {
                     toastr.success('Erweiterte Punkte-Einstellungen erfolgreich aktualisiert!');

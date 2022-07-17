@@ -248,13 +248,13 @@ $(function () {
                                     .append(getChannelSelector('channel-alert', 'Alarmkanal', '#alarme', e.subChannel,
                                             'Kanal, in dem alle Alarme gesendet werden sollen.', allowedChannelTypes))))),
                     function () { // Callback once the user clicks save.
-                        let subToggle = $('#sub-toggle').find(':selected').text() === 'Yes',
+                        let subToggle = $('#sub-toggle').find(':selected').text() === 'Ja',
                                 subMsg = $('#sub-msg'),
-                                primeSubToggle = $('#primesub-toggle').find(':selected').text() === 'Yes',
+                                primeSubToggle = $('#primesub-toggle').find(':selected').text() === 'Ja',
                                 primeSubMsg = $('#primesub-msg'),
-                                reSubToggle = $('#resub-toggle').find(':selected').text() === 'Yes',
+                                reSubToggle = $('#resub-toggle').find(':selected').text() === 'Ja',
                                 reSubMsg = $('#resub-msg'),
-                                gifSubToggle = $('#gifsub-toggle').find(':selected').text() === 'Yes',
+                                gifSubToggle = $('#gifsub-toggle').find(':selected').text() === 'Ja',
                                 gifSubMsg = $('#gifsub-msg'),
                                 subChannel = $('#channel-alert'),
                                 gifSubReward = $('#gifsub-reward');
@@ -314,7 +314,7 @@ $(function () {
                             .append(getChannelSelector('host-channel', 'Alarmkanal', '#alarme', e.hostChannel,
                                     'Kanal, in dem alle Benachrichtigungen angezeigt werden sollen.', allowedChannelTypes))),
                     function () { // Callback once the user clicks save.
-                        let hostToggle = $('#host-toggle').find(':selected').text() === 'Yes',
+                        let hostToggle = $('#host-toggle').find(':selected').text() === 'Ja',
                                 hostMsg = $('#host-message'),
                                 hostChannel = $('#host-channel');
 

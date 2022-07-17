@@ -21,13 +21,13 @@ $.lang.register('welcomesystem.set.message.empty', '$1 wird nur erstmalige Chatt
 $.lang.register('welcomesystem.set.message.success', '$1 wird neue Chatter mit "$2" begrüßen.');
 $.lang.register('welcomesystem.set.firstmessage.empty', '$1 begrüßt erstmalige Chatter mit der Standardnachricht.');
 $.lang.register('welcomesystem.set.firstmessage.success', '$1 begrüßt erstmalige Chatter mit: "$2"');
-$.lang.register('welcomesystem.set.cooldown.show', 'Aktuelle Abklingzeit $1 Stunden. Verwende: "!welcome cooldown [Stunden]" um dies zu ändern.');
+$.lang.register('welcomesystem.set.cooldown.show', 'Aktuelle Abklingzeit $1 Stunden. Verwende: !welcome cooldown [Stunden] um dies zu ändern.');
 $.lang.register('welcomesystem.set.cooldown.usage', 'Verwendung: !welcome cooldown [Stunden] z.B. !welcome cooldown 6');
 $.lang.register('welcomesystem.set.cooldown.success', 'Die Begrüßungsabklingzeit wurde auf $1 Stunden festgelegt.');
-$.lang.register('welcomesystem.set.disableuser.usage', 'Verwendung: !welcome disable [Nutzer]');
+$.lang.register('welcomesystem.set.disableuser.usage', 'Verwendung: !welcome disable (user)');
 $.lang.register('welcomesystem.set.disableuser.fail', 'Die Begrüßung von $1 ist bereits deaktiviert.');
 $.lang.register('welcomesystem.set.disableuser.success', '$1 wird $2 nicht willkommen heißen.');
-$.lang.register('welcomesystem.set.enableuser.usage', 'Verwendung: !welcome enable [Nutzer].');
+$.lang.register('welcomesystem.set.enableuser.usage', 'Verwendung: !welcome enable (user)');
 $.lang.register('welcomesystem.set.enableuser.fail', 'Die Begrüßung ist bereits aktiviert.');
 $.lang.register('welcomesystem.set.enableuser.success', '$1 wird $2 willkommen heißen.');
 $.lang.register('welcomesystem.generalusage', 'Verwendung: !welcome [toggle | setmessage text | setfirstmessage text | disable user | enable user]. Tags für Nachrichtentext: (names), (1 Text für einen Namen), (2 für Zwei), (3 für Drei oder mehr Namen)');

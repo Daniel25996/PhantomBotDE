@@ -40,7 +40,7 @@ $.lang.register('adventuresystem.reset', 'Es wird wieder Zeit für ein neues Abe
 $.lang.register('adventuresystem.stories.default', 'true');
 
 $.lang.register('adventuresystem.stories.1.title', 'Schatz im Schwarzsee');
-$.lang.register('adventuresystem.stories.1.chapter.1', 'Nach jahrelangen Recherchen habe ich die Gewissheit, dass der Schatz im Schwarzsee keine Legende ist, er existiert wirklich! Lasst uns sofort aufbrechen und ihn den Tiefen entreissen.');
+$.lang.register('adventuresystem.stories.1.chapter.1', 'Nach jahrelangen Recherchen habe ich die Gewissheit, dass der Schatz im Schwarzsee keine Legende ist, er existiert wirklich! Lasst uns sofort aufbrechen und ihn den Tiefen entreißen.');
 $.lang.register('adventuresystem.stories.1.chapter.2', 'In den Tiefen des Sees gab es mehr als nur Fische und Muscheln. Seltsame Unterwassergeschöpfe wachen scheinbar über den Schatz. (caught) war(en) diesen Wesen nicht gewachsen und wurde(n) von ihnen getötet.');
 $.lang.register('adventuresystem.stories.1.chapter.3', '(survivors) schaffte(n) es zurück an das Ufer, beladen mit außergewöhnlichen Schätzen. Die Freude dieses Abenteuer überlebt und den Schatz gehoben zu haben ist überwältigend.');
 
@@ -56,10 +56,27 @@ $.lang.register('adventuresystem.stories.3.chapter.3', 'Das war eine knappe Ents
 
 $.lang.register('adventuresystem.stories.4.title', 'Mannbärschwein');
 $.lang.register('adventuresystem.stories.4.chapter.1', 'Ich denke, wir haben sehr gute Chancen, das sagenumwobene Monster in dieser Höhle zu finden... Es ist zu einem Drittel Mensch, einem Drittel Bär und einem Drittel Schwein. Lacht nicht, ICH MEINE ES TOT ERNST!');
-$.lang.register('adventuresystem.stories.4.chapter.2', '/me Als sich der/die Abenteurer:in seinen/ihren Weg durch die Tunnel bahnt/en, hören sie ein leises Geräusch hinter sich...');
+$.lang.register('adventuresystem.stories.4.chapter.2', 'Als sich der/die Abenteurer:in seinen/ihren Weg durch die Tunnel bahnt/en, hören sie ein leises Geräusch hinter sich...');
 $.lang.register('adventuresystem.stories.4.chapter.3', 'Achtung! Es ist Mannbärschwein! (caught) wurde(n) in die Dunkelheit gezogen und verschwand(en) auf nimmer Wiedersehen.');
 $.lang.register('adventuresystem.stories.4.chapter.4', '(survivors), lasst uns hier verschwinden! Wir können es nicht mit ihm aufnehmen!');
 
+$.lang.register('adventuresystem.stories.5.title', 'Des Buttlers Geheimnis');
+$.lang.register('adventuresystem.stories.5.chapter.1', 'Es gibt da diesen einen Moderator bei dieser Streamerin Shurjoka. Man sagt er habe irgendwo unvorstellbare Schätze versteckt. Leider ist Er wohl auch ein mächtiger Feind!');
+$.lang.register('adventuresystem.stories.5.chapter.2', 'Vorsichtig schlichen sich der/die Abenteuer durch die gruselige Villa und versuchten dabei keinen Lärm zu machen.');
+$.lang.register('adventuresystem.stories.5.chapter.3', 'Plötzlich erstarrt/en (caught) auf der Stelle und kann/konnten sich nicht mehr bewegen. "Lauft um euer Leben! Lasst mich/uns hier zurück! Der Buttler Locxion hat uns entdeckt!"');
+$.lang.register('adventuresystem.stories.5.chapter.4', 'Haarscharf konnte/n (survivors) den grausamen Lasern des Buttlers entfliehen! Ob es wohl nochmal jemand wagen sollte Locxion heraus zu fordern?');
+
+$.lang.register('adventuresystem.stories.6.title', 'Stuhlibert\'s Schlacht');
+$.lang.register('adventuresystem.stories.6.chapter.1', 'Stillgestanden Crew! Stuhlibert braucht eure Hilfe bei dem Kampf gegen die gefährlichen Backseat Piraten.');
+$.lang.register('adventuresystem.stories.6.chapter.2', 'Diese steuern direkt auf unsere Festung mit ihrer riesigen Galeone, der BSG Wahnsinn, zu.');
+$.lang.register('adventuresystem.stories.6.chapter.3', 'Den brutalen Methoden konnte/n (caught) nicht standhalten und fiel/en in der grausamen Schlacht.');
+$.lang.register('adventuresystem.stories.6.chapter.4', 'Unter dem Commando von Stuhlibert konnte/n (survivors) die Backseat Piraten zurückschlagen. Ob dies der letzte Angriff dieser üblen Schurken war?');
+
+$.lang.register('adventuresystem.stories.7.title', 'Neue Nahrungsvorräte');
+$.lang.register('adventuresystem.stories.7.chapter.1', 'Ich habe Informationen, dass sich in einem Gletscher riesige Berge Essen versteck befinden. Pack/t deine/eure Sachen, wir brechen auf, um sie zu holen.');
+$.lang.register('adventuresystem.stories.7.chapter.2', 'Mit dicker Kleidung machen sich alle auf dem Weg, um das Innere des Gletschers zu untersuchen und die Vorräte zu finden.');
+$.lang.register('adventuresystem.stories.7.chapter.3', '(caught) wurde/n von einem flauschigen Monster, dass sich über die Vorräte hermacht verschlungen.');
+$.lang.register('adventuresystem.stories.7.chapter.4', 'Mit vollgestopften Rucksäcken war es (survivors) möglich dem gefährlichen Monster Namens "Susi" zu entkommen und die Nahrung vor ihr zu schützen.');
 
 /*
  * Using the stories that come with PhantomBot:

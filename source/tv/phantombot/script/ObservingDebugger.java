@@ -81,7 +81,7 @@ class ObservingDebugFrame implements DebugFrame {
     @Override
     public void onLineChange(Context cx, int lineNumber) {
         if (isDisconnected) {
-            throw new RuntimeException("Skriptausführung beendet");
+            throw new RuntimeException("Script Execution terminated");
         }
     }
 

@@ -81,7 +81,7 @@
 
             if (s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
                 if (!$.audioHookExists(s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                    $.log.error('Audio-Hook konnte nicht wiedergegeben werden: Audio-Hook existiert nicht.');
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
                 } else {
                     $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 }
@@ -144,7 +144,7 @@
             minimum = parseInt(action);
             $.setIniDbNumber('bitsSettings', 'minimum', minimum);
             $.say($.whisperPrefix(sender) + $.lang.get('bitshandler.minimum.set', minimum));
-            $.log.event(sender + ' änderte das Bits Minimum zu: ' + minimum + ' Bits.');
+            $.log.event(sender + ' changed the bits minimum to: ' + minimum + ' bits.');
         }
     });
 
@@ -152,9 +152,9 @@
      * @event initReady
      */
     $.bind('initReady', function () {
-        $.registerChatCommand('./handlers/bitsHandler.js', 'bitstoggle', 1);
-        $.registerChatCommand('./handlers/bitsHandler.js', 'bitsmessage', 1);
-        $.registerChatCommand('./handlers/bitsHandler.js', 'bitsminimum', 1);
+        $.registerChatCommand('./handlers/bitsHandler.js', 'bitstoggle', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/bitsHandler.js', 'bitsmessage', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/bitsHandler.js', 'bitsminimum', $.PERMISSION.Admin);
         announceBits = true;
     });
 

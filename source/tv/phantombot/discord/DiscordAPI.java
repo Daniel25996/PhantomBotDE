@@ -16,6 +16,7 @@
  */
 package tv.phantombot.discord;
 
+import discord4j.common.ReactorResources;
 import discord4j.common.sinks.EmissionStrategy;
 import discord4j.common.util.Snowflake;
 import discord4j.core.DiscordClient;
@@ -43,10 +44,15 @@ import discord4j.core.object.entity.channel.GuildMessageChannel;
 import discord4j.core.object.entity.channel.PrivateChannel;
 import discord4j.gateway.DefaultGatewayClient;
 import discord4j.gateway.GatewayOptions;
+import discord4j.gateway.GatewayReactorResources;
 import discord4j.gateway.intent.Intent;
 import discord4j.gateway.intent.IntentSet;
 import discord4j.rest.request.RequestQueueFactory;
+import discord4j.rest.request.RouteMatcher;
 import discord4j.rest.request.RouterOptions;
+import discord4j.rest.response.ResponseFunction;
+import io.netty.resolver.DefaultAddressResolverGroup;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -58,7 +64,9 @@ import java.util.concurrent.TimeUnit;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.retry.Retry;
 import reactor.util.concurrent.Queues;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.discord.util.DiscordUtil;
 import tv.phantombot.event.EventBus;
@@ -99,7 +107,7 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method to return this class object.
      *
-     * @return {Object}
+     * @return
      */
     public static synchronized DiscordAPI instance() {
         if (DiscordAPI.instance == null) {
@@ -135,7 +143,12 @@ public class DiscordAPI extends DiscordUtil {
      */
     public void connect(String token) {
         if (DiscordAPI.builder == null) {
-            DiscordAPI.builder = DiscordClientBuilder.create(token);
+            DiscordAPI.builder = (DiscordClientBuilder<DiscordClient, RouterOptions>) DiscordClientBuilder.create(token).onClientResponse(ResponseFunction.retryWhen(RouteMatcher.any(), Retry.anyOf(IOException.class).exponentialBackoffWithJitter(Duration.ofSeconds(1), Duration.ofMinutes(15)).retryMax(10)));
+
+            if (CaselessProperties.instance().getPropertyAsBoolean("usedefaultdnsresolver", false)) {
+                DiscordAPI.builder = (DiscordClientBuilder<DiscordClient, RouterOptions>) DiscordAPI.builder.setReactorResources(ReactorResources.builder().httpClient(ReactorResources.DEFAULT_HTTP_CLIENT.get().resolver(DefaultAddressResolverGroup.INSTANCE)).build());
+            }
+
             DiscordAPI.client = DiscordAPI.builder.setRequestQueueFactory(RequestQueueFactory.createFromSink(spec -> spec.multicast().onBackpressureBuffer(Queues.SMALL_BUFFER_SIZE, false), EmissionStrategy.timeoutError(Duration.ofSeconds(5L)))).build();
         }
 
@@ -161,7 +174,7 @@ public class DiscordAPI extends DiscordUtil {
         DiscordAPI.client.gateway().setMaxMissedHeartbeatAck(5).setExtraOptions(o -> new DiscordGatewayOptions(o))
                 .setEnabledIntents(this.connectIntents).withEventDispatcher(this::subscribeToEvents).login(DefaultGatewayClient::new)
                 .timeout(Duration.ofSeconds(30)).doOnSuccess(cgateway -> {
-            com.gmt2001.Console.out.println("Mit Discord verbunden, Authentifizierung wird abgeschlossen...");
+            com.gmt2001.Console.out.println("Connected to Discord, finishing authentication...");
             synchronized (this.mutex) {
                 this.nextReconnect = Instant.now().plusSeconds(30);
             }
@@ -173,7 +186,7 @@ public class DiscordAPI extends DiscordUtil {
                 this.connectionState = ConnectionState.DISCONNECTED;
                 this.nextReconnect = Instant.now().plusSeconds(30);
             }
-            com.gmt2001.Console.err.println("Authentifizierung bei Discord fehlgeschlagen: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+            com.gmt2001.Console.err.println("Failed to connect to Discord: [" + e.getClass().getSimpleName() + "] " + e.getMessage());
             com.gmt2001.Console.err.logStackTrace(e);
         }).subscribe();
     }
@@ -254,7 +267,7 @@ public class DiscordAPI extends DiscordUtil {
     public void checkConnectionStatus() {
         if (!this.isLoggedIn() || !this.isReady()) {
             if (Instant.now().isAfter(this.nextReconnect) && this.getConnectionState() == ConnectionState.DISCONNECTED) {
-                com.gmt2001.Console.warn.println("Verbindung mit Discord verloren, versuche die Verbindung wiederherzustellen...");
+                com.gmt2001.Console.warn.println("Connection lost with Discord, attempting to reconnect...");
                 this.reconnect();
             }
         }
@@ -263,7 +276,7 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method that will return the current guild.
      *
-     * @return {Guild}
+     * @return
      */
     public static Guild getGuild() {
         return DiscordAPI.gateway.getGuildById(DiscordAPI.guildId).block(Duration.ofSeconds(5L));
@@ -276,7 +289,7 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method that will return the current client
      *
-     * @return {DiscordClient}
+     * @return
      */
     public static DiscordClient getClient() {
         return DiscordAPI.client;
@@ -285,7 +298,7 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method that will return the current gateway
      *
-     * @return {GatewayDiscordClient}
+     * @return
      */
     public static GatewayDiscordClient getGateway() {
         return DiscordAPI.gateway;
@@ -294,7 +307,7 @@ public class DiscordAPI extends DiscordUtil {
     /**
      * Method to parse commands.
      *
-     * @param {String} message
+     * @param message
      */
     private void parseCommand(User user, Channel channel, Message message, boolean isAdmin) {
         if (message.getContent().isEmpty()) {
@@ -321,9 +334,6 @@ public class DiscordAPI extends DiscordUtil {
         private static final List<Long> processedMessages = new CopyOnWriteArrayList<>();
         private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-        private DiscordEventListener() {
-        }
-
         public static void onDiscordDisconnectEvent(DisconnectEvent event) {
             synchronized (DiscordAPI.instance().mutex) {
                 DiscordAPI.instance().connectionState = ConnectionState.DISCONNECTED;
@@ -331,29 +341,29 @@ public class DiscordAPI extends DiscordUtil {
             }
             if (event.getStatus().getCode() > 1000) {
                 if (event.getStatus().getCode() == 4014 && (DiscordAPI.instance().connectIntents.contains(Intent.GUILD_MEMBERS) || DiscordAPI.instance().connectIntents.contains(Intent.GUILD_PRESENCES))) {
-                    com.gmt2001.Console.err.println("Discord lehnte privilegierte Absichten ab (" + event.getStatus().getCode() + (event.getStatus().getReason().isPresent() ? " " + event.getStatus().getReason().get() : "") + "). Versuche es ohne sie...");
+                    com.gmt2001.Console.err.println("Discord rejected privileged intents (" + event.getStatus().getCode() + (event.getStatus().getReason().isPresent() ? " " + event.getStatus().getReason().get() : "") + "). Trying without them...");
                     com.gmt2001.Console.err.println("https://discord.com/developers/docs/topics/gateway#privileged-intents");
                     DiscordAPI.instance().connectIntents = IntentSet.of(Intent.GUILDS, Intent.GUILD_VOICE_STATES, Intent.GUILD_MESSAGES, Intent.GUILD_MESSAGE_REACTIONS, Intent.DIRECT_MESSAGES);
                     Mono.delay(Duration.ofMillis(500)).doOnNext(l -> {
                         DiscordAPI.instance().connect();
                     }).subscribe();
                 } else if (event.getStatus().getCode() == 4004) {
-                    com.gmt2001.Console.err.println("Discord hat Bot-Token abgelehnt (" + event.getStatus().getCode() + (event.getStatus().getReason().isPresent() ? " " + event.getStatus().getReason().get() : "") + ")...");
-                    com.gmt2001.Console.err.println("Die Discord-Verbindung wird jetzt deaktiviert. Bitte stoppe den Bot, füge einen neuen Bot-Token in die botlogin.txt ein und starte den Bot dann erneut, um die Discord-Funktionen zu verwenden ...");
+                    com.gmt2001.Console.err.println("Discord rejected bot token (" + event.getStatus().getCode() + (event.getStatus().getReason().isPresent() ? " " + event.getStatus().getReason().get() : "") + ")...");
+                    com.gmt2001.Console.err.println("Discord connection is now being disabled. Please stop the bot, put a new Discord bot token into botlogin.txt, then start the bot again to use Discord features...");
                     com.gmt2001.Console.err.println("https://phantombot.github.io/PhantomBot/guides/#guide=content/integrations/discordintegrationsetup");
                     DiscordAPI.gateway.logout();
                     synchronized (DiscordAPI.instance().mutex) {
                         DiscordAPI.instance().connectionState = ConnectionState.CANNOT_RECONNECT;
                     }
                 } else {
-                    com.gmt2001.Console.err.println("Discord-Verbindung mit Status geschlossen " + event.getStatus().getCode() + (event.getStatus().getReason().isPresent() ? " " + event.getStatus().getReason().get() : ""));
+                    com.gmt2001.Console.err.println("Discord connection closed with status " + event.getStatus().getCode() + (event.getStatus().getReason().isPresent() ? " " + event.getStatus().getReason().get() : ""));
                 }
             }
         }
 
         public static void onDiscordReadyEvent(ReadyEvent event) {
             if (event.getGuilds().size() != 1) {
-                com.gmt2001.Console.err.println("PhantomBot kann sich nur auf 1 Discord-Server gleichzeitig befinden und erkannt werden " + event.getGuilds().size() + ". Discord trennen...");
+                com.gmt2001.Console.err.println("PhantomBot can only be in 1 Discord server at a time, detected " + event.getGuilds().size() + ". Disconnecting Discord...");
                 DiscordAPI.gateway.logout();
                 synchronized (DiscordAPI.instance().mutex) {
                     DiscordAPI.instance().connectionState = ConnectionState.CANNOT_RECONNECT;
@@ -361,7 +371,7 @@ public class DiscordAPI extends DiscordUtil {
                 return;
             }
 
-            com.gmt2001.Console.out.println("Erfolgreich mit Discord authentifiziert.");
+            com.gmt2001.Console.out.println("Successfully authenticated with Discord.");
 
             DiscordAPI.guildId = event.getGuilds().stream().findFirst().get().getId();
             DiscordAPI.instance().ready = true;
@@ -392,30 +402,30 @@ public class DiscordAPI extends DiscordUtil {
         public static void onDiscordMessageEvent(MessageCreateEvent event) {
             Message iMessage = event.getMessage();
             if (iMessage.getContent() == null) {
-                com.gmt2001.Console.debug.println("Ignorierte Meldung " + iMessage.getId().asString() + " wegen null content");
+                com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to null content");
                 return;
             }
 
             if (DiscordEventListener.processedMessages.contains(iMessage.getId().asLong())) {
-                com.gmt2001.Console.debug.println("Ignorierte Meldung " + iMessage.getId().asString() + " wegen processedMessages.contains(iMessage.getId().asLong())");
+                com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to processedMessages.contains(iMessage.getId().asLong())");
                 return;
             }
 
             iMessage.getChannel().timeout(Duration.ofMillis(500)).doOnSuccess(iChannel -> {
                 if (iChannel == null) {
-                    com.gmt2001.Console.debug.println("Ignorierte Meldung " + iMessage.getId().asString() + " wegen null iChannel");
+                    com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to null iChannel");
                     return;
                 }
 
                 User iUser = event.getMember().isPresent() ? event.getMember().get() : (iChannel instanceof PrivateChannel ? ((PrivateChannel) iChannel).getRecipients().stream().findFirst().orElse(null) : null);
 
                 if (iUser == null) {
-                    com.gmt2001.Console.debug.println("Ignorierte Meldung " + iMessage.getId().asString() + " wegen null iUser");
+                    com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to null iUser");
                     return;
                 }
 
-                if (DiscordAPI.selfId != null && iUser.getId().equals(DiscordAPI.selfId)) {
-                    com.gmt2001.Console.debug.println("Ignorierte Meldung " + iMessage.getId().asString() + " wegen iUser.getId().equals(DiscordAPI.selfId)");
+                if (DiscordAPI.selfId != null && DiscordAPI.selfId.equals(iUser.getId())) {
+                    com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to iUser.getId().equals(DiscordAPI.selfId)");
                     return;
                 }
 
@@ -434,7 +444,7 @@ public class DiscordAPI extends DiscordUtil {
                 }
 
                 if (message == null || message.isEmpty()) {
-                    com.gmt2001.Console.debug.println("Ignorierte Meldung " + iMessage.getId().asString() + " wegen null oder empty message");
+                    com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to null or empty message");
                     return;
                 }
 
@@ -506,7 +516,12 @@ public class DiscordAPI extends DiscordUtil {
     public final class DiscordGatewayOptions extends GatewayOptions {
 
         public DiscordGatewayOptions(GatewayOptions parent) {
-            super(parent.getToken(), parent.getReactorResources(), parent.getPayloadReader(),
+            super(parent.getToken(),
+                    CaselessProperties.instance().getPropertyAsBoolean("usedefaultdnsresolver", false)
+                    ? GatewayReactorResources.builder().httpClient(GatewayReactorResources.DEFAULT_HTTP_CLIENT.get()
+                            .resolver(DefaultAddressResolverGroup.INSTANCE)).build()
+                    : parent.getReactorResources(),
+                    parent.getPayloadReader(),
                     parent.getPayloadWriter(), parent.getReconnectOptions(), parent.getIdentifyOptions(),
                     parent.getInitialObserver(), parent.getIdentifyLimiter(), parent.getMaxMissedHeartbeatAck(),
                     parent.isUnpooled(), EmissionStrategy.timeoutError(Duration.ofSeconds(5L)));

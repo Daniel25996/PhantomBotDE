@@ -46,7 +46,7 @@
                         break;
                     }
                 } else {
-                    $.log.error('Fehler beim Senden des Schlüsselworts "' + keys[i] + '": ' + ex.message);
+                    $.log.error('Failed to send keyword "' + keys[i] + '": ' + ex.message);
                     break;
                 }
             }

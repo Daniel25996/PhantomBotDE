@@ -52,55 +52,55 @@ elif [[ "$MACHTYPE" != "x86_64"* ]]; then
     fi
 
     if (( jvermaj < 11 )); then
-        echo "PhantomBot benötigt zur Ausführung Java 11 oder höher."
+        echo "PhantomBot requires Java 11 or later to run."
         echo
 
         if  [[ "$osdist" == *"debian"* ]]; then
-            echo "Bitte installieren Sie das Paket openjdk-11-jre-headless"
+            echo "Please install the package openjdk-11-jre-headless"
             echo
 
             if (( osver < 10 )); then
-                echo "WARNUNG: Du verwendest ein Debian-Derivat niedriger als Version 10 (Buster)"
-                echo "Java 11 ist in dieser Version möglicherweise nicht verfügbar"
-                echo "Es wird empfohlen, mindestens auf Debian 10 (Buster) zu aktualisieren."
-                echo "HINWEIS: Das Aktualisieren der Hauptversion des Betriebssystems bedeutet normalerweise eine saubere Installation (Wipe)."
+                echo "WARNING: You are running a Debian derivative lower than version 10 (buster)"
+                echo "Java 11 may not be available on this version"
+                echo "It is recommended to upgrade to at least Debian 10 (buster)"
+                echo "NOTE: Upgrading the major version of the OS usually means a clean install (wipe)"
                 echo
 
                 if (( osver == 9 )); then
-                    echo "Alternativ kannst du das stretch-backports-Repository zu apt hinzufügen und dann solltest du in der Lage sein, openjdk-11-jre-headless zu installieren"
-                    echo "Anleitungen findest du unter https://github.com/superjamie/lazyweb/wiki/Raspberry-Pi-Debian-Backports#installation"
+                    echo "Alternatively, you can add the stretch-backports repository to apt and then you should be able to install openjdk-11-jre-headless"
+                    echo "You can find instructions at https://github.com/superjamie/lazyweb/wiki/Raspberry-Pi-Debian-Backports#installation"
                     echo
                 fi
             fi
 
-            echo "Die Befehle dazu sind:"
+            echo "The commands to do this are:"
             echo "   sudo apt-get install openjdk-11-jre-headless"
             echo "   sudo update-alternatives --config java"
             echo
-            echo "Wenn du den Befehl update-alternatives ausgibst, wähle die Option für java-11-openjdk"
+            echo "When you issue the update-alternatives command, select the option for java-11-openjdk"
         elif  [[ "$osdist" == *"fedora"* || "$osdist" == *"rhel"* ]]; then
-            echo "Bitte installiere das Paket java-11-openjdk-headless"
+            echo "Please install the package java-11-openjdk-headless"
             echo
 
             if [[ "$osdist" == *"rhel"* || "$osdist2" == *"rhel"* ]] && (( osver < 7 )); then
-                echo "WARNUNG: Sie verwenden ein RHEL-Derivat niedriger als Version 7"
-                echo "Java 11 ist in dieser Version möglicherweise nicht verfügbar"
-                echo "Es wird empfohlen, mindestens auf RHEL 7 zu aktualisieren"
-                echo "HINWEIS: Das Aktualisieren der Hauptversion des Betriebssystems bedeutet normalerweise eine saubere Installation (Wipe)."
+                echo "WARNING: You are running a RHEL derivative lower than version 7"
+                echo "Java 11 may not be available on this version"
+                echo "It is recommended to upgrade to at least RHEL 7"
+                echo "NOTE: Upgrading the major version of the OS usually means a clean install (wipe)"
                 echo
             elif (( osver < 29 )); then
-                echo "WARNUNG: Du verwendest ein Fedora-Derivat niedriger als Version 29"
-                echo "Java 11 ist in dieser Version möglicherweise nicht verfügbar"
-                echo "Es wird empfohlen, mindestens auf Fedora 29 aufzurüsten"
-                echo "HINWEIS: Das Aktualisieren der Hauptversion des Betriebssystems bedeutet normalerweise eine saubere Installation (Wipe)."
+                echo "WARNING: You are running a Fedora derivative lower than version 29"
+                echo "Java 11 may not be available on this version"
+                echo "It is recommended to upgrade to at least Fedora 29"
+                echo "NOTE: Upgrading the major version of the OS usually means a clean install (wipe)"
                 echo
             fi
 
-            echo "Die Befehle dazu sind:"
+            echo "The commands to do this are:"
             echo "   sudo yum install java-11-openjdk-headless"
             echo "   sudo alternatives --config java"
             echo
-            echo "Wenn du den alternativen Befehl ausgibst, wähle die Option für java-11-openjdk"
+            echo "When you issue the alternatives command, select the option for java-11-openjdk"
         fi
 
         exit 1
@@ -116,16 +116,16 @@ if mount | grep '/tmp' | grep -q noexec; then
 fi
 
 if [[ ! -x "${JAVA}" ]]; then
-    echo "Java hat keine Ausführungsberechtigung"
-    echo "Versuch das zu beheben. Du wirst aufgefordert, dein Passwort einzugeben, um sudo zu aktivieren"
-    echo "Wenn dies fehlschlägt, führe bitte den folgenden Befehl aus, um dies zu beheben:"
+    echo "Java does not have the executable permission"
+    echo "Attempting to fix this. You will be asked to enter your password to activate sudo"
+    echo "If this fails, please run the following command to fix this:"
     echo "   sudo chmod u+x ${JAVA}"
 
     sudo chmod u+x ${JAVA}
 
     if [[ ! -x "${JAVA}" ]]; then
         echo ""
-        echo "Befehl fehlgeschlagen. Bitte führe den obigen Befehl aus, um das Problem zu beheben"
+        echo "Command failed. Please run the above command to fix the issue"
         exit 1
     fi
 fi

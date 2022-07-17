@@ -17,9 +17,9 @@
 
 $.lang.register('top5.default', 'Top $1 $2: $3');
 $.lang.register('top5.points-disabled', 'Punkte sind deaktiviert.');
-$.lang.register('top5.amount.points.usage', 'Verwendung: !topamount [Anzahl] - Legen Sie fest, wie viele Zuschauer in der !top Punkte Liste angezeigt werden.');
+$.lang.register('top5.amount.points.usage', 'Verwendung: !topamount (Anzahl) - Lege fest, wie viele Zuschauer in der !top Punkteliste angezeigt werden.');
 $.lang.register('top5.amount.max', 'Die maximale Anzahl an Nutzern ist 15.');
 $.lang.register('top5.amount.points.set', '$1 Nutzer werden jetzt im !top Befehl angezeigt.');
-$.lang.register('top5.amount.time.usage', 'Verwendung: !toptimeamount [Anzahl] - Legen Sie fest, wie viele Zuschauer in der !toptime Liste angezeigt werden.');
-$.lang.register('top5.amount.time.set', '$1 Zuschauer werden jetzt im !toptime Befehl angeziegt.');
+$.lang.register('top5.amount.time.usage', 'Verwendung: !toptimeamount (Anzahl) - Lege fest, wie viele Zuschauer in der !toptime Liste angezeigt werden.');
+$.lang.register('top5.amount.time.set', '$1 Zuschauer werden jetzt im !toptime Befehl angezeigt.');
 $.lang.register('top5.reloadtopbots', 'Veraltet. Bitte nutze !reloadbots');

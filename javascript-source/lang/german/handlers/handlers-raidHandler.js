@@ -24,7 +24,7 @@ $.lang.register('raidhandler.inc.message.usage', 'Usage: !raid setincomingmessag
 $.lang.register('raidhandler.inc.message.set', 'Nachricht für eingehende Raids geändert.');
 $.lang.register('raidhandler.new.inc.message.usage', 'Verwendung: !raid setnewincomingmessage [Nachricht] - Variablen: (username), (viewers), (url), and (game)');
 $.lang.register('raidhandler.new.inc.message.set', 'Nachricht für neuen eingehenden Raid geändert.');
-$.lang.register('raidhandler.out.message.usage', 'Verwendung: !raid setoutgoingmessage [Nachricht] - Variablen: (username) & (url)');
+$.lang.register('raidhandler.out.message.usage', 'Verwendung: !raid setoutgoingmessage [Nachricht] - Variablen: (username) und (url)');
 $.lang.register('raidhandler.out.message.set', 'Nachricht für ausgehenden Raid geändert.');
 $.lang.register('raidhandler.spam.amount.usage', 'Verwendung: !raid setoutgoingmessagespam [Menge] - Maximum ist 10 mal.');
 $.lang.register('raidhandler.spam.amount.set', 'Anzahl an Spam Nachrichten für ausgehenden Raid geändert.');

@@ -73,7 +73,7 @@
             }
         }
 
-        $.log.warn('Du musst mindestens ein Abenteuer haben, welches nicht ein bestimmtes Spiel benötigt.');
+        $.log.warn('You must have at least one adventure that doesn\'t require a game to be set.');
         currentAdventure.gameState = 2;
     };
 
@@ -233,7 +233,7 @@
      */
     function joinHeist(username, bet) {
         if (stories.length < 1) {
-            $.log.error('Keine Abenteuer gefunden, kann kein Abenteuer beginnen.');
+            $.log.error('No adventures found; cannot start an adventure.');
             return;
         }
 
@@ -526,9 +526,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./games/adventureSystem.js', 'adventure', 7);
-        $.registerChatSubcommand('adventure', 'set', 1);
-        $.registerChatSubcommand('adventure', 'top5', 3);
+        $.registerChatCommand('./games/adventureSystem.js', 'adventure', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('adventure', 'set', $.PERMISSION.Admin);
+        $.registerChatSubcommand('adventure', 'top5', $.getHighestIDSubVIP());
 
         loadStories();
     });

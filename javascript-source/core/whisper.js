@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 (function() {
     var whisperMode = $.getSetIniDbBoolean('settings', 'whisperMode', false),
         ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
@@ -55,7 +57,7 @@
      * @returns {string}
      */
     function whisperPrefix(username, force) {
-        if (username.toLowerCase() == $.botName.toLowerCase()) {
+        if (username.toLowerCase() === $.botName.toLowerCase()) {
             return '';
         }
         if (whisperMode || force) {
@@ -88,7 +90,7 @@
             return;
         }
 
-        if (message.startsWith('!') && $.isMod(sender) && $.userExists(sender)) {
+        if (message.startsWith('!') && $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod) && $.userExists(sender)) {
             message = message.substring(1);
             if (message.includes(' ')) {
                 split = message.indexOf(' ');
@@ -99,7 +101,7 @@
             }
 
             ScriptEventManager.instance().onEvent(new CommandEvent(sender, command, arguments));
-            $.log.file('Flüstert', '' + sender + ': ' + message);
+            $.log.file('whispers', '' + sender + ': ' + message);
         }
     });
 
@@ -124,7 +126,7 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./core/whisper.js', 'togglewhispermode', 1);
+        $.registerChatCommand('./core/whisper.js', 'togglewhispermode', $.PERMISSION.Admin);
     });
 
     /** Export functions to API */

@@ -182,7 +182,7 @@ $(function () {
                     tables: ['command', 'permcom', 'cooldown', 'pricecom', 'paycom', 'disabledCommands', 'hiddenCommands'],
                     keys: [command, command, command, command, command, command, command]
                 }, function (e) {
-                    let cooldownJson = (e.cooldown === null ? { globalSec: -1, userSec: -1 } : JSON.parse(e.cooldown)),
+                    let cooldownJson = (e.cooldown === null ? { globalSec: -1, userSec: -1, modsSkip: false } : JSON.parse(e.cooldown)),
                         tokenButton = '';
 
                     if (e.command.match(/\(customapi/gi) !== null) {
@@ -209,7 +209,7 @@ $(function () {
                     .append(tokenButton)
                     // Append a select option for the command permission.
                     .append(helpers.getDropdownGroup('command-permission', 'Benutzerlevel', helpers.getGroupNameById(e.permcom),
-                            ['Caster', 'Administrator', 'Moderator', 'Abonnent', 'Spender', 'VIP', 'Stammzuschauer', 'Zuschauer']))
+                    helpers.getPermGroupNames()))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -229,6 +229,9 @@ $(function () {
                         // Append input box for per-user cooldown.
                         .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', cooldownJson.userSec,
                             'Abklingzeit des Befehls pro Benutzer in Sekunden. -1 entfernt die Abklingzeit pro Benutzer.'))
+                        // Append input box for mods skip cooldown.
+                        .append(helpers.getCheckBox('command-cooldown-modsskip', cooldownJson.modsSkip, 'Mods überspringen Abklingzeit',
+                            'Wenn diese Option aktiviert ist, sind Moderatoren von der Abklingzeit für diesen Befehl ausgenommen.'))
                         .append(helpers.getCheckBox('command-disabled', e.disabledCommands !== null, 'Deaktiviert',
                             'Wenn diese Option aktiviert ist, kann der Befehl nicht im Chat verwendet werden.'))
                         .append(helpers.getCheckBox('command-hidden', e.hiddenCommands !== null, 'Versteckt',
@@ -242,6 +245,7 @@ $(function () {
                             commandReward = $('#command-reward'),
                             commandCooldownGlobal = $('#command-cooldown-global'),
                             commandCooldownUser = $('#command-cooldown-user'),
+                            commandCooldownModsSkip = $('#command-cooldown-modsskip').is(':checked') ? '1' : '0',
                             commandDisabled = $('#command-disabled').is(':checked'),
                             commandHidden = $('#command-hidden').is(':checked');
 
@@ -271,7 +275,7 @@ $(function () {
                                             commandResponse.val(), JSON.stringify({disabled: commandDisabled})], function () {
                                             // Add the cooldown to the cache.
                                             socket.wsEvent('custom_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
-                                            ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function () {
+                                            ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val(), commandCooldownModsSkip], function () {
                                                 // Update command permission.
                                                 socket.sendCommand('edit_command_permission_cmd', 'permcomsilent ' + commandName.val() + ' ' +
                                                         helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function () {
@@ -326,8 +330,8 @@ $(function () {
         // Append a text box for the command response.
         .append(helpers.getTextAreaGroup('command-response', 'text', 'Antwort', 'Antwortbeispiel! Verwende die Eingabetaste für mehrere Chatzeilen, maximal 5.'))
         // Append a select option for the command permission.
-        .append(helpers.getDropdownGroup('command-permission', 'Benutzerlevel', 'Zuschauer',
-                ['Caster', 'Administrator', 'Moderator', 'Abonnent', 'Spender', 'VIP', 'Stammzuschauer', 'Zuschauer']))
+        .append(helpers.getDropdownGroup('command-permission', 'Benutzerlevel', helpers.getGroupNameById(7),
+            helpers.getPermGroupNames()))
         // Add an advance section that can be opened with a button toggle.
         .append($('<div/>', {
             'class': 'collapse',
@@ -347,6 +351,9 @@ $(function () {
             // Append input box for per-user cooldown.
             .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', '-1',
                 'Abklingzeit des Befehls pro Benutzer in Sekunden. -1 entfernt die Abklingzeit pro Benutzer.')))
+            // Append input box for mods skip cooldown.
+            .append(helpers.getCheckBox('command-cooldown-modsskip', false, 'Mods überspringen Abklingzeit',
+                'Wenn diese Option aktiviert ist, sind Moderatoren von der Abklingzeit für diesen Befehl ausgenommen.'))
             .append(helpers.getCheckBox('command-disabled', false, 'Deaktiviert',
                 'Wenn diese Option aktiviert ist, kann der Befehl nicht im Chat verwendet werden.'))
             .append(helpers.getCheckBox('command-hidden', false, 'Versteckt',
@@ -360,6 +367,7 @@ $(function () {
                 commandReward = $('#command-reward'),
                 commandCooldownGlobal = $('#command-cooldown-global'),
                 commandCooldownUser = $('#command-cooldown-user'),
+                commandCooldownModsSkip = $('#command-cooldown-modsskip').is(':checked') ? '1' : '0',
                 commandDisabled = $('#command-disabled').is(':checked'),
                 commandHidden = $('#command-hidden').is(':checked');
 
@@ -396,7 +404,7 @@ $(function () {
                                     ['add', commandName.val(), commandResponse.val(), JSON.stringify({disabled: commandDisabled})], function () {
                                     // Add the cooldown to the cache.
                                     socket.wsEvent('custom_command_cooldown_ws', './core/commandCoolDown.js', null,
-                                        ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function () {
+                                        ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val(), commandCooldownModsSkip], function () {
                                         // Reload the table.
                                         loadCustomCommands();
                                         // Close the modal.

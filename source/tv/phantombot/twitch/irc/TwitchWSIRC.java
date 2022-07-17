@@ -92,14 +92,14 @@ public class TwitchWSIRC implements WsClientFrameHandler {
 
             // if we sent a ping longer than 3 minutes ago, send another one.
             if (System.currentTimeMillis() > (this.lastPing + 180000)) {
-                com.gmt2001.Console.debug.println("Senden eines PINGs an Twitch.");
+                com.gmt2001.Console.debug.println("Sending a PING to Twitch.");
                 this.lastPing = System.currentTimeMillis();
                 this.send("PING");
 
                 // If Twitch's last pong was more than 3.5 minutes ago, close our connection.
             } else if (System.currentTimeMillis() > (this.lastPong + 210000)) {
-                com.gmt2001.Console.out.println("Schließe unsere Verbindung mit Twitch, da kein PONG zurückgeschickt wurde.");
-                com.gmt2001.Console.warn.println("Schließe unsere Verbindung mit Twitch, da kein PONG zurückgeschickt wurde.", true);
+                com.gmt2001.Console.out.println("Closing our connection with Twitch since no PONG got sent back.");
+                com.gmt2001.Console.warn.println("Closing our connection with Twitch since no PONG got sent back.", true);
                 this.session.reconnect();
             }
         }, 10, 30, TimeUnit.SECONDS);
@@ -121,7 +121,7 @@ public class TwitchWSIRC implements WsClientFrameHandler {
      */
     public boolean connectWSS() {
         try {
-            com.gmt2001.Console.out.println("Verbinden mit Twitch WS-IRC Server (SSL) [" + this.uri.getHost() + "]");
+            com.gmt2001.Console.out.println("Connecting to Twitch WS-IRC Server (SSL) [" + this.uri.getHost() + "]");
             this.connected = false;
             this.connecting = true;
             return this.client.connect();
@@ -155,7 +155,7 @@ public class TwitchWSIRC implements WsClientFrameHandler {
      * Performs login and preps the parser
      */
     private void onOpen() {
-        com.gmt2001.Console.out.println("Verbunden mit " + this.botName + "@" + this.uri.getHost() + " (SSL)");
+        com.gmt2001.Console.out.println("Connected to " + this.botName + "@" + this.uri.getHost() + " (SSL)");
 
         this.twitchWSIRCParser = TwitchWSIRCParser.instance(this.client, this.channelName, this.session);
 
@@ -179,14 +179,14 @@ public class TwitchWSIRC implements WsClientFrameHandler {
         // Reconnect if the bot isn't shutting down.
         if (!reason.equals("bye")) {
             if (!this.connecting) {
-                com.gmt2001.Console.warn.println("Verbindung zu Twitch verloren, verursacht durch: ");
+                com.gmt2001.Console.warn.println("Lost connection with Twitch, caused by: ");
                 com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "]");
 
                 this.connecting = true;
                 this.session.reconnect();
             }
         } else {
-            com.gmt2001.Console.out.println("Verbindung zu Twitch WS-IRC wurde geschlossen...");
+            com.gmt2001.Console.out.println("Connection to Twitch WS-IRC was closed...");
             com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "]");
         }
     }

@@ -143,7 +143,7 @@ $(function () {
                                 .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Grund', '', e.silentLinkMessage,
                                         'Nachricht, die allen Moderatoren angezeigt wird, wenn der Benutzer einen Timeout erhält.'))
                                 // Append input box for the permit time.
-                                .append(helpers.getInputGroup('permit-time', 'number', 'Genehmigungsdauer', '0', e.linkPermitTime,
+                                .append(helpers.getInputGroup('permit-time', 'number', 'Permit-Dauer', '0', e.linkPermitTime,
                                         'Wie lange in Sekunden ein Benutzer einen Link posten darf, wenn es ihm erlaubt ist.'))
                                 // Add group for toggles.
                                 .append($('<div/>', {

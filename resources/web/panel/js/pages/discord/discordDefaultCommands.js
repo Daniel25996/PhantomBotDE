@@ -204,7 +204,7 @@ $(run = function() {
                                 var section = $(this).parent().attr('label');
 
                                 // This is a permission.
-                                if (section == 'Berchtigungen') {
+                                if (section == 'Berechtigungen') {
                                     permObj.permissions.push({
                                         'name': $(this).html(),
                                         'selected': $(this).is(':selected').toString()

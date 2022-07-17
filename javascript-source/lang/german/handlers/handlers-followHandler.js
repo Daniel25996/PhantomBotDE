@@ -27,7 +27,7 @@ $.lang.register('followhandler.followtrain.triple', 'Triple Follow!!');
 $.lang.register('followhandler.followtrain.ultra', 'Ultra Follow Train!! ($1)');
 $.lang.register('followhandler.followtrain.unbelievable', 'Unglaublicher Follow Zug!! ($1)');
 $.lang.register('followhandler.set.followmessage.success', 'Follow-Nachricht geändert zu: $1');
-$.lang.register('followhandler.set.followmessage.usage', 'Verwendung: !followmessage [Nachricht] - Tags: (reward) (name)');
+$.lang.register('followhandler.set.followmessage.usage', 'Verwendung: !followmessage (Nachricht) - Tags: (reward) (name)');
 $.lang.register('followhandler.set.followreward.success', 'Follow Belohnung geändert auf $1.');
 $.lang.register('followhandler.set.followreward.usage', 'Verwendung: !followreward [$1]. (Aktuell $2)');
 $.lang.register('followhandler.followtoggle.on', 'Benachrichtigungen für neue Follower sind aktiviert.');

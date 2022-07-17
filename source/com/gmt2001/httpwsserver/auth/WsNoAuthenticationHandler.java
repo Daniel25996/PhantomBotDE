@@ -60,7 +60,7 @@ public class WsNoAuthenticationHandler implements WsAuthenticationHandler {
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param req The {@link WebSocketFrame} of the request
-     * @return {@code true}
+     * @return
      */
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, WebSocketFrame req) {
@@ -81,6 +81,6 @@ public class WsNoAuthenticationHandler implements WsAuthenticationHandler {
 
     @Override
     public void invalidateAuthorization(ChannelHandlerContext ctx, WebSocketFrame frame) {
-        throw new UnsupportedOperationException("Wird von diesem Authentifizierungs-Handler nicht unterstützt.");
+        throw new UnsupportedOperationException("Not supported by this authentication handler.");
     }
 }

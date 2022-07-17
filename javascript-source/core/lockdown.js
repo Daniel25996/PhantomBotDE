@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 phantombot.github.io/PhantomBot
+ * Copyright (C) 2021 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
      */
     $.bind('ircChannelMessage', function(event) {
         if (state.alphaFilter && $.test(event.getMessage(), alphaFilter)) {
-            Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('.timeout ' + event.getSender() + '\'s Nachricht wurde durch den Lockdown-Alphafilter blockiert.');
+            Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('.timeout ' + event.getSender() + ' 1s Message blocked by lockdown alpha filter');
         }
     });
 
@@ -71,6 +71,6 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./core/lockdown.js', 'lockdown', 2);
+        $.registerChatCommand('./core/lockdown.js', 'lockdown', $.PERMISSION.Mod);
     });
 })();

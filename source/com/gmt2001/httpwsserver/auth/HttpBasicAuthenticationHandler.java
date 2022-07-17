@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-202 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,7 +86,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param frame The {@link FullHttpRequest} to check
-     * @return {@code true} if authenticated, {@code false} otherwise. When returning {@code false}, this method will also reply with
+     * @return, this method will also reply with
      * {@code 401 Unauthorized} and then close the channel
      */
     @Override
@@ -167,6 +167,6 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
 
     @Override
     public void invalidateAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
-        throw new UnsupportedOperationException("Wird von diesem Authentifizierungs-Handler nicht unterstützt.");
+        throw new UnsupportedOperationException("Not supported by this authentication handler.");
     }
 }

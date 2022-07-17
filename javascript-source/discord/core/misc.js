@@ -232,8 +232,8 @@
 
                         say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.enabled', module.getModuleName()));
                     } catch (ex) {
-                        $.log.error('[DISCORD] InitReady kann nicht für aktiviertes Modul aufgerufen werden (' + module.scriptName + '): ' + ex.message);
-                        $.consoleLn("Stack-Trace an Fehlerprotokoll senden...");
+                        $.log.error('[DISCORD] Unable to call initReady for enabled module (' + module.scriptName + '): ' + ex.message);
+                        $.consoleLn("Sending stack trace to error log...");
                         Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException);
                     }
                 } else {

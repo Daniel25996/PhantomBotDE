@@ -68,7 +68,7 @@
 
         if (s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
             if (!$.audioHookExists(s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                $.log.error('Audio-Hook konnte nicht wiedergegeben werden: Audio-Hook existiert nicht.');
+                $.log.error('Could not play audio hook: Audio hook does not exist.');
                 return null;
             }
             $.alertspollssocket.triggerAudioPanel(s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
@@ -135,10 +135,10 @@
      * @event initReady
      */
     $.bind('initReady', function () {
-        $.registerChatCommand('./handlers/clipHandler.js', 'clipstoggle', 1);
-        $.registerChatCommand('./handlers/clipHandler.js', 'clipsmessage', 1);
-        $.registerChatCommand('./handlers/clipHandler.js', 'lastclip', 7);
-        $.registerChatCommand('./handlers/clipHandler.js', 'topclip', 7);
+        $.registerChatCommand('./handlers/clipHandler.js', 'clipstoggle', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/clipHandler.js', 'clipsmessage', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/clipHandler.js', 'lastclip', $.PERMISSION.Viewer);
+        $.registerChatCommand('./handlers/clipHandler.js', 'topclip', $.PERMISSION.Viewer);
     });
 
     $.reloadClips = reloadClips;

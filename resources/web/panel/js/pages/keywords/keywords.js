@@ -120,7 +120,7 @@ $(run = function() {
                     })
                     // Append a text box for keyword
                     .append(helpers.getTextAreaGroup('keyword-keyword', 'text', 'Schlüsselwort', '',
-                        e.keywords.keyword.replace('regex:', ''), 'Schlüsselwort, das eine Antwort auslösen soll.', true)
+                        e.keywords.keyword, 'Schlüsselwort, das eine Antwort auslösen soll.', true)
                         // Append checkbox for if the keyword is regex.
                         .append(helpers.getCheckBox('keyword-regex', e.keywords.isRegex, 'Regex', 'Wenn das Schlüsselwort regex verwendet.'))
                         // Append checkbox for it the keyword should be matched case-sensitive

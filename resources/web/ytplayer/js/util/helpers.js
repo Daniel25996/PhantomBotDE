@@ -136,7 +136,7 @@ $(function() {
      */
     helpers.getSettingsModal = (onClose) => {
         player.dbQuery('yt_settings', 'ytSettings', (e) => {
-            helpers.getModal('settings-modal', 'YouTube Player and Request Settings', 'Save', $('<form/>').append($('<div/>', {
+            helpers.getModal('settings-modal', 'YouTube Player- und Anforderungseinstellungen', 'Speichern', $('<form/>').append($('<div/>', {
                 'class': 'form-group'
             }).append($('<label/>', {
                 'text': 'Player Size'

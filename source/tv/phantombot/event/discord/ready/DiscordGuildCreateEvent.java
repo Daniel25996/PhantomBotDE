@@ -17,10 +17,9 @@
 package tv.phantombot.event.discord.ready;
 
 import discord4j.core.object.entity.Role;
-import tv.phantombot.event.Event;
-
 import java.util.Collections;
 import java.util.List;
+import tv.phantombot.event.Event;
 
 public class DiscordGuildCreateEvent extends Event {
 

@@ -234,7 +234,7 @@ $(function () {
         }
 
         if (!found) {
-            printDebug('Vom Browser wurden keine Audioformate unterstützt!', true);
+            printDebug('Vom Browser werden keine Audioformate unterstützt!', true);
         }
 
         if (getOptionSetting('show-debug', 'false') === 'true' && path === undefined) {

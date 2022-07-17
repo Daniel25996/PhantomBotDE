@@ -99,8 +99,8 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
                 JSONStringer jsonObject = new JSONStringer();
                 jsonObject.object().key("errors").array().object()
                         .key("status").value("404")
-                        .key("title").value("URI-Pfad nicht gefunden")
-                        .key("detail").value("Der URI-Pfad '" + hc.requestUri() + "' hat keinen gültigen Handler")
+                        .key("title").value("URI Path Not Found")
+                        .key("detail").value("The URI path '" + hc.requestUri() + "' does not have a valid handler")
                         .endObject().endArray().endObject();
 
                 com.gmt2001.Console.debug.println("404 WS: " + hc.requestUri());
@@ -239,10 +239,10 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
         com.gmt2001.Console.debug.println("Broadcasting frame to Uri [" + uri + "]");
         WS_SESSIONS.forEach((c) -> {
             if (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get() && c.attr(ATTR_URI).get().equals(uri)) {
-                com.gmt2001.Console.debug.println("An den Kunden übertragen [" + c.remoteAddress().toString() + "]");
+                com.gmt2001.Console.debug.println("Broadcast to client [" + c.remoteAddress().toString() + "]");
                 c.writeAndFlush(resframe.copy());
             } else {
-                com.gmt2001.Console.debug.println("Nicht an Client gesendet [" + c.remoteAddress().toString() + "] Authentifiziert: " + (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get() ? "t" : "f") + "   Uri: " + c.attr(ATTR_URI).get() + "   Uri match: " + (c.attr(ATTR_URI).get().equals(uri) ? "t" : "f"));
+                com.gmt2001.Console.debug.println("Did not broadcast to client [" + c.remoteAddress().toString() + "] Authenticated: " + (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get() ? "t" : "f") + "   Uri: " + c.attr(ATTR_URI).get() + "   Uri match: " + (c.attr(ATTR_URI).get().equals(uri) ? "t" : "f"));
             }
         });
     }
@@ -278,12 +278,12 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
     public static void registerWsHandler(String path, WsFrameHandler handler) {
         if (HTTPWSServer.validateUriPath(path, true)) {
             if (wsFrameHandlers.containsKey(path)) {
-                throw new IllegalArgumentException("Der angegebene Pfad ist bereits registriert. Bitte zuerst abmelden");
+                throw new IllegalArgumentException("The specified path is already registered. Please unregister it first");
             } else {
                 wsFrameHandlers.put(path, handler);
             }
         } else {
-            throw new IllegalArgumentException("Unzulässiger Pfad. Darf nicht .. enthalten und muss mit beginnen /ws");
+            throw new IllegalArgumentException("Illegal path. Must not contain .. and must start with /ws");
         }
     }
 

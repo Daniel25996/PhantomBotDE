@@ -23,7 +23,7 @@ $.lang.register('bettingsystem.close.error.usage', 'Die Wette ist nun geschlosse
 $.lang.register('bettingsystem.close.usage', 'Verwendung: !bet close [Gewinnoption]');
 $.lang.register('bettingsystem.close.success', 'Die Wette ist nun geschlossen! Die Gewinnoption ist $1! Kalkuliere Resultate und zahle die Gewinne aus!');
 $.lang.register('bettingsystem.close.semi.success', 'Die Wette ist nun geschlossen! Warte auf Gewinnoption.');
-$.lang.register('bettingsystem.close.success.winners', 'Es haben $1 Personen die Wette gewonnen! Es wurde eine Gesamtsumme von $2 gewonnen, für die Leute, die ihr Wette auf $3 plaziert haben!');
+$.lang.register('bettingsystem.close.success.winners', 'Es haben $1 Personen die Wette gewonnen! Es wurde eine Gesamtsumme von $2 gewonnen, für die Leute, die ihr Wette auf $3 platziert haben!');
 $.lang.register('bettingsystem.save.format', 'Titel: "$1", Optionen: "$2", Gesamt platzierte Wetteinsätze: $3, Gesamt platzierte Wetten: $4, Gewonnene Punkte: $5.');
 $.lang.register('bettingsystem.results', 'Aktuelle Wette: Titel: "$1", Optionen: "$2", Gesamtpunkte: $3, Gesamte Teilnehmer: $4');
 $.lang.register('bettingsystem.global.usage', 'Verwendung: !bet [open / close / save / saveformat / lookup / results / togglemessages / gain]');

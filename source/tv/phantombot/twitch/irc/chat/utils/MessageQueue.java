@@ -16,7 +16,7 @@
  */
 package tv.phantombot.twitch.irc.chat.utils;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Processor;
 import java.util.concurrent.Flow.Subscription;
@@ -28,7 +28,7 @@ public abstract class MessageQueue extends SubmissionPublisher<Message> implemen
     protected final String channelName;
     protected boolean isAllowedToSend = false;
     protected int writes = 0;
-    protected final Date nextReminder = new Date();
+    protected Instant nextReminder = Instant.now();
     protected static final long REMINDER_INTERVAL = 300000L;
     protected Subscription subscription;
     protected long lastWrite = System.currentTimeMillis();
@@ -40,6 +40,7 @@ public abstract class MessageQueue extends SubmissionPublisher<Message> implemen
      * @param channelName
      */
     protected MessageQueue(String channelName) {
+        super();
         this.channelName = channelName;
 
         // Set the default thread uncaught exception handler.
@@ -60,7 +61,7 @@ public abstract class MessageQueue extends SubmissionPublisher<Message> implemen
      *
      * @return isAllowedToSend
      */
-    public boolean getAllowSendMessages() {
+    public boolean isAllowedToSendMessages() {
         return this.isAllowedToSend;
     }
 
@@ -83,7 +84,7 @@ public abstract class MessageQueue extends SubmissionPublisher<Message> implemen
         String[] spl = message.split("\n");
         for (String str : spl) {
             this.offer(new Message(str), 5, TimeUnit.SECONDS, (s, m) -> {
-                com.gmt2001.Console.warn.println("Nachricht konnte nicht gesendet werden: " + m.getMessage());
+                com.gmt2001.Console.warn.println("Failed to submit message: " + m.getMessage());
                 return false;
             });
         }
@@ -120,6 +121,6 @@ public abstract class MessageQueue extends SubmissionPublisher<Message> implemen
     @Override
     public void onError(Throwable thrwbl) {
         com.gmt2001.Console.err.printStackTrace(thrwbl);
-        com.gmt2001.Console.err.println("MessageQueue hat eine Ausnahme ausgelöst und wird getrennt...");
+        com.gmt2001.Console.err.println("MessageQueue threw an exception and is being disconnected...");
     }
 }

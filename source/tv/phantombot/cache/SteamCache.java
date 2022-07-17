@@ -44,7 +44,7 @@ public class SteamCache implements Runnable {
     /**
      * Method that returns this instance.
      *
-     * @param {String} channelName
+     * @param channelName
      * @return
      */
     public static SteamCache instance(String channelName) {
@@ -69,14 +69,14 @@ public class SteamCache implements Runnable {
                 // Update.
                 updateCache();
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("SteamCache.run::Der Cache konnte nicht aktualisiert werden "
+                com.gmt2001.Console.err.println("SteamCache.run::Failed to update cache "
                         + "[" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             }
             // Sleep for 30 minutes.
             try {
                 Thread.sleep(30 * 60 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.debug.println("SteamCache.run::Sleep konnte nicht ausgeführt werden [InterruptedException]: "
+                com.gmt2001.Console.debug.println("SteamCache.run::Failed to sleep [InterruptedException]: "
                         + ex.getMessage());
             }
         }
@@ -127,7 +127,7 @@ public class SteamCache implements Runnable {
     /**
      * Method that returns the game ID, or null if it doesn't exist.
      *
-     * @param {String} gameName
+     * @param gameName
      * @return
      */
     public String getGameID(String gameName) {

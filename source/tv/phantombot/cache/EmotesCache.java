@@ -20,8 +20,8 @@ package tv.phantombot.cache;
 
 import com.gmt2001.BTTVAPIv3;
 import com.illusionaryone.FrankerZAPIv1;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.json.JSONException;
@@ -48,8 +48,8 @@ public class EmotesCache implements Runnable {
 
     private final String channel;
     private final Thread updateThread;
-    private Date timeoutExpire = new Date();
-    private Date lastFail = new Date();
+    private Instant timeoutExpire = Instant.now();
+    private Instant lastFail = Instant.now();
     private int numfail = 0;
     private boolean killed = false;
     private long loopSleep = 0;
@@ -70,14 +70,12 @@ public class EmotesCache implements Runnable {
     }
 
     private void checkLastFail() {
-        Calendar cal = Calendar.getInstance();
-        numfail = (lastFail.after(new Date()) ? numfail + 1 : 1);
+        this.numfail = (lastFail.isAfter(Instant.now()) ? this.numfail + 1 : 1);
 
-        cal.add(Calendar.MINUTE, 1);
-        lastFail = cal.getTime();
+        lastFail = Instant.now().plus(1, ChronoUnit.MINUTES);
 
         if (numfail > 5) {
-            timeoutExpire = cal.getTime();
+            timeoutExpire = Instant.now().plus(1, ChronoUnit.MINUTES);
         }
     }
 
@@ -88,7 +86,7 @@ public class EmotesCache implements Runnable {
 
         while (!killed) {
             try {
-                if (new Date().after(timeoutExpire)) {
+                if (Instant.now().isAfter(timeoutExpire)) {
                     this.updateCache();
                 }
             } catch (Exception ex) {
@@ -99,7 +97,7 @@ public class EmotesCache implements Runnable {
             try {
                 Thread.sleep(loopSleep * 1000L);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.debug.println("EmotesCache.run: Der Initial-Sleep konnte nicht ausgeführt werden: [InterruptedException] " + ex.getMessage());
+                com.gmt2001.Console.debug.println("EmotesCache.run: Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
             }
         }
     }
@@ -137,37 +135,33 @@ public class EmotesCache implements Runnable {
         // We will pull emotes, set the sleep to every 10 minutes.
         loopSleep = LOOP_SLEEP_EMOTES_ENABLED;
 
-        com.gmt2001.Console.debug.println("Abruf von Emotes von BTTV und FFZ");
+        com.gmt2001.Console.debug.println("Polling Emotes from BTTV and FFZ");
 
-        /**
-         * @info Don't need this anymore since we use the IRCv3 tags for Twitch emotes. twitchJsonResult = TwitchAPIv5.instance().GetEmotes(); if
-         * (!checkJSONExceptions(twitchJsonResult, false, "Twitch")) { com.gmt2001.Console.err.println("Failed to get Twitch Emotes"); return; }
-         */
         bttvJsonResult = BTTVAPIv3.instance().GetGlobalEmotes();
         if (!checkJSONExceptions(bttvJsonResult, true, "Global BTTV")) {
-            com.gmt2001.Console.err.println("BTTV Emotes konnten nicht abgerufen werden");
+            com.gmt2001.Console.err.println("Failed to get BTTV Emotes");
             return;
         }
 
         bttvLocalJsonResult = BTTVAPIv3.instance().GetLocalEmotes(UsernameCache.instance().getID(this.channel));
         if (!checkJSONExceptions(bttvLocalJsonResult, true, "Local BTTV")) {
-            com.gmt2001.Console.err.println("BTTV Lokale Emotes konnten nicht abgerufen werden");
+            com.gmt2001.Console.err.println("Failed to get BTTV Local Emotes");
             return;
         }
 
         ffzJsonResult = FrankerZAPIv1.instance().GetGlobalEmotes();
         if (!checkJSONExceptions(ffzJsonResult, true, "Global FrankerZ")) {
-            com.gmt2001.Console.err.println("FFZ Emotes konnten nicht abgerufen werden");
+            com.gmt2001.Console.err.println("Failed to get FFZ Emotes");
             return;
         }
 
         ffzLocalJsonResult = FrankerZAPIv1.instance().GetLocalEmotes(this.channel);
         if (!checkJSONExceptions(ffzLocalJsonResult, true, "Local FrankerZ")) {
-            com.gmt2001.Console.err.println("FFZ Lokale Emotes konnten nicht abgerufen werden");
+            com.gmt2001.Console.err.println("Failed to get FFZ Local Emotes");
             return;
         }
 
-        com.gmt2001.Console.debug.println("Verschiebe das Emote JSON-Objekt auf den EventBus");
+        com.gmt2001.Console.debug.println("Pushing Emote JSON Objects to EventBus");
         EventBus.instance().postAsync(new EmotesGetEvent(null, bttvJsonResult, bttvLocalJsonResult, ffzJsonResult, ffzLocalJsonResult));
     }
 

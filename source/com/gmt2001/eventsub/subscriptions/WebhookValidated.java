@@ -28,34 +28,25 @@ import tv.phantombot.event.eventsub.EventSubWebhookValidatedEvent;
  *
  * @author gmt2001
  */
-public class WebhookValidated extends EventSubSubscriptionType {
+public final class WebhookValidated extends EventSubSubscriptionType {
 
-    protected WebhookValidated() {
+    @Override
+    public EventSubSubscription proposeSubscription() {
+        throw new UnsupportedOperationException("Not a valid subscription type.");
     }
 
     @Override
-    protected EventSubSubscription proposeSubscription() {
-        throw new UnsupportedOperationException("Kein gültiger Abonnementtyp.");
+    public void validateParameters() throws IllegalArgumentException {
+        throw new UnsupportedOperationException("Not a valid subscription type.");
     }
 
     @Override
-    protected void validateParameters() throws IllegalArgumentException {
-        throw new UnsupportedOperationException("Kein gültiger Abonnementtyp.");
-    }
-
-    @Override
-    public boolean isAlreadySubscribed() {
-        throw new UnsupportedOperationException("Kein gültiger Abonnementtyp.");
-    }
-
-    @Override
-    public String findMatchingSubscriptionId() {
-        throw new UnsupportedOperationException("Kein gültiger Abonnementtyp.");
+    protected boolean isMatch(EventSubSubscription subscription) {
+        throw new UnsupportedOperationException("Not a valid subscription type.");
     }
 
     @Handler
     public void onEventSubInternalVerificationEvent(EventSubInternalVerificationEvent e) {
         EventBus.instance().postAsync(new EventSubWebhookValidatedEvent(e.getSubscription()));
     }
-
 }

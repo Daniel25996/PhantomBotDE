@@ -28,9 +28,8 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.util.AttributeKey;
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -65,7 +64,7 @@ import tv.phantombot.event.ytplayer.YTPlayerVolumeEvent;
 public class WsYTHandler implements WsFrameHandler {
 
     private static final AttributeKey<Boolean> ATTR_IS_PLAYER = AttributeKey.valueOf("isPlayer");
-    private static final AttributeKey<Date> ATTR_LAST_PONG = AttributeKey.valueOf("lastPong");
+    private static final AttributeKey<Instant> ATTR_LAST_PONG = AttributeKey.valueOf("lastPong");
     private static final String[] ALLOWED_DB_QUERY_TABLES = new String[]{"modules", "ytSettings", "yt_playlists_registry"};
     private static final String[] ALLOWED_DB_UPDATE_TABLES = new String[]{"ytSettings"};
     private final WsAuthenticationHandler authHandler;
@@ -79,11 +78,10 @@ public class WsYTHandler implements WsFrameHandler {
         authHandler = new WsSharedRWTokenAuthenticationHandler(ytAuthRO, ytAuth, 10);
         executor.scheduleAtFixedRate(() -> {
             Queue<Channel> channels = WebSocketFrameHandler.getWsSessions("/ws/ytplayer");
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.SECOND, -12);
+            Instant valid = Instant.now().minusSeconds(12);
 
             channels.forEach((c) -> {
-                if (c.attr(ATTR_LAST_PONG).get().before(cal.getTime())) {
+                if (c.attr(ATTR_LAST_PONG).get().isBefore(valid)) {
                     c.writeAndFlush(WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
                     c.close();
                 } else {
@@ -110,7 +108,7 @@ public class WsYTHandler implements WsFrameHandler {
     @Override
     public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         ctx.channel().attr(ATTR_IS_PLAYER).setIfAbsent(Boolean.FALSE);
-        ctx.channel().attr(ATTR_LAST_PONG).setIfAbsent(new Date());
+        ctx.channel().attr(ATTR_LAST_PONG).setIfAbsent(Instant.now());
 
         ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
             if (f.channel().attr(ATTR_IS_PLAYER).get()) {
@@ -133,7 +131,7 @@ public class WsYTHandler implements WsFrameHandler {
                 WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jso.object().key("ytkeycheck").value(hasYTKey).endObject().toString()));
 
                 if (!hasYTKey) {
-                    com.gmt2001.Console.err.println("Es wurde kein YouTube-API-Schlüssel konfiguriert. Bitte lesen Sie die Anweisungen in den Anleitungen unter "
+                    com.gmt2001.Console.err.println("A YouTube API key has not been configured. Please review the instructions in the guides at "
                             + "https://phantombot.github.io/PhantomBot/");
                     return;
                 }
@@ -235,7 +233,7 @@ public class WsYTHandler implements WsFrameHandler {
                 EventBus.instance().postAsync(new YTPlayerVolumeEvent(dataInt));
             } else if (jsonStatus.has("errorcode")) {
                 dataInt = jsonStatus.getInt("errorcode");
-                com.gmt2001.Console.err.println("Beim Überspringen des Songs hat YouTube einen Fehler ausgegeben: " + dataInt);
+                com.gmt2001.Console.err.println("Skipping song, YouTube has thrown an error: " + dataInt);
                 EventBus.instance().postAsync(new YTPlayerSkipSongEvent());
             }
         } catch (JSONException ex) {
@@ -305,7 +303,7 @@ public class WsYTHandler implements WsFrameHandler {
                 com.gmt2001.Console.err.logStackTrace(ex);
             }
         } else if (jso.has("pong")) {
-            ctx.channel().attr(ATTR_LAST_PONG).set(new Date());
+            ctx.channel().attr(ATTR_LAST_PONG).set(Instant.now());
         }
     }
 

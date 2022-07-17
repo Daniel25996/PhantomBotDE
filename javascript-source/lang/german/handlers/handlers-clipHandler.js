@@ -17,9 +17,9 @@
 
 $.lang.register('cliphandler.toggle.off', 'Clip Benachrichtigungen wurden deaktiviert.');
 $.lang.register('cliphandler.toggle.on', 'Clip Benachrichtigungen wurden aktiviert.');
-$.lang.register('cliphandler.message.usage', 'Verwendung: !clipsmessage [Benachrichtigung] - Tags: (name), (url)');
+$.lang.register('cliphandler.message.usage', 'Verwendung: !clipsmessage (Nachricht) - Tags: (name), (url)');
 $.lang.register('cliphandler.message.set', 'Benachrichtigungen für Clips geändert zu: $1');
-$.lang.register('cliphandler.channel.usage', 'Verwendung: !clipschannel [Kanal]. Aktuell: $1');
+$.lang.register('cliphandler.channel.usage', 'Verwendung: !clipschannel (Kanal). Aktuell: $1');
 $.lang.register('cliphandler.channel.set', 'Benachrichtigungen für Clips werden in folgendem Channel gepostet: $1.');
 $.lang.register('cliphandler.noclip', 'Kein Clip vorhanden.');
 $.lang.register('cliphandler.lastclip', 'Neuester Clip: $1');

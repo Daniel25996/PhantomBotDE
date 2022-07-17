@@ -61,33 +61,33 @@ fi
 jvermaj=$($JAVA --version | awk 'FNR == 1 { print $2 }' | cut -d . -f 1)
 
 if [ $jvermaj -lt 11 ]; then
-    echo "PhantomBot benötigt zur Ausführung Java 11 oder höher."
+    echo "PhantomBot requires Java 11 or later to run."
     echo
 
     osdist=$(uname)
 
     if  [[ "$osdist" == *"OpenBSD"* ]]; then
-        echo "Bitte installiere das Paket jdk und wähle die Version aus, die dir jdk-11 gibt"
+        echo "Please install the package jdk and select the version that gives you jdk-11"
         echo
 
-        echo "Der Befehl dazu lautet:"
+        echo "The command to do this is:"
         echo "   pkg_add jdk"
         echo
-        echo "Wenn Sie den Befehl pkg_add ausführen, wähle die Option, die mit java-11 beginnt"
+        echo "When you issue the pkg_add command, select the option that starts with java-11"
     elif  [[ "$osdist" == *"FreeBSD"* ]]; then
-        echo "Bitte installiere das Paket openjdk11"
+        echo "Please install the package openjdk11"
         echo
 
-        echo "Der Befehl dazu lautet:"
+        echo "The command to do this is:"
         echo "   sudo pkg install openjdk11"
     else
-        echo "Unbekanntes Betriebssystem erkannt, bitte identifizieren und installiere das entsprechende Java 11-Paket auf Ihrem System"
-        echo "Der Name beginnt im Allgemeinen mit JDK oder OpenJDK"
+        echo "Unknown OS detected, please identify and install the appropriate Java 11 package on your system"
+        echo "The name is generally something starting with JDK or OpenJDK"
     fi
 
     echo
-    echo "Wenn du es bereits installiert hast, versuche, den Pfad zur ausführbaren Java-Datei als Parameter für dieses Skript anzugeben"
-    echo "Beispiel: ./launch.sh java=/usr/local/jdk-11/bin/java"
+    echo "If you have already installed it, try specifying the path to the java executable as a parameter to this script"
+    echo "Example: ./launch.sh java=/usr/local/jdk-11/bin/java"
 
     exit 1
 fi

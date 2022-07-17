@@ -32,7 +32,6 @@ import com.gmt2001.datastore.MySQLStore;
 import com.gmt2001.datastore.SqliteStore;
 import com.gmt2001.eventsub.EventSub;
 import com.gmt2001.httpclient.HttpClient;
-import com.gmt2001.httpclient.HttpUrl;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.TwitchAlertsAPIv1;
@@ -40,10 +39,13 @@ import com.illusionaryone.TwitterAPI;
 import com.scaniatv.CustomAPI;
 import com.scaniatv.StreamElementsAPIv2;
 import com.scaniatv.TipeeeStreamAPIv1;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+import io.netty.util.internal.logging.JdkLoggerFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -51,12 +53,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TimeZone;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -99,7 +101,6 @@ import tv.phantombot.script.Script;
 import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.script.ScriptFileWatcher;
 import tv.phantombot.script.ScriptManager;
-import tv.phantombot.scripts.core.Moderation;
 import tv.phantombot.twitch.api.Helix;
 import tv.phantombot.twitch.api.TwitchValidate;
 import tv.phantombot.twitch.irc.TwitchSession;
@@ -242,7 +243,7 @@ public final class PhantomBot implements Listener {
     /**
      * Prints a message in the bot console.
      *
-     * @param {Object} message
+     * @param message
      */
     private void print(String message) {
         com.gmt2001.Console.out.println(message);
@@ -259,18 +260,18 @@ public final class PhantomBot implements Listener {
             serverSocket = CaselessProperties.instance().getProperty("bindIP", "").isEmpty() ? new ServerSocket(port) : new ServerSocket(port, 1, java.net.InetAddress.getByName(CaselessProperties.instance().getProperty("bindIP", "")));
             serverSocket.setReuseAddress(true);
         } catch (IOException e) {
-            com.gmt2001.Console.err.println("Port ist bereits in Gebrauch: " + port);
-            com.gmt2001.Console.err.println("Stelle sicher, dass keine weitere Kopie von PhantomBot läuft.");
-            com.gmt2001.Console.err.println("Wenn keine andere Kopie läuft, versuche, den Basisport in ./config/botlogin.txt zu ändern.");
-            com.gmt2001.Console.err.println("PhantomBot wird nun beendet.");
+            com.gmt2001.Console.err.println("Port is already in use: " + port);
+            com.gmt2001.Console.err.println("Ensure that another copy of PhantomBot is not running.");
+            com.gmt2001.Console.err.println("If another copy is not running, try to change baseport in ./config/botlogin.txt");
+            com.gmt2001.Console.err.println("PhantomBot will now exit.");
             PhantomBot.exitError();
         } finally {
             if (serverSocket != null) {
                 try {
                     serverSocket.close();
                 } catch (IOException e) {
-                    com.gmt2001.Console.err.println("Der Port kann zum Testen nicht geschlossen werden: " + port);
-                    com.gmt2001.Console.err.println("PhantomBot wird nun beendet.");
+                    com.gmt2001.Console.err.println("Unable to close port for testing: " + port);
+                    com.gmt2001.Console.err.println("PhantomBot will now exit.");
                     PhantomBot.exitError();
                 }
             }
@@ -286,6 +287,15 @@ public final class PhantomBot implements Listener {
         return CaselessProperties.instance().getProperty("youtubekey", "").isEmpty();
     }
 
+    public static void setLevel(java.util.logging.Level targetLevel) {
+        java.util.logging.Logger root = java.util.logging.Logger.getLogger("");
+        root.setLevel(targetLevel);
+        for (java.util.logging.Handler handler : root.getHandlers()) {
+            handler.setLevel(targetLevel);
+        }
+        System.out.println("level set: " + targetLevel.getName());
+    }
+
     /**
      * Constructor for PhantomBot object.
      *
@@ -293,6 +303,10 @@ public final class PhantomBot implements Listener {
     public PhantomBot() {
         if (CaselessProperties.instance().getPropertyAsBoolean("reactordebug", false)) {
             Loggers.useVerboseConsoleLoggers();
+        }
+        if (CaselessProperties.instance().getPropertyAsBoolean("internaldebug", false)) {
+            setLevel(java.util.logging.Level.ALL);
+            InternalLoggerFactory.setDefaultFactory(JdkLoggerFactory.INSTANCE);
         }
 
         /* Set the default bot variables */
@@ -342,7 +356,7 @@ public final class PhantomBot implements Listener {
 
             /* Check to see if we can create a connection */
             if (!this.dataStore.CanConnect(mySqlConn, CaselessProperties.instance().getProperty("mysqluser", ""), CaselessProperties.instance().getProperty("mysqlpass", ""))) {
-                this.print("Es konnte keine Verbindung mit MySQL Server hergestellt werden. PhantomBot wird jetzt heruntergefahren...");
+                this.print("Could not create a connection with MySQL Server. PhantomBot now shutting down...");
                 PhantomBot.exitError();
             }
             /* Convert to MySql */
@@ -354,7 +368,7 @@ public final class PhantomBot implements Listener {
             this.dataStore = H2Store.instance(CaselessProperties.instance().getProperty("datastoreconfig", ""));
 
             if (!this.dataStore.CanConnect()) {
-                this.print("Es konnte keine Verbindung mit der H2-Datenbank hergestellt werden. PhantomBot wird jetzt heruntergefahren...");
+                this.print("Could not create a connection with H2 Database. PhantomBot now shutting down...");
                 PhantomBot.exitError();
             }
 
@@ -365,7 +379,7 @@ public final class PhantomBot implements Listener {
             this.dataStore = SqliteStore.instance(CaselessProperties.instance().getProperty("datastoreconfig", ""));
 
             /* Handle index operations. */
-            com.gmt2001.Console.debug.println("Datenbankindexe werden überprüft, bitte warten...");
+            com.gmt2001.Console.debug.println("Checking database indexes, please wait...");
             this.dataStore.CreateIndexes();
         }
 
@@ -401,7 +415,7 @@ public final class PhantomBot implements Listener {
             /* Validate the chat OAUTH token. */
             TwitchValidate.instance().validateChat(CaselessProperties.instance().getProperty("oauth"), "CHAT (oauth)");
 
-            TwitchValidate.instance().checkOAuthInconsistencies(this.getBotName());
+            TwitchValidate.instance().checkOAuthInconsistencies(this.getBotName(), this.getChannelName());
         }
     }
 
@@ -409,12 +423,12 @@ public final class PhantomBot implements Listener {
         this.validateOAuth();
         if (!TwitchValidate.instance().isChatValid()) {
             com.gmt2001.Console.warn.println();
-            com.gmt2001.Console.warn.println("OAuth war ungültig, TMI wird nicht gestartet (Chat)");
-            com.gmt2001.Console.warn.println("Bitte gehe zur integrierten Oauth-Seite des Bots und richte einen neuen Bot (Chat)-Token ein");
-            com.gmt2001.Console.warn.println("Die Standard-URL ist http://localhost:25000/oauth/");
+            com.gmt2001.Console.warn.println("OAuth was invalid, not starting TMI (Chat)");
+            com.gmt2001.Console.warn.println("Please go the the bots built-in oauth page and setup a new Bot (Chat) token");
+            com.gmt2001.Console.warn.println("The default URL is http://localhost:25000/oauth/");
             com.gmt2001.Console.warn.println();
             if (!this.initChatBackoff.GetIsBackingOff()) {
-                com.gmt2001.Console.warn.println("Wird erneut geprüft in " + (this.initChatBackoff.GetNextInterval() / 1000) + " Sekunden");
+                com.gmt2001.Console.warn.println("Will check again in " + (this.initChatBackoff.GetNextInterval() / 1000) + " seconds");
                 com.gmt2001.Console.warn.println();
                 this.initChatBackoff.BackoffAsync(() -> {
                     this.initChat();
@@ -440,7 +454,7 @@ public final class PhantomBot implements Listener {
      * @return
      */
     public boolean isNightly() {
-        return RepoVersion.getNightlyBuild();
+        return RepoVersion.isNightlyBuild();
     }
 
     /**
@@ -449,7 +463,7 @@ public final class PhantomBot implements Listener {
      * @return
      */
     public boolean isPrerelease() {
-        return RepoVersion.getPrereleaseBuild();
+        return RepoVersion.isPrereleaseBuild();
     }
 
     public TwitchAuthorizationCodeFlow getAuthFlow() {
@@ -506,7 +520,7 @@ public final class PhantomBot implements Listener {
      */
     public static void setDebugging(boolean debug) {
         if (debug) {
-            com.gmt2001.Console.out.println("Debug-Modus aktiviert");
+            com.gmt2001.Console.out.println("Debug Mode Enabled");
         }
 
         PhantomBot.enableDebugging = debug;
@@ -519,7 +533,7 @@ public final class PhantomBot implements Listener {
      */
     public static void setDebuggingLogOnly(boolean debug) {
         if (debug) {
-            com.gmt2001.Console.out.println("Nur Debug-Protokollmodus aktiviert");
+            com.gmt2001.Console.out.println("Debug Log Only Mode Enabled");
         }
 
         PhantomBot.enableDebugging = debug;
@@ -662,7 +676,9 @@ public final class PhantomBot implements Listener {
      * Method that gets the PhantomBot properties.
      *
      * @return
+     * @deprecated
      */
+    @Deprecated
     public CaselessProperties getProperties() {
         return CaselessProperties.instance();
     }
@@ -675,10 +691,10 @@ public final class PhantomBot implements Listener {
             t.setProperty("panelpassword", pass);
             t.commit();
             com.gmt2001.Console.out.println("");
-            com.gmt2001.Console.out.println("Panel-Passwort nicht gefunden...");
-            com.gmt2001.Console.out.println("Der Panel-Benutzername wurde festgelegt auf: " + CaselessProperties.instance().getProperty("paneluser", "panel"));
-            com.gmt2001.Console.out.println("Das Panel-Passwort wurde festgelegt auf: " + pass);
-            com.gmt2001.Console.out.println("Sie können dies in botlogin.txt oder mit dem Konsolenbefehl „panelsetup“ ändern");
+            com.gmt2001.Console.out.println("Did not find a panel password...");
+            com.gmt2001.Console.out.println("The panel username has been set to: " + CaselessProperties.instance().getProperty("paneluser", "panel"));
+            com.gmt2001.Console.out.println("The panel password has been set to: " + pass);
+            com.gmt2001.Console.out.println("You can change this in botlogin.txt, or by using the console command: panelsetup");
             com.gmt2001.Console.out.println("");
         }
 
@@ -810,9 +826,9 @@ public final class PhantomBot implements Listener {
         String http = (CaselessProperties.instance().getPropertyAsBoolean("usehttps", true) ? "https://" : "http://");
 
         try {
-            data += "// Konfiguration für YTPlayer\r\n";
-            data += "// Automatisch von PhantomBot beim Start generiert\r\n";
-            data += "// NICHT verändern! Wird überschrieben, wenn PhantomBot neu gestartet wird!\r\n";
+            data += "// Configuration for YTPlayer\r\n";
+            data += "// Automatically Generated by PhantomBot at Startup\r\n";
+            data += "// Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
             data += "var playerPort = " + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + ";\r\n";
             data += "var channelName = \"" + this.getChannelName() + "\";\r\n";
             data += "var auth=\"" + CaselessProperties.instance().getProperty("ytauth") + "\";\r\n";
@@ -834,9 +850,9 @@ public final class PhantomBot implements Listener {
         /* Create configuration for YTPlayer Playlist v2.0 for the WS port. */
         data = "";
         try {
-            data += "//Konfiguration für YTPlayer\r\n";
-            data += "//Automatisch von PhantomBot beim Start generiert\r\n";
-            data += "//NICHT verändern! Wird überschrieben, wenn PhantomBot neu gestartet wird!\r\n";
+            data += "//Configuration for YTPlayer\r\n";
+            data += "//Automatically Generated by PhantomBot at Startup\r\n";
+            data += "//Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
             data += "var playerPort = " + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + ";\r\n";
             data += "var channelName = \"" + this.getChannelName() + "\";\r\n";
             data += "var auth=\"" + CaselessProperties.instance().getProperty("ytauthro") + "\";\r\n";
@@ -858,9 +874,9 @@ public final class PhantomBot implements Listener {
         /* Create configuration for Read-Only Access to WS port. */
         data = "";
         try {
-            data += "// Konfiguration für das Control Panel\r\n";
-            data += "// Automatisch von PhantomBot beim Start generiert\r\n";
-            data += "// NICHT verändern! Wird überschrieben, wenn PhantomBot neu gestartet wird!\r\n";
+            data += "// Configuration for Control Panel\r\n";
+            data += "// Automatically Generated by PhantomBot at Startup\r\n";
+            data += "// Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
             data += "var panelSettings = {\r\n";
             data += "    panelPort   : " + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + ",\r\n";
             data += "    channelName : \"" + this.getChannelName() + "\",\r\n";
@@ -908,7 +924,6 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("hasDiscordToken", hasDiscordToken(), 0);
         Script.global.defineProperty("customAPI", CustomAPI.instance(), 0);
         Script.global.defineProperty("streamLabsAPI", TwitchAlertsAPIv1.instance(), 0);
-        Script.global.defineProperty("moderation", Moderation.instance(), 0);
 
         /* And finally try to load init, that will then load the scripts */
         try {
@@ -945,15 +960,15 @@ public final class PhantomBot implements Listener {
      */
     @SuppressWarnings("SleepWhileInLoop")
     public void onExit() {
-        this.print(this.getBotName() + " fährt herunter...");
+        this.print(this.getBotName() + " is shutting down...");
 
-        this.print("Senden des Shutdown-Ereignisses an Skripte...");
+        this.print("Sending the shutdown event to scripts...");
         EventBus.instance().post(new ShutdownEvent());
 
         this.isExiting = true;
         PhantomBot.isInExitState = true;
 
-        this.print("Stoppen aller Ereignisse und des Nachrichtenversands...");
+        this.print("Stopping all events and message dispatching...");
         ScriptFileWatcher.instance().kill();
         ScriptEventManager.instance().kill();
 
@@ -972,41 +987,41 @@ public final class PhantomBot implements Listener {
 
         /* Shutdown all caches */
         if (this.followersCache != null) {
-            this.print("Der Twitch-Kanal-Follower-Cache wird beendet...");
+            this.print("Terminating the Twitch channel follower cache...");
             FollowersCache.killall();
         }
 
-        this.print("Der Streamlabs-Cache wird beendet...");
+        this.print("Terminating the Streamlabs cache...");
         DonationsCache.instance().kill();
 
         if (this.tipeeeStreamCache != null) {
-            this.print("Der Tipeeestream-Cache wird beendet...");
+            this.print("Terminating the TipeeeStream cache...");
             TipeeeStreamCache.killall();
         }
 
         if (this.streamElementCache != null) {
-            this.print("Der StreamElements-Cache wird beendet...");
+            this.print("Terminating the StreamElementsCache cache...");
             StreamElementsCache.killall();
         }
 
-        this.print("Alle Skriptmodule werden beendet...");
-        HashMap<String, Script> scripts = ScriptManager.getScripts();
+        this.print("Terminating all script modules...");
+        Map<String, Script> scripts = ScriptManager.getScripts();
         scripts.entrySet().forEach((script) -> {
             script.getValue().kill();
         });
 
-        this.print("Alle Daten werden gespeichert...");
+        this.print("Saving all data...");
         this.dataStore.SaveAll(true);
 
         /* Check to see if web is enabled */
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
-            this.print("Alle Web-Socket-/HTTP-Server werden heruntergefahren...");
+            this.print("Shutting down all web socket/http servers...");
             HTTPWSServer.instance().close();
         }
 
         try {
             for (int i = 5; i > 0; i--) {
-                com.gmt2001.Console.out.print("\rWarten auf das Beenden von allem anderen... " + i + " ");
+                com.gmt2001.Console.out.print("\rWaiting for everything else to shutdown... " + i + " ");
                 Thread.sleep(1000);
             }
         } catch (InterruptedException ex) {
@@ -1015,7 +1030,7 @@ public final class PhantomBot implements Listener {
         }
 
         com.gmt2001.Console.out.print("\r\n");
-        this.print("Datenbank schließen...");
+        this.print("Closing the database...");
         this.dataStore.dispose();
 
         CaselessProperties.instance().store(false);
@@ -1034,7 +1049,7 @@ public final class PhantomBot implements Listener {
             }
         }
 
-        this.print(this.getBotName() + " wird beendet.");
+        this.print(this.getBotName() + " is exiting.");
     }
 
     /**
@@ -1116,7 +1131,7 @@ public final class PhantomBot implements Listener {
                         EventBus.instance().postAsync(new IrcChannelUserModeEvent(this.session, this.session.getBotName(), "O", true));
                         /* Allow the bot to sends message to this session */
                         event.getSession().setAllowSendMessages(true);
-                        com.gmt2001.Console.debug.println("Senden von Nachrichten aufgrund von .mods-Antworten zulassen +O");
+                        com.gmt2001.Console.debug.println("Allowing messages to be sent due to .mods response +O");
                     }
                 }
             }
@@ -1198,14 +1213,14 @@ public final class PhantomBot implements Listener {
         System.setProperty("io.netty.noUnsafe", "true");
 
         if (Float.valueOf(System.getProperty("java.specification.version")) < (float) 11) {
-            System.out.println("Erkanntes Java " + System.getProperty("java.version") + ". " + "PhantomBot erfordert Java 11 oder höher.");
+            System.out.println("Detected Java " + System.getProperty("java.version") + ". " + "PhantomBot requires Java 11 or later.");
             PhantomBot.exitError();
         }
 
         /* Print the user dir */
-        com.gmt2001.Console.out.println("Das Hauptverzeichnis ist: " + GetExecutionPath());
+        com.gmt2001.Console.out.println("The working directory is: " + GetExecutionPath());
 
-        com.gmt2001.Console.out.println("Java " + System.getProperty("java.version") + " erkannt, läuft unter "
+        com.gmt2001.Console.out.println("Detected Java " + System.getProperty("java.version") + " running on "
                 + System.getProperty("os.name") + " " + System.getProperty("os.version")
                 + " (" + System.getProperty("os.arch") + ")");
 
@@ -1243,21 +1258,21 @@ public final class PhantomBot implements Listener {
 
     private static void setEnableRhinoDebugger(boolean enableRhinoDebugger) {
         if (enableRhinoDebugger) {
-            com.gmt2001.Console.out.println("Rhino Debugger wird gestartet, wenn das System dies unterstützt.");
+            com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
         }
         PhantomBot.enableRhinoDebugger = enableRhinoDebugger;
     }
 
     private static void setEnableRhinoES6(boolean enableRhinoES6) {
         if (enableRhinoES6) {
-            com.gmt2001.Console.out.println("Rhino ECMAScript6-Unterstützung aktiviert.");
+            com.gmt2001.Console.out.println("Rhino ECMAScript6 support enabled.");
         }
         PhantomBot.enableRhinoES6 = enableRhinoES6;
     }
 
     private static void setReloadScripts(boolean reloadScripts) {
         if (reloadScripts) {
-            com.gmt2001.Console.out.println("Aktivieren des Wiederladens von Skripten");
+            com.gmt2001.Console.out.println("Enabling Script Reloading");
         }
         PhantomBot.reloadScripts = reloadScripts;
 
@@ -1265,7 +1280,7 @@ public final class PhantomBot implements Listener {
 
     private static void setSilentScriptsLoad(boolean silentScriptsLoad) {
         if (silentScriptsLoad) {
-            com.gmt2001.Console.out.println("Aktivieren des stummen Skriptladens");
+            com.gmt2001.Console.out.println("Enabling Silent Script Load");
         }
         PhantomBot.silentScriptsLoad = silentScriptsLoad;
 
@@ -1321,17 +1336,17 @@ public final class PhantomBot implements Listener {
                 try {
                     Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
 
-                    if (RepoVersion.getNightlyBuild()) {
-                        String latestNightly = HttpClient.get(HttpUrl.fromUri("https://raw.githubusercontent.com/PhantomBot/nightly-build/master/last_repo_version")).responseBody().trim();
+                    if (RepoVersion.isNightlyBuild()) {
+                        String latestNightly = HttpClient.get(URI.create("https://raw.githubusercontent.com/PhantomBot/nightly-build/master/last_repo_version")).responseBody().trim();
                         if (latestNightly.equalsIgnoreCase(RepoVersion.getRepoVersion().trim())) {
                             this.dataStore.del("settings", "newrelease_info");
                         } else {
                             try {
                                 Thread.sleep(6000);
                                 this.print("");
-                                this.print("Neuer PhantomBot Nightly Build entdeckt: " + latestNightly);
+                                this.print("New PhantomBot Nightly Build Detected: " + latestNightly);
                                 this.print("Download Link: https://github.com/PhantomBot/nightly-build/raw/master/PhantomBot-nightly" + PhantomBot.getOsSuffix() + ".zip");
-                                this.print("Eine Erinnerung erfolgt in 24 Stunden!");
+                                this.print("A reminder will be provided in 24 hours!");
                                 this.print("");
                             } catch (InterruptedException ex) {
                                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -1347,10 +1362,10 @@ public final class PhantomBot implements Listener {
                             try {
                                 Thread.sleep(6000);
                                 this.print("");
-                                this.print("Neue PhantomBotDE-Version gefunden: " + newVersionInfo[0]);
-                                this.print("Veröffentlichung Änderungsprotokoll: https://github.com/PhantomBotDE/PhantomBotDE/releases/" + newVersionInfo[0]);
+                                this.print("New PhantomBot Release Detected: " + newVersionInfo[0]);
+                                this.print("Release Changelog: https://github.com/PhantomBot/PhantomBot/releases/" + newVersionInfo[0]);
                                 this.print("Download Link: " + newVersionInfo[1]);
-                                this.print("Eine Erinnerung erfolgt in 24 Stunden!");
+                                this.print("A reminder will be provided in 24 hours!");
                                 this.print("");
                             } catch (InterruptedException ex) {
                                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -1363,7 +1378,7 @@ public final class PhantomBot implements Listener {
                             this.dataStore.del("settings", "newrelease_info");
                         }
                     }
-                } catch (URISyntaxException | JSONException ex) {
+                } catch (JSONException ex) {
                     com.gmt2001.Console.err.logStackTrace(ex);
                 }
             }
@@ -1399,9 +1414,7 @@ public final class PhantomBot implements Listener {
         service.scheduleAtFixedRate(() -> {
             Thread.currentThread().setName("tv.phantombot.PhantomBot::doBackupDB");
 
-            SimpleDateFormat datefmt = new SimpleDateFormat("ddMMyyyy.hhmmss");
-            datefmt.setTimeZone(TimeZone.getTimeZone(CaselessProperties.instance().getProperty("logtimezone", "CET")));
-            String timestamp = datefmt.format(new Date());
+            String timestamp = LocalDateTime.now(getTimeZoneId()).format(DateTimeFormatter.ofPattern("ddMMyyyy.hhmmss"));
 
             this.dataStore.backupDB("phantombot.auto.backup." + timestamp + ".db");
 
@@ -1414,7 +1427,7 @@ public final class PhantomBot implements Listener {
                     }
                 }
             } catch (Exception ex) {
-                com.gmt2001.Console.err.println("Fehler beim Bereinigen des Datenbank-Sicherungsverzeichnisses: " + ex.getMessage());
+                com.gmt2001.Console.err.println("Failed to clean up database backup directory: " + ex.getMessage());
             }
         }, 0, CaselessProperties.instance().getPropertyAsInt("backupdbhourfrequency", CaselessProperties.instance().getPropertyAsInt("backupsqlitehourfrequency", 24)), TimeUnit.HOURS);
     }
@@ -1447,9 +1460,9 @@ public final class PhantomBot implements Listener {
             stream.write(builder.toString().getBytes(Charset.forName("UTF-8")));
             stream.flush();
         } catch (IOException ex) {
-            com.gmt2001.Console.err.println("Fehler beim Schreiben von Daten in die Datei [IOException]: " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed writing data to file [IOException]: " + ex.getMessage());
         } catch (SecurityException ex) {
-            com.gmt2001.Console.err.println("Fehler beim Schreiben von Daten in die Datei [SecurityException]: " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed writing data to file [SecurityException]: " + ex.getMessage());
         } finally {
             if (stream != null) {
                 try {
@@ -1500,11 +1513,31 @@ public final class PhantomBot implements Listener {
     }
 
     public static String getTimeZone() {
-        return CaselessProperties.instance().getProperty("logtimezone", "CET");
+        String tz = CaselessProperties.instance().getProperty("logtimezone", "GMT");
+
+        if (tz == null || tz.isBlank()) {
+            return "GMT";
+        }
+
+        return tz;
+    }
+
+    public static ZoneId getTimeZoneId() {
+        ZoneId zoneId = ZoneId.of(getTimeZone());
+
+        if (zoneId == null) {
+            return ZoneId.systemDefault();
+        }
+
+        return zoneId;
     }
 
     public static boolean isInExitState() {
         return isInExitState;
+    }
+
+    public TwitchPubSub getPubSub() {
+        return this.pubSubEdge;
     }
 
     public void setPubSub(TwitchPubSub pubSub) {

@@ -18,8 +18,8 @@ package tv.phantombot.cache;
 
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.datastore.DataStore;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONArray;
@@ -34,17 +34,15 @@ public class FollowersCache implements Runnable {
     private static final Map<String, FollowersCache> instances = new HashMap<>();
     private final Thread updateThread;
     private final String channelName;
-    private Date timeoutExpire = new Date();
-    private Date lastFail = new Date();
+    private Instant timeoutExpire = Instant.now();
+    private Instant lastFail = Instant.now();
     private boolean firstUpdate = true;
     private boolean killed = false;
     private int numfail = 0;
 
     /*
-     * @function instance
-     *
      * @param  {String} channelName
-     * @return {Object}
+     * @return
      */
     public static FollowersCache instance(String channelName) {
         FollowersCache instance = instances.get(channelName);
@@ -57,9 +55,7 @@ public class FollowersCache implements Runnable {
     }
 
     /*
-     * @function FollowersCache
-     *
-     * @param {String} channelName
+     * @param channelName
      */
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private FollowersCache(String channelName) {
@@ -78,12 +74,12 @@ public class FollowersCache implements Runnable {
         try {
             Thread.sleep(20 * 1000);
         } catch (InterruptedException ex) {
-            com.gmt2001.Console.err.println("FollowersCache.run: Der Initial-Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
+            com.gmt2001.Console.err.println("FollowersCache.run: Failed to initial sleep [InterruptedException]: " + ex.getMessage());
         }
 
         while (!killed) {
             try {
-                if (new Date().after(timeoutExpire)) {
+                if (Instant.now().isAfter(timeoutExpire)) {
                     updateCache();
                 }
             } catch (Exception ex) {
@@ -94,14 +90,11 @@ public class FollowersCache implements Runnable {
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.println("FollowersCache.run: Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
+                com.gmt2001.Console.err.println("FollowersCache.run: Failed to sleep [InterruptedException]: " + ex.getMessage());
             }
         }
     }
 
-    /*
-     * @function updateCache
-     */
     private void updateCache() throws Exception {
         com.gmt2001.Console.debug.println("FollowersCache::updateCache");
         DataStore datastore = PhantomBot.instance().getDataStore();
@@ -135,31 +128,20 @@ public class FollowersCache implements Runnable {
         }
     }
 
-    /*
-     * @function checkLastFail
-     */
     private void checkLastFail() {
-        Calendar cal = Calendar.getInstance();
-        numfail = (lastFail.after(new Date()) ? numfail + 1 : 1);
+        numfail = (lastFail.isAfter(Instant.now()) ? numfail + 1 : 1);
 
-        cal.add(Calendar.MINUTE, 1);
-        lastFail = cal.getTime();
+        lastFail = Instant.now().plus(1, ChronoUnit.MINUTES);
 
         if (numfail > 5) {
-            timeoutExpire = cal.getTime();
+            timeoutExpire = Instant.now().plus(1, ChronoUnit.MINUTES);
         }
     }
 
-    /*
-     * @function kill
-     */
     public void kill() {
         this.killed = true;
     }
 
-    /*
-     * @function killall
-     */
     public static void killall() {
         instances.values().forEach(instance -> {
             instance.kill();

@@ -118,7 +118,7 @@ $(function() {
                     'discordSlotMachineEmojis', 'discordSlotMachineEmojis'],
             keys: ['reward_0', 'reward_1', 'reward_2', 'reward_3', 'reward_4', 'emoji_0', 'emoji_1', 'emoji_2', 'emoji_3', 'emoji_4']
         }, true, function(e) {
-            helpers.getModal('slotmachine-game', 'Slot Machine Einstellungen', 'Speichern', $('<form/>', {
+            helpers.getModal('slotmachine-game', 'Slot Maschine Einstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
             // Add the div for the col boxes.

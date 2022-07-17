@@ -71,11 +71,11 @@
                     </div>
 
                     <div class="form-group">
-                        <input type="text" id="username" name="user" class="form-control" autocomplete="username" placeholder="Benutzername">
+                        <input type="text" id="username" name="username" class="form-control" autocomplete="username" placeholder="Benutzername">
                     </div>
 
                     <div class="form-group">
-                        <input type="password" id="password" name="pass" class="form-control" autocomplete="current-password" placeholder="Passwort">
+                        <input type="password" id="password" name="password" class="form-control" autocomplete="current-password" placeholder="Passwort">
                     </div>
 
                     <div class="form-group">
@@ -111,6 +111,18 @@
         <script src="../../common/reconnecting-websocket/reconnectingWS.min.js"></script>
         <script>
             let isLocalBot = false;
+
+            let sslHelp = 'Entweder antwortet der Bot nicht oder das erforderliche SSL ist auf diesem Bot nicht aktiviert.<br /><br />'
+            + 'Schritte zur Fehlerbehebung:<br />'
+            + '• Stelle sicher, dass der Bot ausgeführt wird<br />Unter Windows darf das schwarze Fenster nicht geschlossen werden (Minimiert ist okay)<br />Schließe unter Linux deine SSH '
+            + 'Verbindung nicht, es sei denn, du hast den Bot als Daemon gestartet <i>service</i> oderr <i>systemctl</i><br />'
+            + '• Versuche, den integrierten Webserver des Bots direkt zu besuchen, um zu sehen, ob du deinem Browser die Genehmigung erteilen musst, das selbstsignierte SSL-Zertifikat '
+            + 'zu verwenden: <a href="https://%hostname%:%port%" target="bot">https://%hostname%:%port%</a><br />'
+            + '• Wenn Sie einen SSL-Fehler erhalten, der nicht umgangen werden kann, versuche den Bot herunterzufahren und <i>selfkey.jks</i> in '
+            + 'dem <i>config</i> Ordner<br /><br /> zu löchen.'
+            + 'Weitere Anweisungen zur Einrichtung von SSL finden du unter '
+            + '<a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/integrations/twitchembeds" target="guide">this guide</a>';
+
             function doLogin(hostname, port, username, password, remember) {
                 let webSocket = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') + hostname + (port.length > 0 ? ':' + port : '') + '/ws/panel/login?target=' + hostname + (port.length > 0 ? ':' + port : ''));
                 webSocket.onopen = function () {
@@ -234,13 +246,13 @@
                                     } else {
                                         $('#error-box').removeClass('hide');
                                         $('#alert-br').removeClass('hide');
-                                        $('#error-box').html('SSL ist erforderlich, aber für diesen Bot nicht aktiviert.<br />Hilfe beim Einrichten von SSL findest du in <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/integrations/twitchembeds">diesen Guide</a>');
+                                        $('#error-box').html(sslHelp.replaceAll('%hostname%', hostname).replaceAll('%port%', port));
                                     }
                                 },
                                 error: function () {
                                     $('#error-box').removeClass('hide');
                                     $('#alert-br').removeClass('hide');
-                                    $('#error-box').html('Entweder antwortet der Bot nicht oder das erforderliche SSL ist auf diesem Bot nicht aktiviert.<br />Hilfe beim Einrichten von SSL findest du in <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/integrations/twitchembeds">diesen Guide</a>');
+                                    $('#error-box').html(sslHelp.replaceAll('%hostname%', hostname).replaceAll('%port%', port));
                                 }
                             }
                     );
@@ -286,7 +298,7 @@
                 if (hashmap['sslFail'] !== undefined && hashmap['sslFail'] === 'true') {
                     $('#error-box').removeClass('hide');
                     $('#alert-br').removeClass('hide');
-                    $('#error-box').html('SSL ist erforderlich, aber für diesen Bot nicht aktiviert.<br />Hilfe beim Einrichten von SSL findest du in <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/integrations/twitchembeds">diesen Guide</a>');
+                    $('#error-box').html(sslHelp.replaceAll('%hostname%', window.localStorage.getItem('bothostname')).replaceAll('%port%', window.localStorage.getItem('botport')));
                     window.localStorage.removeItem('webauth');
                     window.localStorage.removeItem('remember');
                     window.localStorage.removeItem('expires');

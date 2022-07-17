@@ -469,7 +469,7 @@
             userInput = event.getUserInput(),
             fulfillmentStatus = event.getFulfillmentStatus();
 
-        com.gmt2001.Console.debug.println("Kanalpunktereignis " + rewardTitle + " in Javascript geparst." + " ID ist: " + rewardID);
+        com.gmt2001.Console.debug.println("Channel point event " + rewardTitle + " parsed to javascript." + " ID is: " + rewardID);
 
         /*
          * reward ID config
@@ -588,7 +588,7 @@
      * add chat commands
      */
     $.bind('initReady', function () {
-        $.registerChatCommand('./handlers/channelPointsHandler.js', 'channelpoints', 1);
+        $.registerChatCommand('./handlers/channelPointsHandler.js', 'channelpoints', $.PERMISSION.Admin);
     });
 
     /*

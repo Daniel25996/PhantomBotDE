@@ -173,7 +173,7 @@ public class EmbedBuilder {
 
     public EmbedCreateSpec build() {
         if (this.doesExceedCharacterLimit()) {
-            throw new IllegalArgumentException("Einbetten überschreitet die Zeichenbeschränkung von " + TOTAL_MAX_CHAR + " (hat " + this.getTotalVisibleCharacters() + " Zeichen)");
+            throw new IllegalArgumentException("Embed exceeds character limit of " + TOTAL_MAX_CHAR + " (has " + this.getTotalVisibleCharacters() + " chars)");
         }
 
         EmbedCreateSpec spec = EmbedCreateSpec.create();

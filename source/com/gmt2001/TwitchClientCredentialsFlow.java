@@ -18,9 +18,9 @@ package com.gmt2001;
 
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
-import com.gmt2001.httpclient.HttpUrl;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
+import java.net.URI;
 import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -88,7 +88,7 @@ public class TwitchClientCredentialsFlow {
         if (c.before(Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC)))) {
             return this.getAppToken(properties);
         } else {
-            com.gmt2001.Console.debug.println("Update überspringen");
+            com.gmt2001.Console.debug.println("skip update");
         }
 
         return false;
@@ -103,10 +103,10 @@ public class TwitchClientCredentialsFlow {
         return this.checkExpirationAndGetNewToken(CaselessProperties.instance());
     }
 
-    private boolean getAppToken(CaselessProperties properties) {
+    private synchronized boolean getAppToken(CaselessProperties properties) {
         if (properties == null || !properties.containsKey("clientid") || properties.getProperty("clientid").isBlank()
                 || !properties.containsKey("clientsecret") || properties.getProperty("clientsecret").isBlank()) {
-            com.gmt2001.Console.debug.println("Aktualisierung übersprungen");
+            com.gmt2001.Console.debug.println("skipped refresh");
             return false;
         }
 
@@ -117,14 +117,14 @@ public class TwitchClientCredentialsFlow {
         if (result.has("error")) {
             com.gmt2001.Console.err.println(result.toString());
         } else if (!result.has("access_token") || !result.has("expires_in")) {
-            com.gmt2001.Console.err.println("Fehler beim Abrufen von App (EventSub) OAuth, Token oder Expiration fehlte: " + result.toString());
+            com.gmt2001.Console.err.println("Failed to get App (EventSub) OAuth, Token or Expiration was missing: " + result.toString());
         } else {
             Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
             c.add(Calendar.SECOND, result.getInt("expires_in"));
             transaction.setProperty("apptoken", result.getString("access_token"));
             transaction.setProperty("apptokenexpires", c.getTimeInMillis() + "");
 
-            com.gmt2001.Console.out.println("App-Token aktualisiert");
+            com.gmt2001.Console.out.println("Refreshed the app token");
             changed = true;
         }
 
@@ -140,17 +140,17 @@ public class TwitchClientCredentialsFlow {
 
     private synchronized void startup(String clientid, String clientsecret) {
         if (this.timerStarted) {
-            com.gmt2001.Console.debug.println("Timer existiert");
+            com.gmt2001.Console.debug.println("Timer exists");
             return;
         }
         if (clientid != null && !clientid.isBlank() && clientsecret != null && !clientsecret.isBlank()) {
-            com.gmt2001.Console.debug.println("Timer starten");
+            com.gmt2001.Console.debug.println("starting timer");
             Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
                 checkExpirationAndGetNewToken();
             }, REFRESH_INTERVAL, REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
             this.timerStarted = true;
         } else {
-            com.gmt2001.Console.debug.println("startet nicht");
+            com.gmt2001.Console.debug.println("not starting");
         }
     }
 
@@ -176,7 +176,7 @@ public class TwitchClientCredentialsFlow {
 
     private static JSONObject doRequest(String path, Map<String, String> query) {
         try {
-            HttpUrl url = HttpUrl.fromUri(BASE_URL, path).withQuery(query);
+            URI url = URI.create(BASE_URL + path + HttpClient.createQuery(query));
             HttpHeaders headers = HttpClient.createHeaders(HttpMethod.POST, true);
 
             HttpClientResponse response = HttpClient.post(url, headers, "");
@@ -184,7 +184,7 @@ public class TwitchClientCredentialsFlow {
             com.gmt2001.Console.debug.println(response.responseCode());
 
             return response.jsonOrThrow();
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             com.gmt2001.Console.debug.printStackTrace(ex);
             return new JSONObject("{\"error\": \"Internal\",\"message\":\"" + ex.toString() + "\",\"status\":0}");
         }

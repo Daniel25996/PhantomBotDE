@@ -203,7 +203,7 @@ $(run = function() {
                     tables: ['audioCommands', 'permcom', 'cooldown', 'pricecom', 'paycom'],
                     keys: [command, command, command, command, command]
                 }, function(e) {
-                    let cooldownJson = (e.cooldown === null ? { globalSec: -1, userSec: -1 } : JSON.parse(e.cooldown));
+                    let cooldownJson = (e.cooldown === null ? { globalSec: -1, userSec: -1, modsSkip: false } : JSON.parse(e.cooldown));
 
                     // Get advance modal from our util functions in /utils/helpers.js
                     helpers.getAdvanceModal('edit-audio-command', 'Audiobefehl bearbeiten', 'Speichern', $('<form/>', {
@@ -215,7 +215,7 @@ $(run = function() {
                     .append(helpers.getInputGroup('command-audio', 'text', 'Audio Hook', '', e.audioCommands, 'Audio der abgespielt werden soll. Dieser kann nicht bearbeitet werden.', true))
                     // Append a select option for the command permission.
                     .append(helpers.getDropdownGroup('command-permission', 'Benutzerlevel', helpers.getGroupNameById(e.permcom),
-                        ['Caster', 'Administratoren', 'Moderatoren', 'Abonnenten', 'Spender', 'VIPs', 'Stammzuschauer', 'Zuschauer']))
+                    helpers.getPermGroupNames()))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -235,12 +235,16 @@ $(run = function() {
                             // Append input box for per-user cooldown.
                             .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', cooldownJson.userSec,
                                 'Abklingzeit des Befehls pro Benutzer in Sekunden. -1 entfernt die Abklingzeit pro Benutzer.'))
+                            // Append input box for mods skip cooldown.
+                            .append(helpers.getCheckBox('command-cooldown-modsskip', cooldownJson.modsSkip, 'Mods überspringen Abklingzeit',
+                                'Wenn diese Option aktiviert ist, sind Moderatoren von der Abklingzeit für diesen Befehl ausgenommen.'))
                     })), function() {
                         let commandPermission = $('#command-permission'),
                             commandCost = $('#command-cost'),
                             commandReward = $('#command-reward'),
                             commandCooldownGlobal = $('#command-cooldown-global'),
-                            commandCooldownUser = $('#command-cooldown-user');
+                            commandCooldownUser = $('#command-cooldown-user'),
+                            commandCooldownModsSkip = $('#command-cooldown-modsskip').is(':checked') ? '1' : '0';
 
                         // Handle each input to make sure they have a value.
                         switch (false) {
@@ -258,7 +262,7 @@ $(run = function() {
                                 }, function() {
                                     // Add the cooldown to the cache.
                                     socket.wsEvent('audio_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
-                                    ['add', command, commandCooldownGlobal.val(), commandCooldownUser.val()], function() {
+                                    ['add', command, commandCooldownGlobal.val(), commandCooldownUser.val(), commandCooldownModsSkip], function() {
                                         // Update command permission.
                                         socket.sendCommand('edit_command_permission_cmd', 'permcomsilent ' + command + ' ' +
                                             helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function() {
@@ -318,7 +322,7 @@ $(function() {
         })
         // Append the lable.
         .append($('<label/>', {
-            'text': 'Browser Quelllink'
+            'text': 'Browser Source Link'
         }))
         .append($('<div/>', {
             'class': 'input-group'
@@ -356,7 +360,7 @@ $(function() {
                     // Close the modal.
                     $('#audio-settings').removeClass('fade').modal('hide');
                     // Alert the user.
-                    toastr.success('Browser-Quell-URL kopiert!');
+                    toastr.success('Browser Source URL kopiert!');
                 }
             })
         })))), function() {
@@ -394,8 +398,8 @@ $(function() {
             // All audio hooks in a list.
             .append(helpers.getDropdownGroup('command-audio', 'Audio Hook', 'Auswählen eines Audio-Hooks', audioNames, 'Audio-Hook, der abgespielt werden soll, wenn der Befehl ausgeführt wird.'))
             // Append a select option for the command permission.
-            .append(helpers.getDropdownGroup('command-permission', 'Benuterlevel', 'Zuschauer',
-                ['Caster', 'Administratoren', 'Moderatoren', 'Abonnenten', 'Spender', 'VIPs', 'Stammzuschauer', 'Zuschauer'], 'Benutzer, die den Befehl ausführen können.'))
+            .append(helpers.getDropdownGroup('command-permission', 'Benuterlevel', helpers.getGroupNameById(7),
+                helpers.getPermGroupNames(), 'Benutzer, die den Befehl ausführen können.'))
             // Add an advance section that can be opened with a button toggle.
             .append($('<div/>', {
                 'class': 'collapse',
@@ -415,6 +419,9 @@ $(function() {
                     // Append input box for per-user cooldown.
                     .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', undefined,
                         'Abklingzeit des Befehls pro Benutzer in Sekunden. -1 entfernt die Abklingzeit pro Benutzer.'))
+                    // Append input box for mods skip cooldown.
+                    .append(helpers.getCheckBox('command-cooldown-modsskip', false, 'Mods überspringen Abklingzeit',
+                        'Wenn diese Option aktiviert ist, sind Moderatoren von der Abklingzeit für diesen Befehl ausgenommen.'))
             })), function() {
                 let commandName = $('#command-name'),
                     commandAudio = $('#command-audio'),
@@ -422,7 +429,8 @@ $(function() {
                     commandCost = $('#command-cost'),
                     commandReward = $('#command-reward'),
                     commandCooldownGlobal = $('#command-cooldown-global'),
-                    commandCooldownUser = $('#command-cooldown-user');
+                    commandCooldownUser = $('#command-cooldown-user'),
+                    commandCooldownModsSkip = $('#command-cooldown-modsskip').is(':checked') ? '1' : '0';
 
                 // Remove the ! and spaces.
                 commandName.val(commandName.val().replace(/(\!|\s)/g, '').toLowerCase());
@@ -454,7 +462,7 @@ $(function() {
                                     values: [commandCost.val(), helpers.getGroupIdByName(commandPermission.find(':selected').text()), commandReward.val(), commandAudio.val()]
                                 }, function() {
                                     socket.wsEvent('audio_command_add_cooldown_ws', './core/commandCoolDown.js', null,
-                                        ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val()], function() {
+                                        ['add', commandName.val(), commandCooldownGlobal.val(), commandCooldownUser.val(), commandCooldownModsSkip], function() {
                                         socket.sendCommandSync('add_audio_command_cmd', 'panelloadaudiohookcmds', function() {
                                             // Reload the table
                                             run();

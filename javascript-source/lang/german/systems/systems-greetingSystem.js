@@ -17,7 +17,7 @@
 
 $.lang.register('greetingsystem.set.autogreet.enabled', 'Auto-Begrüßung aktiviert. $1 wird nun jeden begrüßen, wenn dieser das eingestellt hat.');
 $.lang.register('greetingsystem.set.autogreet.disabled', 'Auto-Begrüßung deaktiviert.');
-$.lang.register('greetingsystem.set.autogreet.noname', 'Die Standard-Begrüßungsnachricht benötigt den Tag "(name)" um zu wissen wo der Benutzername hingehört.');
+$.lang.register('greetingsystem.set.autogreet.noname', 'Die Standard-Begrüßungsnachricht benötigt den Tag (name) um zu wissen wo der Benutzername hingehört.');
 $.lang.register('greetingsystem.set.default.success', 'Die Standard-Begrüßung wurde zu „$1" geändert.');
 $.lang.register('greetingsystem.set.personal.success', 'Persönliche Begrüßung geändert zu "$1".');
 $.lang.register('greetingsystem.set.success', 'Begrüßung von $1 in "$2" geändert.');
@@ -28,3 +28,7 @@ $.lang.register('greetingsystem.generalusage.admin', 'Verwendung: !greeting [tog
 $.lang.register('greetingsystem.generalusage.other', 'Verwende !greeting [ enable [default | Nachricht] | disable ]. Tags für den Nachrichtentext: (name)');
 $.lang.register('greetingsystem.cooldown.usage', 'Verwendung: !greeting cooldown [Stunden]');
 $.lang.register('greetingsystem.cooldown.success', 'Begrüßungs Abklingzeit auf $1 Stunden gesetzt.');
+$.lang.register('greetingsystem.set.userselfservice.off', 'Benutzer werden jetzt daran gehindert, ihre eigenen Begrüßungsnachrichten festzulegen!');
+$.lang.register('greetingsystem.set.userselfservice.on', 'Benutzer dürfen ihre eigenen Begrüßungsnachrichten festlegen!');
+$.lang.register('greetingsystem.set.onJoin.off', 'Die Benutzer werden nach ihrer ersten Nachricht begrüßt!');
+$.lang.register('greetingsystem.set.onJoin.on', 'Die Benutzer werden beim Betreten des Chats begrüßt!');

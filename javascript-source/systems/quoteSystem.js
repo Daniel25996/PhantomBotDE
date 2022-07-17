@@ -168,7 +168,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.404'));
             }
 
-            $.log.event(sender + ' bearbeitete Zitat #' + quote);
+            $.log.event(sender + ' edited quote #' + quote);
         }
 
         /**
@@ -199,7 +199,7 @@
                 }
                 quote = args.splice(0).join(' ');
                 $.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(sender)), quote)));
-                $.log.event(sender + ' hat Zitat "' + quote + '" hinzugefügt.');
+                $.log.event(sender + ' added a quote "' + quote + '".');
                 return;
             } else {
                 if (args.length < 2) {
@@ -215,7 +215,7 @@
                 quote = args.splice(1).join(' ');
                 var username = useTwitchNames ? $.username.resolve(target) : target;
                 $.say($.lang.get('quotesystem.add.success', username, saveQuote(String(username), quote)));
-                $.log.event(sender + ' hat Zitat "' + quote + '" hinzugefügt.');
+                $.log.event(sender + ' added a quote "' + quote + '".');
                 return;
             }
         }
@@ -252,7 +252,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.404', args[0]));
             }
 
-            $.log.event(sender + ' entfernte Zitat mit der ID: ' + args[0]);
+            $.log.event(sender + ' removed quote with id: ' + args[0]);
         }
 
         /**
@@ -299,7 +299,7 @@
             quoteStr = args.splice(0).join(' ');
             $.inidb.set('settings', 'quoteMessage', quoteStr);
             $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.quotemessage.success'));
-            $.log.event(sender + ' änderte die Zitatnachricht in: ' + quoteStr);
+            $.log.event(sender + ' changed the quote message to: ' + quoteStr);
         }
 
         /**
@@ -314,7 +314,7 @@
             quoteStr = args.splice(0).join(' ');
             $.inidb.set('settings', 'quoteDateFormat', quoteStr);
             $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.quotedateformat.success'));
-            $.log.event(sender + ' änderte die Zitat-Nachricht zu: ' + quoteStr);
+            $.log.event(sender + ' changed the quote date format to: ' + quoteStr);
         }
 
         /**
@@ -361,16 +361,16 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./systems/quoteSystem.js', 'quotemodetoggle', 2);
-        $.registerChatCommand('./systems/quoteSystem.js', 'searchquote', 7);
-        $.registerChatCommand('./systems/quoteSystem.js', 'addquote', 2);
-        $.registerChatCommand('./systems/quoteSystem.js', 'addquotesilent', 1);
-        $.registerChatCommand('./systems/quoteSystem.js', 'delquote', 2);
-        $.registerChatCommand('./systems/quoteSystem.js', 'delquotesilent', 1);
-        $.registerChatCommand('./systems/quoteSystem.js', 'editquote', 2);
+        $.registerChatCommand('./systems/quoteSystem.js', 'quotemodetoggle', $.PERMISSION.Mod);
+        $.registerChatCommand('./systems/quoteSystem.js', 'searchquote', $.PERMISSION.Viewer);
+        $.registerChatCommand('./systems/quoteSystem.js', 'addquote', $.PERMISSION.Mod);
+        $.registerChatCommand('./systems/quoteSystem.js', 'addquotesilent', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/quoteSystem.js', 'delquote', $.PERMISSION.Mod);
+        $.registerChatCommand('./systems/quoteSystem.js', 'delquotesilent', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/quoteSystem.js', 'editquote', $.PERMISSION.Mod);
         $.registerChatCommand('./systems/quoteSystem.js', 'quote');
-        $.registerChatCommand('./systems/quoteSystem.js', 'quotemessage', 1);
-        $.registerChatCommand('./systems/quoteSystem.js', 'quotedateformat', 1);
-        $.registerChatCommand('./systems/quoteSystem.js', 'quotetwitchnamestoggle', 1);
+        $.registerChatCommand('./systems/quoteSystem.js', 'quotemessage', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/quoteSystem.js', 'quotedateformat', $.PERMISSION.Admin);
+        $.registerChatCommand('./systems/quoteSystem.js', 'quotetwitchnamestoggle', $.PERMISSION.Admin);
     });
 })();

@@ -111,7 +111,7 @@
         $.inidb.set('emotecache', 'regexp_cache', newEmotesRegExpList.join(','));
 
         loaded = true;
-        $.consoleDebug("Erstellte " + newEmotesRegExpList.length + " reguläre Ausdrücke für das Emotes-Handling.");
+        $.consoleDebug("Built " + newEmotesRegExpList.length + " regular expressions for emote handling.");
         newEmotesRegExpList = [];
     }
 

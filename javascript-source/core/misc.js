@@ -342,13 +342,13 @@
                 }
             } else {
                 if (request.httpCode == 0) {
-                    $.log.error('Fehler bei der Verwendung von random.org: ' + request.exception);
+                    $.log.error('Failed to use random.org: ' + request.exception);
                 } else {
-                    $.log.error('Fehler bei der Verwendung von random.org: HTTP' + request.httpCode + ' ' + request.content);
+                    $.log.error('Failed to use random.org: HTTP' + request.httpCode + ' ' + request.content);
                 }
             }
         } catch (error) {
-            $.log.error('Fehler bei der Verwendung von random.org: ' + error);
+            $.log.error('Failed to use random.org: ' + error);
         }
 
         return randRange(min, max);
@@ -734,6 +734,10 @@
     }
 
     function match(str, regex) {
+        if (str === undefined || str === null) {
+            return ''.match(regex);
+        }
+
         regex.lastIndex = 0;
         return str.match(regex);
     }
@@ -743,7 +747,7 @@
         try {
             return regex.test(str);
         } catch (e) {
-            if (e.indexOf('Funktionstest kann nicht gefunden werden') >= 0) {
+            if (e.message.indexOf('Cannot find function test') >= 0) {
                 return $.javaString(str).contains(regex);
             } else {
                 throw e;

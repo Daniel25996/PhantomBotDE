@@ -31,7 +31,7 @@ $(run = function () {
         if (e['isActive'] === 'true') {
             $('#open-or-close-raffle').html($('<i/>', {
                 'class': 'fa fa-lock'
-            })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
+            })).append('&nbsp; Schließen').removeClass('btn-success').addClass('btn-warning');
         }
 
         /**
@@ -156,7 +156,7 @@ $(function () {
                                 // Update the button.
                                 $('#open-or-close-raffle').html($('<i/>', {
                                     'class': 'fa fa-lock'
-                                })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
+                                })).append('&nbsp; Schließen').removeClass('btn-success').addClass('btn-warning');
                             });
                         });
                     });

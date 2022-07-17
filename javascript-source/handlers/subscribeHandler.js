@@ -124,7 +124,7 @@
 
             if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
                 if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                    $.log.error('Audio-Hook konnte nicht wiedergegeben werden: Audio-Hook existiert nicht.');
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
                 } else {
                     $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 }
@@ -172,7 +172,7 @@
 
             if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
                 if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                    $.log.error('Audio-Hook konnte nicht wiedergegeben werden: Audio-Hook existiert nicht.');
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
                 } else {
                     $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 }
@@ -233,7 +233,7 @@
 
             if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
                 if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                    $.log.error('Audio-Hook konnte nicht wiedergegeben werden: Audio-Hook existiert nicht.');
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
                 } else {
                     $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 }
@@ -299,7 +299,7 @@
 
             if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
                 if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                    $.log.error('Audio-Hook konnte nicht wiedergegeben werden: Audio-Hook existiert nicht.');
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
                 } else {
                     $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 }
@@ -359,7 +359,7 @@
 
             if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
                 if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                    $.log.error('Audio-Hook konnte nicht wiedergegeben werden: Audio-Hook existiert nicht.');
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
                 } else {
                     $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 }
@@ -415,7 +415,7 @@
 
             if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
                 if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                    $.log.error('Audio-Hook konnte nicht wiedergegeben werden: Audio-Hook existiert nicht.');
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
                 } else {
                     $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 }
@@ -468,7 +468,7 @@
 
             if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
                 if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                    $.log.error('Audio-Hook konnte nicht wiedergegeben werden: Audio-Hook existiert nicht.');
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
                 } else {
                     $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 }
@@ -776,26 +776,26 @@
      * @event initReady
      */
     $.bind('initReady', function () {
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'subwelcometoggle', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'resubemote', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'primesubwelcometoggle', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'resubwelcometoggle', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'giftsubwelcometoggle', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'giftanonsubwelcometoggle', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'massgiftsubwelcometoggle', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'massanongiftsubwelcometoggle', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'subscribereward', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'resubscribereward', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'giftsubreward', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'massgiftsubreward', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'submessage', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'primesubmessage', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'resubmessage', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'giftsubmessage', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'giftanonsubmessage', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'massgiftsubmessage', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'massanongiftsubmessage', 1);
-        $.registerChatCommand('./handlers/subscribeHandler.js', 'namesubplan', 1);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'subwelcometoggle', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'resubemote', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'primesubwelcometoggle', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'resubwelcometoggle', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'giftsubwelcometoggle', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'giftanonsubwelcometoggle', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'massgiftsubwelcometoggle', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'massanongiftsubwelcometoggle', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'subscribereward', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'resubscribereward', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'giftsubreward', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'massgiftsubreward', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'submessage', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'primesubmessage', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'resubmessage', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'giftsubmessage', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'giftanonsubmessage', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'massgiftsubmessage', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'massanongiftsubmessage', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/subscribeHandler.js', 'namesubplan', $.PERMISSION.Admin);
         announce = true;
     });
 

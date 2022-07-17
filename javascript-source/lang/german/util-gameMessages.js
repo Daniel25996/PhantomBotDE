@@ -35,7 +35,8 @@ $.lang.register('slot.win.16', 'Ein Gewinner ist nur ein Verlierer, der es noch 
 $.lang.register('slot.win.17', 'Wow!');
 $.lang.register('slot.win.18', 'Das Ding muss manipuliert worden sein!');
 $.lang.register('slot.win.19', 'Die Göttin Fortuna lächelt zu dir herunter!');
-$.lang.register('slot.win.20', '!......... (Ernsthaft?!)');
+$.lang.register('slot.win.20', '?!......... (Ernsthaft?!)');
+$.lang.register('slot.win.21', 'HASTE FEIN GEMACHT, KRIEGSTE NEN KEKS FÜR!');
 
 // Lose messages for the slot machine (slotMachine.js) mini game:
 $.lang.register('slot.lost.1', 'Mehr Glück beim nächsten Mal!');
@@ -62,7 +63,7 @@ $.lang.register('slot.lost.21', 'Träume sind Schäume!');
 $.lang.register('slot.lost.22', 'Sieht aus als hättest du meine Fallenkarte aktiviert, Freundchen! Kappa');
 $.lang.register('slot.lost.23', 'Du bist nicht verpflichtet zu gewinnen. Du bist nur verpflichtet, es weiter zu versuchen.');
 $.lang.register('slot.lost.24', 'Dies ist nicht das Ende, dies ist auch nicht der Anfang vom Ende, das ist vielleicht nur das Ende des Anfangs.');
-$.lang.register('slot.lost.25', 'Manchmal ist nicht zu bekommen was man will, ein brillianter Glücksfall!');
+$.lang.register('slot.lost.25', 'Manchmal ist nicht zu bekommen was man will, ein brillanter Glücksfall!');
 $.lang.register('slot.lost.26', 'Gewinnen braucht Talent, es zu wiederholen, Charakter.');
 $.lang.register('slot.lost.27', 'Schlange? Schlange?! Schlaaaaange!!');
 $.lang.register('slot.lost.28', 'Du bist wie Forrest Gump, nur ohne das laufen Ding.');
@@ -85,10 +86,10 @@ $.lang.register('slot.lost.44', 'Hey, du bist nicht wirklich schlecht. Du bist a
 $.lang.register('slot.lost.45', 'Ich hatte Meetings, die aufregender waren!');
 $.lang.register('slot.lost.46', 'Selbst nach den niedrigsten Standards war das wirklich schlecht!');
 $.lang.register('slot.lost.47', 'Ha-ha-ha! Was ist da los? Du hasst es zu verlieren? Das ist aber nicht mein Problem! Ha, ha, ha, ha, ha!');
-$.lang.register('slot.lost.48', 'Alte Worte der Weisheit... " Du Niete! "');
+$.lang.register('slot.lost.48', 'Alte Worte der Weisheit... "Du Niete!"');
 $.lang.register('slot.lost.49', 'Ich werde dir nicht sagen, dass du schlecht bist. Ich werde es mir einfach denken, okay?');
 $.lang.register('slot.lost.50', 'Ich denke, dass ich etwas daraus gelernt habe. Du bist nichts...');
-$.lang.register('slot.lost.51', 'Hey! Mach dir keine Sorgen darüber! Du weisst schon... so schlecht zu sein!');
+$.lang.register('slot.lost.51', 'Hey! Mach dir keine Sorgen darüber! Du weißt schon... so schlecht zu sein!');
 $.lang.register('slot.lost.52', 'Die Tragödie aller Verlierer ist, dass sie denken, dass sie am Rande des Sieges wären!');
 $.lang.register('slot.lost.53', 'Hm! Du solltest wieder zu deinen Puzzles zurück kehren!');
 $.lang.register('slot.lost.54', 'Die Vergangenheit ist die Vergangenheit! Wenn du jetzt ein Verlierer bist, dann warst du vorher auch schon einer!');
@@ -100,6 +101,12 @@ $.lang.register('slot.lost.59', 'Du warst nicht schlecht. Du warst erbärmlich! 
 $.lang.register('slot.lost.60', 'Du hast es wenigstens versucht, egal wie erbärmlich es auch war.');
 $.lang.register('slot.lost.61', 'Mein Vater könnte gewinnen und der ist tot!');
 $.lang.register('slot.lost.62', 'Du und die Tastatur! Ich habe trotzdem gewonnen! Du gehst mir auf die Nerven und du stinkst, stinkst erbärmlich!');
+$.lang.register('slot.lost.63', 'Die Götter haben dich verlassen!');
+$.lang.register('roll.lost.64', 'Ein Verlierer weiss nicht, was er tut wenn er verliert, aber er spricht immer zu darüber, was er macht, wenn er gewinnt. Ein Gewinner spricht nicht darüber, was er macht, wenn er gewinnt, aber weiss, was er macht, wenn er verliert.');
+$.lang.register('roll.lost.65', 'Kannst du nicht gewinnen, verliere wenigstens wie ein Champion!');
+$.lang.register('roll.lost.66', 'Willkommen in Verliererstadt! Population: DU!');
+$.lang.register('roll.lost.67', 'Wer auch immer sagt, "Es ist nicht wichtig, ob man verliert oder gewinnt." ist immer am verlieren.');
+$.lang.register('roll.lost.68', 'Was lief falsch? Was nicht? - es war einer dieser Tage. Nicht dein Tag natürlich!');
 
 
 // Win messages for the roll (roll.js) mini game:
@@ -123,6 +130,7 @@ $.lang.register('roll.win.17', 'Wow!');
 $.lang.register('roll.win.18', 'Das Ding muss manipuliert worden sein!');
 $.lang.register('roll.win.19', 'Die Göttin Fortuna lächelt zu dir herunter!');
 $.lang.register('roll.win.20', '?!......... (Ernsthaft?!)');
+$.lang.register('roll.win.21', 'HASTE FEIN GEMACHT, KRIEGSTE NEN KEKS FÜR!');
 
 // Lose messages for the roll (roll.js) mini game:
 $.lang.register('roll.lost.1', 'Mehr Glück beim nächsten Mal!');
@@ -187,11 +195,12 @@ $.lang.register('roll.lost.59', 'Du warst nicht schlecht. Du warst erbärmlich! 
 $.lang.register('roll.lost.60', 'Du hast es wenigstens versucht, egal wie erbärmlich es auch war.');
 $.lang.register('roll.lost.61', 'Mein Vater könnte gewinnen und der ist tot!');
 $.lang.register('roll.lost.62', 'Du und die Tastatur! Ich habe trotzdem gewonnen! Du gehst mir auf die Nerven und du stinkst, stinkst erbärmlich!');
-$.lang.register('roll.lost.63', 'Ein Verlierer weiss nicht, was er tut wenn er verliert, aber er spricht immer zu darüber, was er macht, wenn er gewinnt. Ein Gewinner spricht nicht darüber, was er macht, wenn er gewinnt, aber weiss, was er macht, wenn er verliert.');
-$.lang.register('roll.lost.64', 'Kannst du nicht gewinnen, verliere wenigstens wie ein Champion!');
-$.lang.register('roll.lost.65', 'Willkommen in Verliererstadt! Population: DU!');
-$.lang.register('roll.lost.66', 'Wer auch immer sagt, "Es ist nicht wichtig, ob man verliert oder gewinnt." ist immer am verlieren.');
-$.lang.register('roll.lost.67', 'Was lief falsch? Was nicht? - es war einer dieser Tage. Nicht dein Tag natürlich!');
+$.lang.register('slot.lost.63', 'Die Götter haben dich verlassen!');
+$.lang.register('roll.lost.64', 'Ein Verlierer weiss nicht, was er tut wenn er verliert, aber er spricht immer zu darüber, was er macht, wenn er gewinnt. Ein Gewinner spricht nicht darüber, was er macht, wenn er gewinnt, aber weiss, was er macht, wenn er verliert.');
+$.lang.register('roll.lost.65', 'Kannst du nicht gewinnen, verliere wenigstens wie ein Champion!');
+$.lang.register('roll.lost.66', 'Willkommen in Verliererstadt! Population: DU!');
+$.lang.register('roll.lost.67', 'Wer auch immer sagt, "Es ist nicht wichtig, ob man verliert oder gewinnt." ist immer am verlieren.');
+$.lang.register('roll.lost.68', 'Was lief falsch? Was nicht? - es war einer dieser Tage. Nicht dein Tag natürlich!');
 
 // Win messages for the gambling (gambling.js) mini game, remove the /// to start using it.:
 

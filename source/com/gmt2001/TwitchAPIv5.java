@@ -19,11 +19,11 @@ package com.gmt2001;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
-import com.gmt2001.httpclient.HttpUrl;
+import java.net.URI;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -171,7 +171,7 @@ public class TwitchAPIv5 {
 
     public JSONObject UpdateChannel(String channel, String oauth, String status, String game) throws JSONException {
         if (oauth != null && !oauth.isBlank()) {
-            com.gmt2001.Console.warn.println("Der oAuth-Parameter in wird nicht mehr unterstützt, alle Anfragen verwenden jetzt den apioauth von botlogin.txt");
+            com.gmt2001.Console.warn.println("The oauth parameter in is no longer supported, all requests will now use the apioauth from botlogin.txt");
         }
 
         return UpdateChannel(channel, status, game, -1);
@@ -179,7 +179,7 @@ public class TwitchAPIv5 {
 
     public JSONObject UpdateChannel(String channel, String oauth, String status, String game, int delay) throws JSONException {
         if (oauth != null && !oauth.isBlank()) {
-            com.gmt2001.Console.warn.println("Der oAuth-Parameter in wird nicht mehr unterstützt, alle Anfragen verwenden jetzt den apioauth von botlogin.txt");
+            com.gmt2001.Console.warn.println("The oauth parameter in is no longer supported, all requests will now use the apioauth from botlogin.txt");
         }
 
         return UpdateChannel(channel, status, game, delay);
@@ -308,11 +308,11 @@ public class TwitchAPIv5 {
      */
     public JSONObject GetChannelFollows(String channel, int limit, int offset, boolean ascending) throws JSONException {
         if (offset > 0) {
-            com.gmt2001.Console.warn.println("Der Offset-Parameter in wird nicht mehr unterstützt, bitte aktualisieren Sie, um die Paginierung von Helix zu verwenden");
+            com.gmt2001.Console.warn.println("The offset parameter in is no longer supported, please update to use pagination from Helix");
         }
 
         if (ascending) {
-            com.gmt2001.Console.warn.println("Das Sortieren in aufsteigender Reihenfolge wird nicht mehr unterstützt");
+            com.gmt2001.Console.warn.println("Sorting in ascending order is no longer supported");
         }
 
         return this.GetChannelFollows(channel, limit, null);
@@ -382,11 +382,11 @@ public class TwitchAPIv5 {
      */
     public JSONObject GetChannelSubscriptions(String channel, int limit, int offset, boolean ascending) throws JSONException {
         if (offset > 0) {
-            com.gmt2001.Console.warn.println("Der Offset-Parameter in wird nicht mehr unterstützt, bitte aktualisieren Sie, um die Paginierung von Helix zu verwenden");
+            com.gmt2001.Console.warn.println("The offset parameter in is no longer supported, please update to use pagination from Helix");
         }
 
         if (ascending) {
-            com.gmt2001.Console.warn.println("Das Sortieren in aufsteigender Reihenfolge wird nicht mehr unterstützt");
+            com.gmt2001.Console.warn.println("Sorting in ascending order is no longer supported");
         }
 
         return this.GetChannelSubscriptions(channel, limit, null);
@@ -404,7 +404,7 @@ public class TwitchAPIv5 {
         JSONObject subscriptionData = Helix.instance().getBroadcasterSubscriptionsAsync(this.getIDFromChannel(channel), null, limit, from).block();
         JSONObject result = new JSONObject();
         JSONArray subscriptions = new JSONArray();
-        Date now = new Date();
+        Instant now = Instant.now();
 
         this.setupResult(result, subscriptionData, "subscriptions");
         if (subscriptionData == null || subscriptionData.has("error") || subscriptionData.isNull("data")) {
@@ -442,7 +442,7 @@ public class TwitchAPIv5 {
 
     public JSONObject GetChannelSubscriptions(String channel, int limit, int offset, boolean ascending, String oauth) throws JSONException {
         if (oauth != null && !oauth.isBlank()) {
-            com.gmt2001.Console.warn.println("Der oAuth-Parameter in wird nicht mehr unterstützt, alle Anfragen verwenden jetzt den apioauth von botlogin.txt");
+            com.gmt2001.Console.warn.println("The oauth parameter in is no longer supported, all requests will now use the apioauth from botlogin.txt");
         }
 
         return this.GetChannelSubscriptions(channel, limit, offset, ascending);
@@ -688,7 +688,7 @@ public class TwitchAPIv5 {
         String endpoint = "https://tmi.twitch.tv/group/user/" + channel + "/chatters";
 
         try {
-            HttpClientResponse response = HttpClient.get(HttpUrl.fromUri(endpoint));
+            HttpClientResponse response = HttpClient.get(URI.create(endpoint));
 
             if (response.hasJson()) {
                 jsonResult = response.json();
@@ -1182,15 +1182,11 @@ public class TwitchAPIv5 {
      * @return JSONObject clips object.
      */
     public JSONObject getClipsToday(String channel) throws JSONException {
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, 0);
-        c.set(Calendar.MINUTE, 0);
-        Calendar c2 = Calendar.getInstance();
-        c2.setTimeInMillis(c.getTimeInMillis());
-        c2.add(Calendar.DAY_OF_MONTH, 1);
+        ZonedDateTime started_at = ZonedDateTime.now().withHour(0).withMinute(0).withSecond(0);
+        ZonedDateTime ended_at = started_at.plusDays(1);
 
         JSONObject result = new JSONObject();
-        JSONObject clipsData = Helix.instance().getClipsAsync(null, this.getIDFromChannel(channel), null, 100, null, null, c, c2).block();
+        JSONObject clipsData = Helix.instance().getClipsAsync(null, this.getIDFromChannel(channel), null, 100, null, null, started_at, ended_at).block();
 
         this.setupResult(result, clipsData, "clips");
         if (clipsData == null || clipsData.has("error") || clipsData.isNull("data")) {
@@ -1315,7 +1311,7 @@ public class TwitchAPIv5 {
         } while (!jsonInput.getJSONArray("data").isEmpty());
 
         dataStore.RenameFile("followed_fixtable", "followed");
-        com.gmt2001.Console.out.println("FixFollowedTable: Follower in die Follower-Tabelle gezogen, geladen " + insertCtr + "/" + followerCount + " .");
+        com.gmt2001.Console.out.println("FixFollowedTable: Pulled followers into the followed table, loaded " + insertCtr + "/" + followerCount + " records.");
     }
 
     /**
@@ -1331,12 +1327,12 @@ public class TwitchAPIv5 {
         /* Determine number of followers to determine if this should not execute unless forced. */
         JSONObject jsonInput = Helix.instance().getUsersFollows(null, this.getIDFromChannel(channel), 1, null);
         if (!jsonInput.has("total")) {
-            com.gmt2001.Console.err.println("Die Anzahl der Follower konnte nicht abgerufen werden für FixFollowedTable");
+            com.gmt2001.Console.err.println("Failed to pull follower count for FixFollowedTable");
             return;
         }
         int followerCount = jsonInput.optInt("total");
         if (followerCount > 10000 && !force) {
-            com.gmt2001.Console.out.println("Die Anzahl der Follower liegt über 10.000 (" + followerCount + "). Nicht ausführen. Du kannst dies erzwingen.");
+            com.gmt2001.Console.out.println("Follower count is above 10,000 (" + followerCount + "). Not executing. You may force this.");
             return;
         }
 
@@ -1344,7 +1340,7 @@ public class TwitchAPIv5 {
             FixFollowedTableRunnable fixFollowedTableRunnable = new FixFollowedTableRunnable(this.getIDFromChannel(channel), dataStore, followerCount);
             new Thread(fixFollowedTableRunnable, "com.gmt2001.TwitchAPIv5::fixFollowedTable").start();
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("Fehler beim Starten des Threads zum Aktualisieren der Gefolgten Tabelle.");
+            com.gmt2001.Console.err.println("Failed to start thread for updating followed table.");
         }
     }
 

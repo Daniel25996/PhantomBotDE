@@ -19,8 +19,8 @@
 package tv.phantombot.cache;
 
 import com.illusionaryone.TwitchAlertsAPIv1;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import tv.phantombot.PhantomBot;
@@ -38,8 +38,8 @@ public class DonationsCache implements Runnable {
 
     private final Thread updateThread;
     private boolean firstUpdate = true;
-    private Date timeoutExpire = new Date();
-    private Date lastFail = new Date();
+    private Instant timeoutExpire = Instant.now();
+    private Instant lastFail = Instant.now();
     private int numfail = 0;
     private boolean killed = false;
 
@@ -52,14 +52,12 @@ public class DonationsCache implements Runnable {
     }
 
     private void checkLastFail() {
-        Calendar cal = Calendar.getInstance();
-        this.numfail = (this.lastFail.after(new Date()) ? this.numfail + 1 : 1);
+        this.numfail = (this.lastFail.isAfter(Instant.now()) ? this.numfail + 1 : 1);
 
-        cal.add(Calendar.MINUTE, 1);
-        this.lastFail = cal.getTime();
+        this.lastFail = Instant.now().plus(1, ChronoUnit.MINUTES);
 
         if (this.numfail > 5) {
-            this.timeoutExpire = cal.getTime();
+            this.timeoutExpire = Instant.now().plus(1, ChronoUnit.MINUTES);
         }
     }
 
@@ -73,12 +71,12 @@ public class DonationsCache implements Runnable {
         try {
             Thread.sleep(20 * 1000);
         } catch (InterruptedException ex) {
-            com.gmt2001.Console.debug.println("DonationsCache.run: Der Initial-Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
+            com.gmt2001.Console.debug.println("DonationsCache.run: Failed to execute initial sleep [InterruptedException]: " + ex.getMessage());
         }
 
         while (!this.killed) {
             try {
-                if (new Date().after(this.timeoutExpire)) {
+                if (Instant.now().isAfter(this.timeoutExpire)) {
                     this.updateCache();
                 }
             } catch (Exception ex) {
@@ -89,7 +87,7 @@ public class DonationsCache implements Runnable {
             try {
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.debug.println("DonationsCache.run: Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
+                com.gmt2001.Console.debug.println("DonationsCache.run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
             }
         }
     }
@@ -107,7 +105,7 @@ public class DonationsCache implements Runnable {
             if (jsonResult.getInt("_http") == 200) {
                 donations = jsonResult.getJSONArray("data");
             } else if (jsonResult.optString("message", "").contains("Unauthorized")) {
-                com.gmt2001.Console.err.println("DonationsCache.updateCache: Schlechter API Schlüssel, deaktiviere das StreamLabs Modul.");
+                com.gmt2001.Console.err.println("DonationsCache.updateCache: Bad API key disabling the StreamLabs module.");
                 PhantomBot.instance().getDataStore().SetString("modules", "", "./handlers/donationHandler.js", "false");
                 this.kill();
             }

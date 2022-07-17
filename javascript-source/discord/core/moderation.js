@@ -181,7 +181,7 @@
             obj = {},
             i;
 
-        obj['**Nutzer_gesperrt:**'] = '[' + username + '](https://www.twitch.tv/popout/' + $.channelName + '/viewercard/' + username.toLowerCase() + ')';
+        obj['**Nutzer_getimeoutet:**'] = '[' + username + '](https://www.twitch.tv/popout/' + $.channelName + '/viewercard/' + username.toLowerCase() + ')';
         obj['**Ersteller:**'] = creator;
         obj['**Grund:**'] = reason;
         obj['**Zeit:**'] = time + ' Sekunden.';

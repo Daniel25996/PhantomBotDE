@@ -30,6 +30,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
@@ -91,7 +92,7 @@ public class TwitchWSHostIRC {
             this.twitchWSHostIRCWS = new TwitchWSHostIRCWS(this, new URI(this.twitchIRCWSS));
             if (!this.twitchWSHostIRCWS.connectWSS()) {
                 this.lastConnectSuccess = false;
-                com.gmt2001.Console.err.println("Es kann keine Verbindung zum Twitch Data Host Feed hergestellt werden");
+                com.gmt2001.Console.err.println("Unable to connect to Twitch Data Host Feed");
             } else {
                 this.lastConnectSuccess = true;
             }
@@ -122,9 +123,10 @@ public class TwitchWSHostIRC {
         if (this.reconnectLock.tryLock()) {
             try {
                 if (!this.backoff.GetIsBackingOff()) {
+                    this.backoff.CancelReset();
                     this.shutdown();
-                    com.gmt2001.Console.out.println("Verzögern des nächsten Verbindungsversuchs (Host), um Spam zu verhindern, " + (this.backoff.GetNextInterval() / 1000) + " Sekunden...");
-                    com.gmt2001.Console.warn.println("Verzögern der nächsten Wiederverbindung (Host) " + (this.backoff.GetNextInterval() / 1000) + " Sekunden...", true);
+                    com.gmt2001.Console.out.println("Delaying next connection (Host) attempt to prevent spam, " + (this.backoff.GetNextInterval() / 1000) + " seconds...");
+                    com.gmt2001.Console.warn.println("Delaying next reconnect (Host) " + (this.backoff.GetNextInterval() / 1000) + " seconds...", true);
                     this.backoff.BackoffAsync(() -> {
                         this.connect();
                         if (!this.lastConnectSuccess) {
@@ -209,14 +211,14 @@ public class TwitchWSHostIRC {
 
                 // if we sent a ping longer than 3 minutes ago, send another one.
                 if (System.currentTimeMillis() > (this.lastPing + 180000)) {
-                    com.gmt2001.Console.debug.println("Senden eines PING an Twitch.");
+                    com.gmt2001.Console.debug.println("Sending a PING to Twitch.");
                     this.lastPing = System.currentTimeMillis();
                     this.client.send("PING");
 
                     // If Twitch's last pong was more than 3.5 minutes ago, close our connection.
                 } else if (System.currentTimeMillis() > (this.lastPong + 210000)) {
-                    com.gmt2001.Console.out.println("Wir schließen unsere Verbindung mit Twitch (Host), da kein PONG zurückgesendet wurde.");
-                    com.gmt2001.Console.warn.println("Wir schließen unsere Verbindung mit Twitch (Host), da kein PONG zurückgesendet wurde.", true);
+                    com.gmt2001.Console.out.println("Closing our connection with Twitch (Host) since no PONG got sent back.");
+                    com.gmt2001.Console.warn.println("Closing our connection with Twitch (Host) since no PONG got sent back.", true);
                     this.twitchWSHostIRC.reconnect();
                 }
             }, 10, 30, TimeUnit.SECONDS);
@@ -259,7 +261,7 @@ public class TwitchWSHostIRC {
          */
         public boolean connectWSS() {
             try {
-                com.gmt2001.Console.out.println("Verbinden mit Twitch WS-IRC Server (SSL, Host) [" + this.uri.getHost() + "]");
+                com.gmt2001.Console.out.println("Connecting to Twitch WS-IRC Server (SSL, Host) [" + this.uri.getHost() + "]");
                 this.connecting = true;
                 return this.client.connect();
             } catch (IllegalStateException | InterruptedException ex) {
@@ -292,14 +294,14 @@ public class TwitchWSHostIRC {
             // Reconnect if the bot isn't shutting down.
             if (!reason.equals("bye")) {
                 if (!this.connecting) {
-                    com.gmt2001.Console.warn.println("Verbindungsabbruch mit Twitch (Host), verursacht durch: ");
+                    com.gmt2001.Console.warn.println("Lost connection with Twitch (Host), caused by: ");
                     com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "]");
 
                     this.connecting = true;
                     this.twitchWSHostIRC.reconnect();
                 }
             } else {
-                com.gmt2001.Console.out.println("Verbindung zu Twitch WS-IRC (Host) wurde geschlossen...");
+                com.gmt2001.Console.out.println("Connection to Twitch WS-IRC (Host) was closed...");
                 com.gmt2001.Console.debug.println("Code [" + code + "] Reason [" + reason + "]");
             }
         }
@@ -326,20 +328,20 @@ public class TwitchWSHostIRC {
                 // This is to make sure the caster created the oauth with his channel account and not the bot's.
                 if (message.contains("002 " + this.channelName + " :")) {
                     this.connected = true;
-                    com.gmt2001.Console.out.println("Verbunden mit Twitch Host Data Feed");
+                    com.gmt2001.Console.out.println("Connected to Twitch Host Data Feed");
 
                     Executors.newSingleThreadScheduledExecutor().schedule(() -> {
                         EventBus.instance().postAsync(new TwitchHostsInitializedEvent());
-                        backoff.Reset();
+                        backoff.ResetIn(Duration.ofSeconds(30));
                     }, 20, TimeUnit.SECONDS);
                 } else {
                     this.connected = false;
                     this.badOauth = true;
                     com.gmt2001.Console.out.println("");
-                    com.gmt2001.Console.out.println("Falscher API OAuth erkannt.");
-                    com.gmt2001.Console.out.println("Der API OAuth gehört zu einem anderen Konto.");
-                    com.gmt2001.Console.out.println("Bitte beziehe den neuen API OAuth mit deinem Kanalkonto über das Panel");
-                    com.gmt2001.Console.out.println("Deaktiviere jetzt das Hostmodul.");
+                    com.gmt2001.Console.out.println("Wrong API OAuth detected.");
+                    com.gmt2001.Console.out.println("The API OAuth belongs to another account.");
+                    com.gmt2001.Console.out.println("Please obtain new API OAuth with your channel account from the panel");
+                    com.gmt2001.Console.out.println("Now disabling host module.");
                     com.gmt2001.Console.out.println("");
                     PhantomBot.instance().getDataStore().set("modules", "./handlers/hostHandler.js", "false");
                     this.close(1000, "bye");
@@ -349,9 +351,9 @@ public class TwitchWSHostIRC {
 
             if (message.contains("Error logging in") || message.contains("Login authentication failed") && this.badOauth == false) {
                 com.gmt2001.Console.out.println("");
-                com.gmt2001.Console.out.println("API OAuth darf keine Hostdaten sammeln.");
-                com.gmt2001.Console.out.println("Bitte beziehe eine neue API OAuth vom Panel");
-                com.gmt2001.Console.out.println("Deaktiviere jetzt das Hostmodul.");
+                com.gmt2001.Console.out.println("API OAuth not allowed to gather host data.");
+                com.gmt2001.Console.out.println("Please obtain new API OAuth from the panel");
+                com.gmt2001.Console.out.println("Now disabling host module.");
                 com.gmt2001.Console.out.println("");
                 PhantomBot.instance().getDataStore().set("modules", "./handlers/hostHandler.js", "false");
                 this.badOauth = true;

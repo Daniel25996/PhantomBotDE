@@ -101,6 +101,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param session The {@link TwitchSession} that controls the IRC session
      */
     private TwitchWSIRCParser(WSClient client, String channelName, TwitchSession session) {
+        super();
         this.client = client;
         this.channelName = channelName;
         this.session = session;
@@ -163,7 +164,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
     @Override
     public void onError(Throwable thrwbl) {
         com.gmt2001.Console.err.printStackTrace(thrwbl);
-        com.gmt2001.Console.err.println("GiftSubTracker hat eine Ausnahme ausgelöst und wird getrennt ...");
+        com.gmt2001.Console.err.println("GiftSubTracker threw an exception and is being disconnected...");
     }
 
     /**
@@ -211,7 +212,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
             for (String badge : badgeParts) {
                 // Remove the `/1` from the badge.
                 // For bits it can be `/1000`, so we need to use indexOf.
-                badge = badge.substring(0, badge.indexOf("/"));
+                badge = badge.substring(0, badge.indexOf('/'));
 
                 switch (badge) {
                     case "staff":
@@ -233,6 +234,8 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
                         break;
                     case "vip":
                         badges.put("vip", "1");
+                        break;
+                    default:
                         break;
                 }
             }
@@ -308,7 +311,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
 
         // Get username if present.
         if (prefixcommand.length > 1 && prefixcommand[0].contains("!") && prefixcommand[0].contains("@")) {
-            username = prefixcommand[0].substring(prefixcommand[0].indexOf("!") + 1, prefixcommand[0].indexOf("@"));
+            username = prefixcommand[0].substring(prefixcommand[0].indexOf('!') + 1, prefixcommand[0].indexOf('@'));
         } else if (prefixcommand.length > 1) {
             username = prefixcommand[0];
         }
@@ -336,8 +339,8 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         // Check for arguments.
         if (command.contains(" ")) {
             String commandString = command;
-            command = commandString.substring(0, commandString.indexOf(" "));
-            arguments = commandString.substring(commandString.indexOf(" ") + 1);
+            command = commandString.substring(0, commandString.indexOf(' '));
+            arguments = commandString.substring(commandString.indexOf(' ') + 1);
         }
 
         // Send the command.
@@ -355,7 +358,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param username The parsed sender username
      * @param tags The tags attached to the message
      */
-    private void onChannelJoined(String message, String username, Map<String, String> tags) {
+    private void onChannelJoined(String unusedMessage, String unusedUsername, Map<String, String> unusedTags) {
         // Request our tags
         this.send("CAP REQ :twitch.tv/membership");
         this.send("CAP REQ :twitch.tv/commands");
@@ -365,7 +368,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
         this.send("JOIN #" + channelName);
 
         // Log in the console that web joined.
-        com.gmt2001.Console.out.println("Kanal beigetreten[#" + channelName + "]");
+        com.gmt2001.Console.out.println("Channel Joined [#" + channelName + "]");
 
         // Port the channel joined event.
         eventBus.postAsync(new IrcJoinCompleteEvent(session));
@@ -440,7 +443,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param username The parsed sender username
      * @param tags The tags attached to the message
      */
-    private void onClearChat(String message, String username, Map<String, String> tags) {
+    private void onClearChat(String unusedMessage, String username, Map<String, String> tags) {
         String duration = "";
         String reason = "";
 
@@ -479,7 +482,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param username The parsed sender username
      * @param tags The tags attached to the message
      */
-    private void onJoin(String message, String username, Map<String, String> tags) {
+    private void onJoin(String unusedMessage, String username, Map<String, String> unusedTags) {
         // Post the event.
         eventBus.postAsync(new IrcChannelJoinEvent(session, username));
         // Show the message in debug mode.
@@ -493,7 +496,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param username The parsed sender username
      * @param tags The tags attached to the message
      */
-    private void onPart(String message, String username, Map<String, String> tags) {
+    private void onPart(String unusedMessage, String username, Map<String, String> unusedTags) {
         // Post the event.
         eventBus.postAsync(new IrcChannelLeaveEvent(session, username));
         // Show the message in debug mode.
@@ -507,7 +510,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param username The parsed sender username
      * @param tags The tags attached to the message
      */
-    private void onNotice(String message, String username, Map<String, String> tags) {
+    private void onNotice(String message, String unusedUsername, Map<String, String> tags) {
         if (tags.containsKey("msg-id")) {
             switch (tags.get("msg-id")) {
                 case "msg_banned":
@@ -529,26 +532,28 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
                 case "whisper_restricted_recipient":
                     com.gmt2001.Console.err.println(tags.get("msg-id") + ": " + message);
                     break;
+                default:
+                    break;
             }
         }
         switch (message) {
             case "Login authentication failed":
                 com.gmt2001.Console.out.println();
-                com.gmt2001.Console.out.println("Twitch angezeigte Anmeldung fehlgeschlagen. Überprüfen Sie das OAUTH-Passwort.");
-                com.gmt2001.Console.out.println("Beende PhantomBot.");
+                com.gmt2001.Console.out.println("Twitch Indicated Login Failed. Check OAUTH password.");
+                com.gmt2001.Console.out.println("Exiting PhantomBot.");
                 com.gmt2001.Console.out.println();
                 PhantomBot.exitError();
                 break;
             case "Invalid NICK":
                 com.gmt2001.Console.out.println();
-                com.gmt2001.Console.out.println("Twitch hat einen ungültigen Bot-Namen angezeigt. Überprüfen Sie die Einstellung 'user=' in botlogin.txt");
-                com.gmt2001.Console.out.println("Beende PhantomBot.");
+                com.gmt2001.Console.out.println("Twitch Inidicated Invalid Bot Name. Check 'user=' setting in botlogin.txt");
+                com.gmt2001.Console.out.println("Exiting PhantomBot.");
                 com.gmt2001.Console.out.println();
                 PhantomBot.exitError();
                 break;
             default:
                 eventBus.postAsync(new IrcPrivateMessageEvent(session, "jtv", message, tags));
-                com.gmt2001.Console.debug.println("Nachricht von jtv (HINWEIS): " + message);
+                com.gmt2001.Console.debug.println("Message from jtv (NOTICE): " + message);
                 break;
         }
     }
@@ -560,7 +565,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param username The parsed sender username
      * @param tags The tags attached to the message
      */
-    private void onUserNotice(String message, String username, Map<String, String> tags) {
+    private void onUserNotice(String message, String unusedUsername, Map<String, String> tags) {
         if (tags.containsKey("msg-id")) {
             if (tags.get("msg-id").equalsIgnoreCase("resub")) {
                 scriptEventManager.onEvent(new TwitchReSubscriberEvent(tags.get("login"), tags.get("msg-param-cumulative-months"), tags.get("msg-param-sub-plan"), message));
@@ -609,7 +614,7 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
      * @param username The parsed sender username
      * @param tags The tags attached to the message
      */
-    private void onUserState(String message, String username, Map<String, String> tags) {
+    private void onUserState(String unusedMessage, String username, Map<String, String> tags) {
         username = session.getBotName();
 
         if (tags.containsKey("user-type")) {
@@ -626,10 +631,10 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
                     }
                 } else if (tags.containsKey("display-name") && !tags.get("display-name").equalsIgnoreCase(username)) {
                     com.gmt2001.Console.out.println();
-                    com.gmt2001.Console.out.println("[FEHLER] oAuth Token stimmt nicht mit dem Benutzernamen des Twitch Bots überein.");
-                    com.gmt2001.Console.out.println("[FEHLER] Bitte besuche https://phantombot.github.io/PhantomBot/oauth/ und generiere einen neuen Token.");
-                    com.gmt2001.Console.out.println("[FEHLER] Achte darauf, dass du auf twitch.tv gehst und dich als Bot anmeldest, bevor du den Token beziehst.");
-                    com.gmt2001.Console.out.println("[FEHLER] Öffnen Sie anschließend die Datei botlogin.txt und ersetze den oauth= Wertd urch den Token.");
+                    com.gmt2001.Console.out.println("[ERROR] oAuth token doesn't match the bot's Twitch account name.");
+                    com.gmt2001.Console.out.println("[ERROR] Please go to https://phantombot.github.io/PhantomBot/oauth/ and generate a new token.");
+                    com.gmt2001.Console.out.println("[ERROR] Be sure to go to twitch.tv and login as the bot before getting the token.");
+                    com.gmt2001.Console.out.println("[ERROR] After, open the botlogin.txt file and replace the oauth= value with the token.");
                     com.gmt2001.Console.out.println();
                 } else {
                     // Since the "user-type" tag in deprecated and Twitch wants us to reply on badges
@@ -641,9 +646,9 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
                     // filter is triggered. This fix is only to prevent the bot from losing moderator powers.
                     if (!tags.containsKey("mod") || !tags.get("mod").equals("1")) {
                         com.gmt2001.Console.out.println();
-                        com.gmt2001.Console.out.println("[FEHLER] " + username + " wurde nicht als Moderator erkannt!");
-                        com.gmt2001.Console.out.println("[FEHLER] Du musst " + username + " als Channel-Moderator hinzufügen, damit er den Chat moderieren kann.");
-                        com.gmt2001.Console.out.println("[FEHLER] Gebe /mod " + username + " ein, um " + username + " als Channel-Moderator hinzuzufügen.");
+                        com.gmt2001.Console.out.println("[ERROR] " + username + " is not detected as a moderator!");
+                        com.gmt2001.Console.out.println("[ERROR] You must add " + username + " as a channel moderator for it to chat.");
+                        com.gmt2001.Console.out.println("[ERROR] Type /mod " + username + " to add " + username + " as a channel moderator.");
                         com.gmt2001.Console.out.println();
 
                         // We're not a mod thus we cannot send messages.

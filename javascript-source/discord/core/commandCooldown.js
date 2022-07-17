@@ -26,11 +26,11 @@
 
     const   Type = {
             User: 'user',
-            Global: 'global',
+            Global: 'global'
         },
         Operation = {
             UnSet: -1,
-            UnChanged: 0,
+            UnChanged: 0
         };
 
     /*
@@ -224,6 +224,12 @@
             secsG   = Operation.UnChanged,
             secsU   = Operation.UnChanged;
 
+        if (type1.equalsIgnoreCase('remove')) {
+            remove(command);
+            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.coolcom.remove', command));
+            return;
+        }
+
         if(!isNaN(parseInt(type1)) && second === undefined) { //Only assume this is global if no secondary action is present
             type1 = Type.Global;
             secsG = ParseInt(type1);
@@ -234,7 +240,6 @@
             secsG = type1.equalsIgnoreCase(Type.Global) ? parseInt(action1[1]) : secsG;
             secsU = type1.equalsIgnoreCase(Type.User) ? parseInt(action1[1]) : secsU;
         }
-
 
         if (second !== undefined){
             var action2 = second.split("="),
@@ -251,6 +256,8 @@
 
         if (secsG === Operation.UnSet && secsU === Operation.UnSet) {
             remove(command);
+            $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.coolcom.remove', command));
+            return;
         } else {
             add(command, secsG, secsU);
             clear(command);
@@ -278,10 +285,11 @@
             actionArgs = args[2];
 
         /*
-         * @commandpath coolcom [command] [user=seconds] [global=seconds] - Sets a cooldown for a command, default is global if no type and no secondary type is given. Using -1 for the seconds removes the cooldown.
+         * @discordcommandpath coolcom [command] [user=seconds] [global=seconds] - Sets a cooldown for a command, default is global if no type and no secondary type is given. Using -1 for the seconds removes the cooldown.
+         * @discordcommandpath coolcom [command] remove
          */
         if (command.equalsIgnoreCase('coolcom')) {
-            if (action === undefined || isNaN(parseInt(subAction))) {
+            if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.coolcom.usage'));
                 return;
             }

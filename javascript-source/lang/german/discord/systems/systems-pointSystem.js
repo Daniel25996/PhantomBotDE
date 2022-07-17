@@ -15,6 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$.lang.register('discord.pointsystem.self.points', 'Du hast momentan $1.'); // Verwenden Sie $2, um die Zeit des Benutzers anzuzeigen und $3 für den Rang des Benutzers. Der Rang hat standardmäßig auch seinen Namen.
-$.lang.register('discord.pointsystem.other.points', '$1 hat momentan $2.'); // Verwenden Sie $3, um die Zeit des Benutzers anzuzeigen und $4 für den Rang des Benutzers. Der Rang hat standardmäßig auch seinen Namen.
+$.lang.register('discord.pointsystem.self.points', 'Du hast momentan $1.'); // Verwende $2, um die Zeit des Benutzers anzuzeigen und $3 für den Rang des Benutzers. Der Rang hat standardmäßig auch seinen Namen.
+$.lang.register('discord.pointsystem.other.points', '$1 hat momentan $2.'); // Verwende $3, um die Zeit des Benutzers anzuzeigen und $4 für den Rang des Benutzers. Der Rang hat standardmäßig auch seinen Namen.
 $.lang.register('discord.pointsystem.no.points.other', 'Der Nutzer hat keine $1.');

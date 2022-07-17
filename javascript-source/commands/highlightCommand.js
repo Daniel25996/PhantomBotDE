@@ -45,7 +45,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.highlight.offline'));
                 return;
             } else if (args.length === 0) {
-                $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.highlight.usage', $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : 'CET'));
+                $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.highlight.usage', $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : 'GMT'));
                 return;
             }
 
@@ -64,7 +64,7 @@
                 hours = parseInt(streamUptimeMinutes / 60),
                 minutes = (parseInt(streamUptimeMinutes % 60) < 10 ? '0' + parseInt(streamUptimeMinutes % 60) : parseInt(streamUptimeMinutes % 60)),
                 timestamp = hours + ':' + minutes,
-                localDate = $.getCurLocalTimeString('dd-MM-yyyy HH:mm');
+                localDate = $.getCurLocalTimeString('dd-MM-yyyy hh:mm');
 
             $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.highlight.success', timestamp));
             $.inidb.set('highlights', localDate, vodURL + ' : ' + args.join(' '));
@@ -105,9 +105,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./commands/highlightCommand.js', 'highlight', 2);
-        $.registerChatCommand('./commands/highlightCommand.js', 'gethighlights', 2);
-        $.registerChatCommand('./commands/highlightCommand.js', 'showhighlights', 2);
-        $.registerChatCommand('./commands/highlightCommand.js', 'clearhighlights', 1);
+        $.registerChatCommand('./commands/highlightCommand.js', 'highlight', $.PERMISSION.Mod);
+        $.registerChatCommand('./commands/highlightCommand.js', 'gethighlights', $.PERMISSION.Mod);
+        $.registerChatCommand('./commands/highlightCommand.js', 'showhighlights', $.PERMISSION.Mod);
+        $.registerChatCommand('./commands/highlightCommand.js', 'clearhighlights', $.PERMISSION.Admin);
     });
 })();

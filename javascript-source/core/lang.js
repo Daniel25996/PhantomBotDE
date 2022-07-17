@@ -26,14 +26,14 @@
  */
 (function() {
     var data = [],
-        curLang = ($.inidb.exists('settings', 'lang') ? $.inidb.get('settings', 'lang') : 'german');
+        curLang = $.jsString($.inidb.exists('settings', 'lang') ? $.inidb.get('settings', 'lang') : 'german');
 
     /**
      * @function load
      */
     function load(force) {
         $.bot.loadScriptRecursive('./lang/german', true, (force ? force : false));
-        if (curLang != 'german') {
+        if (curLang !== 'german') {
             $.bot.loadScriptRecursive('./lang/' + curLang, true, (force ? force : false));
         }
 
@@ -73,11 +73,11 @@
             i;
 
         if (string === undefined) {
-            $.log.warn('Sprachen Zeichenfolge für Schlüssel  "' + key + '" wurde nicht gefunden.');
+            $.log.warn('Lang string for key "' + key + '" was not found.');
             return '';
         }
 
-        if (string == '<<EMPTY_PLACEHOLDER>>') {
+        if (string === '<<EMPTY_PLACEHOLDER>>') {
             return '';
         }
 
@@ -180,9 +180,9 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./core/lang.js', 'lang', 1);
-        $.registerChatCommand('./core/lang.js', 'mute', 1);
-        $.registerChatCommand('./core/lang.js', 'toggleme', 1);
+        $.registerChatCommand('./core/lang.js', 'lang', $.PERMISSION.Admin);
+        $.registerChatCommand('./core/lang.js', 'mute', $.PERMISSION.Admin);
+        $.registerChatCommand('./core/lang.js', 'toggleme', $.PERMISSION.Admin);
     });
 
     /** Export functions to API */

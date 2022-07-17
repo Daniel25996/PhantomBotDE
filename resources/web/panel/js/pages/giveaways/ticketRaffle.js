@@ -104,7 +104,7 @@ $(run = function () {
         if (e['isActive'] === '1') {
             $('#ticket-open-or-close-raffle').html($('<i/>', {
                 'class': 'fa fa-lock'
-            })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
+            })).append('&nbsp; Schließen').removeClass('btn-success').addClass('btn-warning');
         }
 
         // Raffle is over, winners were already drawn
@@ -152,7 +152,7 @@ $(function () {
                         // Update the button.
                         $('#ticket-open-or-close-raffle').html($('<i/>', {
                             'class': 'fa fa-lock'
-                        })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
+                        })).append('&nbsp; Schließen').removeClass('btn-success').addClass('btn-warning');
                     });
 
                 $('#traffle-list-title').text("Liste der Ticketverlosung");
@@ -187,7 +187,7 @@ $(function () {
             case helpers.handleInputNumber(prize, 0):
                 break;
             default:
-                socket.sendCommandSync('draw_raffle_cmd', 'traffle draw ' + drawAmount.val() + ' ' + prize.val() , function () {
+                socket.sendCommandSync('draw_raffle_cmd', 'traffle draw ' + drawAmount.val() + ' ' + prize.val(), function () {
                     // Alert the user.
                     toastr.success('Erfolgreich einen Gewinner ausgelost!');
 
@@ -196,7 +196,7 @@ $(function () {
                     $('#ticket-draw-raffle').prop('disabled', true);
                     $('#ticket-open-or-close-raffle').html($('<i/>', {
                         'class': 'fa fa-unlock-alt'
-                    })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
+                    })).append('&nbsp; Öffnen').removeClass('btn-warning').addClass('btn-success');
 
                     //Show the winners
                     helpers.temp.loadWinners();

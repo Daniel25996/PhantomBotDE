@@ -16,8 +16,8 @@
  */
 
 $.lang.register('discord.gambling.need.points', 'Du hast nicht genug $1.');
-$.lang.register('discord.gambling.error.max', 'Du kannst maximal $1 Setzen.');
-$.lang.register('discord.gambling.error.min', 'Du musst mindestens $1 Setzen.');
+$.lang.register('discord.gambling.error.max', 'Du kannst maximal $1 setzen.');
+$.lang.register('discord.gambling.error.min', 'Du musst mindestens $1 setzen.');
 $.lang.register('discord.gambling.lost', '$1 rollte eine $2 und verliert $3 von $4. $5'); // Verwende $4 für die verbleibenden Punkte des Benutzers
 $.lang.register('discord.gambling.won', '$1 rollte eine $2 und gewinnt $3! $5'); // Verwende $4 für die verbleibenden Punkte des Benutzers
 $.lang.register('discord.gambling.usage', 'Verwendung: !gamble [Betrag / all / half]');

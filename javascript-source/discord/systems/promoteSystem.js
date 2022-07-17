@@ -409,7 +409,7 @@
      */
     function startPromote() {
         if (promoteIntervalID != -1) {
-           $.consoleLn('Neustart des Promotion-Intervall-Handlers');
+           $.consoleLn('Restarting the Promotion Interval Handler');
            clearInterval(promoteIntervalID);
         }
 

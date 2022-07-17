@@ -49,7 +49,7 @@ public class HttpNoAuthenticationHandler implements HttpAuthenticationHandler {
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param req The {@link FullHttpRequest} of the request
-     * @return {@code true}
+     * @return
      */
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
@@ -58,6 +58,6 @@ public class HttpNoAuthenticationHandler implements HttpAuthenticationHandler {
 
     @Override
     public void invalidateAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
-        throw new UnsupportedOperationException("Wird von diesem Authentifizierungs-Handler nicht unterstützt.");
+        throw new UnsupportedOperationException("Not supported by this authentication handler.");
     }
 }

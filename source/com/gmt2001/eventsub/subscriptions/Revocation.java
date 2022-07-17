@@ -28,34 +28,25 @@ import tv.phantombot.event.eventsub.EventSubRevocationEvent;
  *
  * @author gmt2001
  */
-public class Revocation extends EventSubSubscriptionType {
+public final class Revocation extends EventSubSubscriptionType {
 
-    protected Revocation() {
+    @Override
+    public EventSubSubscription proposeSubscription() {
+        throw new UnsupportedOperationException("Not a valid subscription type.");
     }
 
     @Override
-    protected EventSubSubscription proposeSubscription() {
-        throw new UnsupportedOperationException("Kein gültiger Abonnementtyp.");
+    public void validateParameters() throws IllegalArgumentException {
+        throw new UnsupportedOperationException("Not a valid subscription type.");
     }
 
     @Override
-    protected void validateParameters() throws IllegalArgumentException {
-        throw new UnsupportedOperationException("Kein gültiger Abonnementtyp.");
-    }
-
-    @Override
-    public boolean isAlreadySubscribed() {
-        throw new UnsupportedOperationException("Kein gültiger Abonnementtyp.");
-    }
-
-    @Override
-    public String findMatchingSubscriptionId() {
-        throw new UnsupportedOperationException("Kein gültiger Abonnementtyp.");
+    protected boolean isMatch(EventSubSubscription subscription) {
+        throw new UnsupportedOperationException("Not a valid subscription type.");
     }
 
     @Handler
-    public void onEventSubInternalVerificationEvent(EventSubInternalRevocationEvent e) {
+    public void onEventSubInternalRevocationEvent(EventSubInternalRevocationEvent e) {
         EventBus.instance().postAsync(new EventSubRevocationEvent(e.getSubscription()));
     }
-
 }

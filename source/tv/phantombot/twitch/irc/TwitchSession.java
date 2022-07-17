@@ -20,7 +20,8 @@ import com.gmt2001.ExponentialBackoff;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.channels.NotYetConnectedException;
-import java.util.Date;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
@@ -91,11 +92,11 @@ public class TwitchSession extends MessageQueue {
         try {
             if (this.twitchWSIRC.connected()) {
                 this.twitchWSIRC.send(message);
-                this.backoff.Reset();
+                this.backoff.ResetIn(Duration.ofSeconds(30));
             } else {
                 if (!isretry) {
                     try {
-                        com.gmt2001.Console.warn.println("Es wurde versucht, eine Nachricht zu senden, bevor eine Verbindung zu Twitch hergestellt wurde, und es wird in 5 Sekunden erneut versucht...");
+                        com.gmt2001.Console.warn.println("Tried to send message before connecting to Twitch, trying again in 5 seconds...");
                         Thread.sleep(5000);
                         this.sendRaw(message, true);
                     } catch (InterruptedException ex2) {
@@ -105,16 +106,16 @@ public class TwitchSession extends MessageQueue {
         } catch (NotYetConnectedException ex) {
             if (!isretry) {
                 try {
-                    com.gmt2001.Console.warn.println("Es wurde versucht, eine Nachricht zu senden, bevor eine Verbindung zu Twitch hergestellt wurde, und es wird in 5 Sekunden erneut versucht...");
+                    com.gmt2001.Console.warn.println("Tried to send message before connecting to Twitch, trying again in 5 seconds...");
                     Thread.sleep(5000);
                     this.sendRaw(message, true);
                     return;
                 } catch (InterruptedException ex2) {
                 }
             }
-            com.gmt2001.Console.err.println("Fehler beim senden einer Nachricht zu Twitch [WebsocketNotConnectedException]: " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed to send message to Twitch [NotYetConnectedException]: " + ex.getMessage());
         } catch (Exception ex) {
-            com.gmt2001.Console.err.println("Fehler beim senden einer Nachricht zu Twitch [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+            com.gmt2001.Console.err.println("Failed to send message to Twitch [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
         }
     }
 
@@ -145,14 +146,14 @@ public class TwitchSession extends MessageQueue {
             this.twitchWSIRC = new TwitchWSIRC(new URI("wss://irc-ws.chat.twitch.tv"), this.channelName, this.botName, this.oAuth, this);
             if (!this.twitchWSIRC.connectWSS()) {
                 this.lastConnectSuccess = false;
-                com.gmt2001.Console.err.println("Fehler beim Verbinden mit Twitch.");
+                com.gmt2001.Console.err.println("Error when connecting to Twitch.");
             } else {
                 this.lastConnectSuccess = true;
             }
         } catch (URISyntaxException ex) {
             this.lastConnectSuccess = false;
             com.gmt2001.Console.err.printStackTrace(ex);
-            com.gmt2001.Console.err.println("TwitchWSIRC URI Fehlgeschlagen");
+            com.gmt2001.Console.err.println("TwitchWSIRC URI Failed");
         }
         return this;
     }
@@ -170,9 +171,10 @@ public class TwitchSession extends MessageQueue {
         if (this.reconnectLock.tryLock()) {
             try {
                 if (!this.backoff.GetIsBackingOff()) {
+                    this.backoff.CancelReset();
                     this.quitIRC();
-                    com.gmt2001.Console.out.println("Verzögern des nächsten Verbindungsversuchs, um Spam zu verhindern, " + (this.backoff.GetNextInterval() / 1000) + " Sekunden...");
-                    com.gmt2001.Console.warn.println("Verzögern der nächsten Wiederverbindung " + (this.backoff.GetNextInterval() / 1000) + " Sekunden...", true);
+                    com.gmt2001.Console.out.println("Delaying next connection attempt to prevent spam, " + (this.backoff.GetNextInterval() / 1000) + " seconds...");
+                    com.gmt2001.Console.warn.println("Delaying next reconnect " + (this.backoff.GetNextInterval() / 1000) + " seconds...", true);
                     this.backoff.BackoffAsync(() -> {
                         try {
                             this.connect();
@@ -207,7 +209,7 @@ public class TwitchSession extends MessageQueue {
                 if (this.lastWrite > time) {
                     if (this.writes >= limit && !message.hasPriority()) {
                         this.nextWrite = (time + (this.lastWrite - time));
-                        com.gmt2001.Console.warn.println("Nachrichtenlimit von (" + limit + ") wurde erreicht. Nachrichten werden erneut gesendet " + (this.nextWrite - time) + "ms");
+                        com.gmt2001.Console.warn.println("Message limit of (" + limit + ") has been reached. Messages will be sent again in " + (this.nextWrite - time) + "ms");
                         Thread.sleep(this.nextWrite - time);
                     }
                     this.writes++;
@@ -221,18 +223,18 @@ public class TwitchSession extends MessageQueue {
                 com.gmt2001.Console.out.println("[CHAT] " + message.getMessage());
             }
 
-            if (new Date().after(this.nextReminder)) {
-                if ((!this.isAllowedToSend || TwitchValidate.instance().hasOAuthInconsistencies(PhantomBot.instance().getBotName()))) {
-                    com.gmt2001.Console.warn.println("WARNUNG: Die letzte Nachricht konnte aufgrund eines Konfigurationsfehlers nicht gesendet werden");
+            if (Instant.now().isAfter(this.nextReminder)) {
+                if ((!this.isAllowedToSend || TwitchValidate.instance().hasOAuthInconsistencies(PhantomBot.instance().getBotName(), PhantomBot.instance().getChannelName()))) {
+                    com.gmt2001.Console.warn.println("WARNING: Unable to send last message due to configuration error");
 
-                    TwitchValidate.instance().checkOAuthInconsistencies(PhantomBot.instance().getBotName());
+                    TwitchValidate.instance().checkOAuthInconsistencies(PhantomBot.instance().getBotName(), PhantomBot.instance().getChannelName());
 
                     if (!this.isAllowedToSend) {
-                        com.gmt2001.Console.warn.println("WARNUNG: Möglicherweise kein Moderator");
+                        com.gmt2001.Console.warn.println("WARNING: May not be a moderator");
                     }
                 }
 
-                this.nextReminder.setTime(new Date().getTime() + REMINDER_INTERVAL);
+                this.nextReminder = Instant.now().plusMillis(REMINDER_INTERVAL);
             }
         } catch (InterruptedException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);

@@ -17,7 +17,7 @@
 
 $.lang.register('streamcommand.vod.404', 'Keine Videos vorhanden!');
 $.lang.register('streamcommand.vod.online', 'Der Stream ist Live seit: $1 [$2]');
-$.lang.register('streamcommand.vod.offline', 'Der Stream ist offline. Letztes Video erstellt: [$1] [Length: $2]');
+$.lang.register('streamcommand.vod.offline', 'Der Stream ist offline. Letztes Video erstellt: [$1] [Länge: $2]');
 $.lang.register('streamcommand.playtime.offline', '$1 streamt gerade nicht.');
 $.lang.register('streamcommand.playtime.online', '$1 ist seit $3 in der Kategorie $2');
 $.lang.register('streamcommand.title.offline', 'Aktueller Titel: $1');
@@ -29,7 +29,7 @@ $.lang.register('streamcommand.game.offline', 'Aktuelle Kategorie: $1');
 $.lang.register('streamcommand.game.no.game', 'Aktuell ist keine Kategorie eingestellt.');
 $.lang.register('streamcommand.game.set.usage', 'Verwendung: !setgame [Kategorie] Aktuell: $1');
 $.lang.register('streamcommand.communities.set.usage', 'Verwendung: !setcommunities [Communities] Aktuell: $1');
-$.lang.register('streamcommand.viewers', 'Es schauen aktuell $1 Personen zu.');
+$.lang.register('streamcommand.viewers', 'Aktuell schauen $1 Personen zu.');
 $.lang.register('streamcommand.online.offline', 'Stream ist offline.');
 $.lang.register('streamcommand.online.online', 'Stream ist online.');
 $.lang.register('streamcommand.createdat.404', 'Bitte füge einen Channel hinzu.');

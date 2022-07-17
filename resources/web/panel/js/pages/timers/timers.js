@@ -178,7 +178,7 @@
                     'data': tableData,
                     'columnDefs': [
                         { 'className': 'default-table', 'width': '70px', 'orderable': false, 'targets': 2 },
-                        { 'width': '3%', 'targets': 0 },
+                        { 'width': '3%', 'targets': 0 }
                     ],
                     'columns': [
                         { 'title': 'ID' },
@@ -349,7 +349,7 @@
                 'data': tableData,
                 'columnDefs': [
                     { 'className': 'default-table', 'width': '70px', 'orderable': false, 'targets': 2 },
-                    { 'width': '3%', 'targets': 0 },
+                    { 'width': '3%', 'targets': 0 }
                 ],
                 'columns': [
                     { 'title': 'ID' },

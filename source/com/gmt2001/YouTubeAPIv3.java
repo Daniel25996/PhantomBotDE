@@ -26,18 +26,17 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.net.ssl.HttpsURLConnection;
-import org.joda.time.Period;
-import org.joda.time.format.ISOPeriodFormat;
-import org.joda.time.format.PeriodFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import reactor.core.publisher.Mono;
 import tv.phantombot.PhantomBot;
 
 /**
@@ -59,7 +58,7 @@ public class YouTubeAPIv3 {
         if (instance == null) {
             instance = new YouTubeAPIv3();
         }
-        
+
         return instance;
     }
 
@@ -84,8 +83,8 @@ public class YouTubeAPIv3 {
      * as needed.
      */
     private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
-                                       String url, int responseCode, String exception,
-                                       String exceptionMessage, String jsonContent) throws JSONException {
+            String url, int responseCode, String exception,
+            String exceptionMessage, String jsonContent) throws JSONException {
         jsonObject.put("_success", success);
         jsonObject.put("_type", type);
         jsonObject.put("_url", url);
@@ -95,7 +94,7 @@ public class YouTubeAPIv3 {
         jsonObject.put("_content", jsonContent);
     }
 
-    @SuppressWarnings( {
+    @SuppressWarnings({
         "null", "SleepWhileInLoop", "UseSpecificCatch"
     })
     private JSONObject GetData(request_type type, String urlAddress) throws JSONException {
@@ -111,8 +110,8 @@ public class YouTubeAPIv3 {
             urlConn.setDoInput(true);
             urlConn.setRequestMethod("GET");
             urlConn.addRequestProperty("Content-Type", "application/json");
-            urlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 " +
-                                       "(KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
+            urlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 "
+                    + "(KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
             urlConn.connect();
 
             if (urlConn.getResponseCode() == 200) {
@@ -131,8 +130,8 @@ public class YouTubeAPIv3 {
                 if (jsonResult.getJSONObject("error").has("errors")) {
                     JSONArray jaerror = jsonResult.getJSONObject("error").getJSONArray("errors");
                     if (jaerror.getJSONObject(0).has("reason") && jaerror.getJSONObject(0).has("domain")) {
-                        com.gmt2001.Console.err.println("YouTubeAPIv3 Error: [Domain] " + jaerror.getJSONObject(0).getString("domain") + 
-                                                        " [Reason] " + jaerror.getJSONObject(0).getString("reason"));
+                        com.gmt2001.Console.err.println("YouTubeAPIv3 Error: [Domain] " + jaerror.getJSONObject(0).getString("domain")
+                                + " [Reason] " + jaerror.getJSONObject(0).getString("reason"));
                     }
                 }
             }
@@ -159,14 +158,14 @@ public class YouTubeAPIv3 {
         } finally {
             if (inputStream != null)
                 try {
-                    inputStream.close();
-                } catch (IOException ex) {
-                    fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-                    com.gmt2001.Console.err.printStackTrace(ex);
-                }
+                inputStream.close();
+            } catch (IOException ex) {
+                fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
         }
         com.gmt2001.Console.debug.logln(jsonResult.toString().replaceAll(apikey, "xxx"));
-        return(jsonResult);
+        return (jsonResult);
     }
 
     public void SetAPIKey(String apikey) {
@@ -189,21 +188,21 @@ public class YouTubeAPIv3 {
         JSONObject j = GetData(request_type.GET, "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=" + q + "&format=json");
         if (j.getBoolean("_success") && !j.toString().contains("Bad Request") && !j.toString().contains("Not Found")) {
             if (j.toString().contains("Unauthorized")) {
-                com.gmt2001.Console.debug.println("URL-Prüfung zurückgegeben nicht autorisiert (Video als privat markiert)");
+                com.gmt2001.Console.debug.println("URL Check Returned Unauthorized (Video Marked Private)");
 
-                return new String[] { q, "Video Marked Private", "" };
+                return new String[]{q, "Video Marked Private", ""};
             }
 
             if (j.getInt("_http") == 200) {
                 try {
-                    com.gmt2001.Console.debug.println("URL Check erfolgreich");
+                    com.gmt2001.Console.debug.println("URL Check Success");
 
                     String a = j.getString("title");
-                    return new String[] { q, a, "" };
+                    return new String[]{q, a, ""};
                 } catch (JSONException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
 
-                    return new String[] { "", "", "" };
+                    return new String[]{"", "", ""};
                 }
             }
         } else {
@@ -215,9 +214,9 @@ public class YouTubeAPIv3 {
                 if (j2.getInt("_http") == 200) {
                     JSONObject pageInfo = j2.getJSONObject("pageInfo");
                     if (pageInfo.getInt("totalResults") == 0) {
-                        com.gmt2001.Console.debug.println("Such-API aufgerufen: Keine Ergebnisse");
+                        com.gmt2001.Console.debug.println("Search API Called: No Results");
 
-                        return new String[] { q, "No Search Results Found", "" };
+                        return new String[]{q, "No Search Results Found", ""};
                     }
 
                     JSONArray a = j2.getJSONArray("items");
@@ -227,32 +226,36 @@ public class YouTubeAPIv3 {
                         JSONObject id = it.getJSONObject("id");
                         JSONObject sn = it.getJSONObject("snippet");
 
-                        com.gmt2001.Console.debug.println("Erfolgreiche API-Suche");
+                        com.gmt2001.Console.debug.println("Search API Success");
 
-                        return new String[] { id.getString("videoId"), sn.getString("title"), sn.getString("channelTitle") };
+                        return new String[]{id.getString("videoId"), sn.getString("title"), sn.getString("channelTitle")};
                     } else {
-                        com.gmt2001.Console.debug.println("Such-API-Fehler: Length == 0");
+                        com.gmt2001.Console.debug.println("Search API Fail: Length == 0");
 
-                        return new String[] { "", "", "" };
+                        return new String[]{"", "", ""};
                     }
                 } else {
-                    com.gmt2001.Console.debug.println("Such-API-Fehler: HTTP Code " + j2.getInt("_http"));
+                    com.gmt2001.Console.debug.println("Search API Fail: HTTP Code " + j2.getInt("_http"));
 
-                    return new String[] { "", "", "" };
+                    return new String[]{"", "", ""};
                 }
             } else {
-                com.gmt2001.Console.debug.println("Such-API-Fehler: Returned Failure");
+                com.gmt2001.Console.debug.println("Search API Fail: Returned Failure");
 
-                return new String[] { "", "", "" };
+                return new String[]{"", "", ""};
             }
         }
 
-        com.gmt2001.Console.debug.println("URL-Prüfung Fataler Fehler");
+        com.gmt2001.Console.debug.println("URL Check Fatal Error");
 
-        return new String[] { "", "", "" };
+        return new String[]{"", "", ""};
     }
 
     public int[] GetVideoLength(String id) throws JSONException {
+        return this.GetVideoLength(id, false);
+    }
+
+    public int[] GetVideoLength(String id, boolean isRetry) throws JSONException {
         com.gmt2001.Console.debug.println("Query = [" + id + "]");
 
         JSONObject j = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/videos?id=" + id + "&key=" + apikey + "&part=contentDetails");
@@ -265,44 +268,39 @@ public class YouTubeAPIv3 {
 
                     JSONObject cd = i.getJSONObject("contentDetails");
 
-                    PeriodFormatter formatter = ISOPeriodFormat.standard();
-
-                    Period d = formatter.parsePeriod(cd.getString("duration"));
+                    Duration d = Duration.parse(cd.getString("duration"));
 
                     if (cd.getString("duration").equalsIgnoreCase("PT0S")) {
-                        com.gmt2001.Console.debug.println("Video-API: Livestream erkannt");
-                        return new int[] { 123, 456, 7899 };
+                        com.gmt2001.Console.debug.println("Videos API: Live Stream Detected");
+                        return new int[]{123, 456, 7899};
                     }
 
-                    int h, m, s;
+                    com.gmt2001.Console.debug.println("Videos API Success");
 
-                    String hours = d.toStandardHours().toString().substring(2);
-                    h = Integer.parseInt(hours.substring(0, hours.indexOf("H")));
-
-                    String minutes = d.toStandardMinutes().toString().substring(2);
-                    m = Integer.parseInt(minutes.substring(0, minutes.indexOf("M")));
-
-                    String seconds = d.toStandardSeconds().toString().substring(2);
-                    s = Integer.parseInt(seconds.substring(0, seconds.indexOf("S")));
-
-                    com.gmt2001.Console.debug.println("Videos API erfolgreich");
-
-                    return new int[] { h, m, s };
+                    return new int[]{(int) d.toHours(), d.toMinutesPart(), d.toSecondsPart()};
                 } else {
-                    com.gmt2001.Console.debug.println("Videos API-Fehler: Length == 0");
-                    return new int[] { 0, 0, 0 };
+                    com.gmt2001.Console.debug.println("Videos API Fail: Length == 0");
+                    return new int[]{0, 0, 0};
                 }
+            } else if (j.getInt("_http") == 403 && !isRetry) {
+                com.gmt2001.Console.out.println("Detected 403, trying again in 5 seconds...");
+                Mono.delay(Duration.ofSeconds(5)).block();
+                return this.GetVideoLength(id, true);
             } else {
-                com.gmt2001.Console.debug.println("Videos API-Fehler: HTTP Code " + j.getInt("_http"));
-                return new int[] { 0, 0, 0 };
+                com.gmt2001.Console.debug.println("Videos API Fail: HTTP Code " + j.getInt("_http"));
+                return new int[]{0, 0, 0};
             }
         }
-        com.gmt2001.Console.debug.println("Videos API Fataler Fehler");
+        com.gmt2001.Console.debug.println("Videos API Fatal Error");
 
-        return new int[] { 0, 0, 0 };
+        return new int[]{0, 0, 0};
     }
 
     public int[] GetVideoInfo(String id) throws JSONException {
+        return this.GetVideoInfo(id, false);
+    }
+
+    public int[] GetVideoInfo(String id, boolean isRetry) throws JSONException {
         int licenseRetval = 0;
         int embedRetval = 0;
 
@@ -322,35 +320,37 @@ public class YouTubeAPIv3 {
                     licenseRetval = license.equals("creativeCommon") ? 1 : 0;
                     embedRetval = embeddable == true ? 1 : 0;
 
-                    com.gmt2001.Console.debug.println("Videos API erfolgreich");
+                    com.gmt2001.Console.debug.println("Videos API Success");
                 } else {
-                    com.gmt2001.Console.debug.println("Videos API-Fehler: Length == 0");
+                    com.gmt2001.Console.debug.println("Videos API Fail: Length == 0");
                 }
+            } else if (jsonObject.getInt("_http") == 403 && !isRetry) {
+                com.gmt2001.Console.out.println("Detected 403, trying again in 5 seconds...");
+                Mono.delay(Duration.ofSeconds(5)).block();
+                return this.GetVideoInfo(id, true);
             } else {
-                com.gmt2001.Console.debug.println("Videos API-Fehler: HTTP Code " + jsonObject.getInt("_http"));
+                com.gmt2001.Console.debug.println("Videos API Fail: HTTP Code " + jsonObject.getInt("_http"));
             }
         } else {
-            com.gmt2001.Console.debug.println("Videos API Fataler Fehler");
+            com.gmt2001.Console.debug.println("Videos API Fatal Error");
         }
 
-        return new int[] { licenseRetval, embedRetval };
+        return new int[]{licenseRetval, embedRetval};
     }
 
     private void updateQuota(long quota) {
         long storedQuota = getDBLong("quotaPoints", 0L);
         String storedDate = getDBString("quotaDate", "01-01-2000");
 
-        SimpleDateFormat datefmt = new SimpleDateFormat("dd-MM-yyyy");
-        datefmt.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
-        String currentDate = datefmt.format(new Date());
+        String currentDate = LocalDate.now(ZoneId.of("America/Los_Angeles")).format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
         if (!currentDate.equals(storedDate)) {
-            com.gmt2001.Console.debug.println("Datumsänderung erkannt: " + storedDate + " -> " + currentDate);
-            com.gmt2001.Console.debug.println("Quote zurücksetzen. Neue Quote: " + quota);
+            com.gmt2001.Console.debug.println("Date Change Detected: " + storedDate + " -> " + currentDate);
+            com.gmt2001.Console.debug.println("Resetting Quota. New Quota: " + quota);
             updateDBString("quotaDate", currentDate);
             updateDBLong("quotaPoints", quota);
         } else {
-            com.gmt2001.Console.debug.println("Aktualisieren der Quote. Neue Quote: " + (quota + storedQuota));
+            com.gmt2001.Console.debug.println("Updating Quota. New Quota: " + (quota + storedQuota));
             updateDBLong("quotaPoints", quota + storedQuota);
         }
     }
@@ -402,6 +402,5 @@ public class YouTubeAPIv3 {
     private void updateDBString(String dbKey, String dbValue) {
         PhantomBot.instance().getDataStore().SetString("youtubePlayer", "", dbKey, dbValue);
     }
-
 
 }

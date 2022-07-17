@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global toastr, swal */
+
 $(function () {
     const helpers = {};
 
@@ -273,7 +275,7 @@ $(function () {
         return helpers.handleInput(obj, function (obj) {
             let matched = obj.val().match(/^((\d{2}|\d{4})(\\|\/|\.|-)(\d{2})(\\|\/|\.|-)(\d{4}|\d{2}))$/);
 
-            if (matched === null || ((matched[6].length < 4 && matched[2].length == 2) || (matched[6].length == 2 && matched[2].length < 4))) {
+            if (matched === null || ((matched[6].length < 4 && matched[2].length === 2) || (matched[6].length === 2 && matched[2].length < 4))) {
                 return 'Please enter a valid date (mm/dd/yyyy or dd/mm/yyyy).';
             }
             return null;
@@ -290,10 +292,14 @@ $(function () {
         id = 'phantombot_' + id.substring(id.indexOf('-') + 1);
 
         if (localStorage.getItem(id) === 'false') {
-            if (parseInt(obj.data('number').replace(/,/g, '')) < 9999) {
-                obj.html(obj.data('number'));
+            let numval = obj.data('number');
+            if (numval === undefined || numval === null || numval.trim().length === 0) {
+                numval = '0';
+            }
+            if (parseInt(numval.replace(/,/g, '')) < 9999) {
+                obj.html(numval);
             } else {
-                obj.html($('.small-box').width() < 230 ? obj.data('parsed') : obj.data('number'));
+                obj.html($('.small-box').width() < 230 ? obj.data('parsed') : numval);
             }
             localStorage.setItem(id, 'true');
         } else {
@@ -313,14 +319,19 @@ $(function () {
                 isSmall = $('.small-box').width() < 230;
 
         if (item === 'true' || item === null) {
-            if (parseInt(obj.data('number').replace(/,/g, '')) < 9999) {
-                obj.html(obj.data('number'));
+            let numval = obj.data('number');
+            if (numval === undefined || numval === null || numval.trim().length === 0) {
+                numval = '0';
+            }
+            if (parseInt(numval.replace(/,/g, '')) < 9999) {
+                obj.html(numval);
             } else {
-                obj.html(isSmall ? parsed : obj.data('number'));
+                obj.html(isSmall ? parsed : numval);
             }
         } else {
             obj.html('Hidden');
         }
+
         obj.data('parsed', parsed);
     };
 
@@ -948,40 +959,8 @@ $(function () {
      * @return {Number}
      */
     helpers.getGroupIdByName = function (name, asString) {
-        let swap = helpers.isSwappedSubscriberVIP();
-        switch (name.toLowerCase()) {
-            case 'casters':
-            case 'caster':
-                return (asString ? '0' : 0);
-            case 'administrators':
-            case 'administrator':
-                return (asString ? '1' : 1);
-            case 'moderators':
-            case 'moderator':
-                return (asString ? '2' : 2);
-            case 'subscribers':
-            case 'subscriber':
-                if (swap) {
-                    return (asString ? '5' : 5);
-                } else {
-                    return (asString ? '3' : 3);
-                }
-            case 'donators':
-            case 'donator':
-                return (asString ? '4' : 4);
-            case 'vips':
-            case 'vip':
-                if (!swap) {
-                    return (asString ? '5' : 5);
-                } else {
-                    return (asString ? '3' : 3);
-                }
-            case 'regulars':
-            case 'regular':
-                return (asString ? '6' : 6);
-            default:
-                return (asString ? '7' : 7);
-        }
+        let idx =  permGroupNames.indexOf(name);
+        return (asString ? idx.toString() : parseInt(idx));
     };
 
     /*
@@ -1003,6 +982,27 @@ $(function () {
         return 'null';
     };
 
+    let updatePermGroups = function () {
+        socket.getDBTableValues('permissions_get_all_groups', 'groups', function(results){
+            permGroups;
+            for (let i = 0; i < results.length; i++) {
+                permGroups[i] = results[i].value
+                permGroupNames[i] =  i.toString() + ' (' + results[i].value + ')';
+            }
+        });
+    };
+
+    let permGroups = [];
+    let permGroupNames = [];
+
+    setTimeout(function () {
+        updatePermGroups();
+    }, 1e3);
+
+    setInterval(function () {
+        updatePermGroups();
+    }, 30e3);
+
     /*
      * @function Gets the group name by its ID.
      *
@@ -1010,33 +1010,11 @@ $(function () {
      * @return {Number}
      */
     helpers.getGroupNameById = function (id) {
-        let swap = helpers.isSwappedSubscriberVIP();
-        switch (id.toString()) {
-            case '0':
-                return 'Caster';
-            case '1':
-                return 'Administrators';
-            case '2':
-                return 'Moderators';
-            case '3':
-                if (swap) {
-                    return 'VIPs';
-                } else {
-                    return 'Subscribers';
-                }
-            case '4':
-                return 'Donators';
-            case '5':
-                if (!swap) {
-                    return 'VIPs';
-                } else {
-                    return 'Subscribers';
-                }
-            case '6':
-                return 'Regulars';
-            default:
-                return 'Viewers';
-        }
+        return permGroupNames[parseInt(id)]; //The database always holds the names in the correct order
+    };
+
+    helpers.getPermGroupNames = function () {
+        return permGroupNames;
     };
 
     /*
@@ -1051,7 +1029,7 @@ $(function () {
         let perms = [];
 
         for (let i = 0; i < json.roles.length; i++) {
-            if (json.roles[i].selected == 'true')
+            if (json.roles[i].selected === 'true')
                 roles.push(json.roles[i].name);
         }
 
@@ -1060,7 +1038,7 @@ $(function () {
         }
 
         for (let i = 0; i < json.permissions.length; i++) {
-            if (json.permissions[i].selected == 'true')
+            if (json.permissions[i].selected === 'true')
                 perms.push(json.permissions[i].name);
         }
 
@@ -1168,14 +1146,14 @@ $(function () {
 
                 let html = '';
                 if (version.startsWith("nightly-")) {
-                    html = 'Nightly build ' + version.slice(8) + ' of PhantomBot is now availabel to download! <br>' +
+                    html = 'Nightly build ' + version.slice(8) + ' of PhantomBot is now available to download! <br>' +
                             'You can grab your own copy of nightly build ' + version.slice(8) + ' of PhantomBot ' +
                             $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
                             '<b>Please check ' +
                             $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
                             ' on how to properly update PhantomBot.</b>';
                 } else {
-                    html = 'Version ' + version + ' of PhantomBot is now availabel to download! <br>' +
+                    html = 'Version ' + version + ' of PhantomBot is now available to download! <br>' +
                             'You can view the changes of this version ' +
                             $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://github.com/PhantomBot/PhantomBot/releases/' + version).append('here')[0].outerHTML + '. <br>' +
                             'You can grab your own copy of version ' + version + ' of PhantomBot ' +

@@ -308,6 +308,9 @@ $.lang.register('cooldown.coolcom.err', 'Die minimale Abklingzeit, die eingestel
 $.lang.register('cooldown.coolcom.setGlobal', 'Abklingzeit für Befehl !$1 wurde global auf $2 Sekunden gesetzt.');
 $.lang.register('cooldown.coolcom.setUser', 'Abklingzeit für Befehl !$1 wurde individuell für jeden Benutzer auf $2 Sekunden gesetzt.');
 $.lang.register('cooldown.coolcom.setCombo', 'Abklingzeit für Befehl !$1 wurde global auf $2 Sekunden und zu $3 Sekunden für jeden Benutzer individuell gesetzt.');
+$.lang.register('cooldown.coolcom.setGlobalModsSkip', 'Die Abklingzeit für den Befehl !$1 wurde global auf $2 Sekunden gesetzt. Moderatoren sind von der Abklingzeit nicht betroffen.');
+$.lang.register('cooldown.coolcom.setUserModsSkip', 'Die Abklingzeit für den Befehl !$1 wurde für jeden Benutzer individuell auf $2 Sekunden gesetzt. Moderatoren sind von der Abklingzeit nicht betroffen.');
+$.lang.register('cooldown.coolcom.setComboModsSkip', 'Die Abklingzeit für den Befehl !$1 wurde global auf $2 Sekunden und individuell für jeden Benutzer auf $3 Sekunden gesetzt. Moderatoren sind von der Abklingzeit nicht betroffen.');
 $.lang.register('cooldown.coolcom.remove', 'Abklingzeit für Befehl !$1 wurde entfernt.');
 $.lang.register('cooldown.cooldown.usage', 'Verwendung: !cooldown [togglemoderators / setdefault]');
 $.lang.register('cooldown.default.set', 'Die Standardabklingzeit für Befehle ohne diese, wurde auf $1 Sekunden gesetzt.');
@@ -346,7 +349,7 @@ $.lang.register('init.blacklist.usage', 'Verwendung: !$1 blacklist [add / remove
 $.lang.register('init.blacklist.add.usage', 'Verwendung: !$1 blacklist add (Nutzername)');
 $.lang.register('init.blacklist.added', '$1 zur Bot-Verbotsliste hinzugefügt!');
 $.lang.register('init.blacklist.remove.usage', 'Verwendung: !$1 blacklist remove (Nutzername)');
-$.lang.register('init.blacklist.err', 'Dieser Nuter ist nicht auf der Blacklist.');
+$.lang.register('init.blacklist.err', 'Dieser Nutzer ist nicht auf der Blacklist.');
 $.lang.register('init.blacklist.removed', '$1 von Bot-Verbotsliste entfernt!');
 $.lang.register('init.mod.toggle.on.pay', 'Moderatoren+ müssen nun für Befehle bezahlen.');
 $.lang.register('init.mod.toggle.off.pay', 'Moderatoren+ müssen nun nicht mehr für Befehle bezahlen.');
@@ -391,7 +394,7 @@ $.lang.register('permissions.grouppoints.showgroup.online', 'Berechtigung $1 erh
 $.lang.register('permissions.grouppoints.showgroup.offline', 'Berechtigung $1 erhielt $2 $3 Offline.');
 $.lang.register('permissions.grouppoints.set.online', 'Lege die Berechtigung $1 fest, um $2 $3 online zu erhalten.');
 $.lang.register('permissions.grouppoints.set.offline', 'Lege die Berechtigung $1 fest, um $2 $3 offline zu erhalten.');
-$.lang.register('permissions.grouppoints.set.sub.error', 'Sie können niemanden zum Abonnenten befördern, dieser Status stammt von Twitch.');
+$.lang.register('permissions.grouppoints.set.sub.error', 'Du kannst niemanden zum Abonnenten befördern, dieser Status stammt von Twitch.');
 $.lang.register('permissions.swapsubscribervip.normal', 'Abonnenten werden jetzt höher als VIPs eingestellt (Standard).');
 $.lang.register('permissions.swapsubscribervip.swapped', 'VIPs werden jetzt als höher als Abonnenten festgelegt.');
 $.lang.register('ignorelist', 'Aktuell ignorierte Bots: $1');

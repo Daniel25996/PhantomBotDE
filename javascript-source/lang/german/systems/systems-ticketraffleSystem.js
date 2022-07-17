@@ -21,13 +21,13 @@ $.lang.register('ticketrafflesystem.msg.need.to.be.following', 'Du musst dem Kan
 $.lang.register('ticketrafflesystem.raffle.opened', 'Die Ticket-Verlosung ist nun geöffnet! Kaufe bis zu $1 Tickets mit !tickets - du kannst mehrmals kaufen. Tickets kosten $2. $3');
 $.lang.register('ticketrafflesystem.err.raffle.not.opened', 'Derzeit ist keine Ticket-Verlosung geöffnet!');
 $.lang.register('ticketrafflesystem.draw.usage', 'Verwendung: !traffle draw [Anzahl (Standard=1)] [Loyalitäts Punktepreis (Standard = 0)]');
-$.lang.register('ticketrafflesystem.err.already.drawn', 'Die Gewinner:innen wurden bereits ausgelost.');
+$.lang.register('ticketrafflesystem.err.already.drawn', 'Der/Die Gewinner:innen wurden bereits ausgelost.');
 $.lang.register('ticketrafflesystem.raffle.closed', 'Die Ticketverlosung ist nun beendet. Verwende "!traffle draw", um die Gewinnenden zu ziehen.');
 $.lang.register('ticketrafflesystem.raffle.closed.and.draw', 'Die Ticketverlosung ist nun geschlossen.');
 $.lang.register('ticketrafflesystem.raffle.close.err', 'Die Ticketverlosung ist beendet. Niemand hat teilgenommen.');
 $.lang.register('ticketrafflesystem.winner.single', 'Gewinner:in dieser Ticket-Verlosung ist: $1! $2');
 $.lang.register('ticketrafflesystem.winner.multiple', 'Die Gewinner:innen dieser Ticketverlosung sind: $1!');
-$.lang.register('ticketrafflesystem.winner.single.award', 'Der Gewinner wurde ausgezeichnet: $1!');
+$.lang.register('ticketrafflesystem.winner.single.award', 'Der/Die Gewinner:in wurde ausgezeichnet: $1!');
 $.lang.register('ticketrafflesystem.winner.multiple.award', 'Die Gewinner wurden ausgezeichnet: $1 jeder!');
 $.lang.register('ticketrafflesystem.only.buy.amount', 'Du kannst nur $1 Ticket(s) kaufen.');
 $.lang.register('ticketrafflesystem.limit.hit', 'Du kannst nicht mehr als $1 Ticket(s) kaufen.');

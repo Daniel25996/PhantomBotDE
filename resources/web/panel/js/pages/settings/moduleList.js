@@ -59,7 +59,7 @@ $(run = function() {
                     'type': 'button',
                     'class': 'btn btn-xs btn-' + (twitchModules[i].status ? 'success' : 'warning'),
                     'data-toggle': 'tooltip',
-                    'title': (twitchModules[i].status ? 'Klick hier, um das Modul zu deaktivieren.' : 'Klick hier, um das Modul zu aktivieren.') ,
+                    'title': (twitchModules[i].status ? 'Klick hier, um das Modul zu deaktivieren.' : 'Klick hier, um das Modul zu aktivieren.'),
                     'style': 'float: right',
                     'data-module': twitchModules[i].module,
                     'data-mtoggle': twitchModules[i].status,

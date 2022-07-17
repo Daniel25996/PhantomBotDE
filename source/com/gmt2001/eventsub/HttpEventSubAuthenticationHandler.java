@@ -31,10 +31,7 @@ import io.netty.handler.codec.http.HttpUtil;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import io.netty.util.CharsetUtil;
 import java.nio.charset.Charset;
-import java.time.ZoneOffset;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.ZonedDateTime;
 import tv.phantombot.PhantomBot;
 
 /**
@@ -42,7 +39,7 @@ import tv.phantombot.PhantomBot;
  *
  * @author gmt2001
  */
-class HttpEventSubAuthenticationHandler implements HttpAuthenticationHandler {
+final class HttpEventSubAuthenticationHandler implements HttpAuthenticationHandler {
 
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
@@ -53,10 +50,8 @@ class HttpEventSubAuthenticationHandler implements HttpAuthenticationHandler {
 
         boolean authenticated = HMAC.compareHmacSha256(EventSub.getSecret(), id + timestamp + body, signature);
 
-        Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
-        c.add(Calendar.MINUTE, -10);
-        Date ts = EventSub.parseDate(timestamp);
-        if (ts.before(c.getTime()) || EventSub.instance().isDuplicate(id, ts)) {
+        ZonedDateTime ts = EventSub.parseDate(timestamp);
+        if (ts.isBefore(ZonedDateTime.now().minusMinutes(10)) || EventSub.instance().isDuplicate(id, ts)) {
             authenticated = false;
         }
 
@@ -70,7 +65,7 @@ class HttpEventSubAuthenticationHandler implements HttpAuthenticationHandler {
             if (PhantomBot.getEnableDebugging()) {
                 com.gmt2001.Console.debug.println("403");
                 com.gmt2001.Console.debug.println("Expected: >" + signature + "<");
-                com.gmt2001.Console.debug.println("Bekam: >" + HMAC.calcHmacSha256(EventSub.getSecret(), id + timestamp + body) + "<");
+                com.gmt2001.Console.debug.println("Got: >" + HMAC.calcHmacSha256(EventSub.getSecret(), id + timestamp + body) + "<");
             }
 
             res.headers().set(CONNECTION, CLOSE);
@@ -82,6 +77,6 @@ class HttpEventSubAuthenticationHandler implements HttpAuthenticationHandler {
 
     @Override
     public void invalidateAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
-        throw new UnsupportedOperationException("Wird von diesem Authentifizierungs-Handler nicht unterstützt.");
+        throw new UnsupportedOperationException("Not supported by this authentication handler.");
     }
 }

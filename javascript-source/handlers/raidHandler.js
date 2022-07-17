@@ -200,7 +200,7 @@
 
             if (message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/g)) {
                 if (!$.audioHookExists(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1])) {
-                    $.log.error('Audio-Hook konnte nicht wiedergegeben werden: Audio-Hook existiert nicht.');
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
                 } else {
                     $.alertspollssocket.triggerAudioPanel(message.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[1]);
                 }
@@ -356,14 +356,14 @@
      * @event initReady
      */
     $.bind('initReady', function () {
-        $.registerChatCommand('./handlers/raidHandler.js', 'raid', 1);
-        $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'toggle', 1);
-        $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'setreward', 1);
-        $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'lookup', 2);
-        $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'setincomingmessage', 1);
-        $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'setnewincomingmessage', 1);
-        $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'setoutgoingmessage', 1);
-        $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'setoutgoingmessagespam', 1);
+        $.registerChatCommand('./handlers/raidHandler.js', 'raid', $.PERMISSION.Admin);
+        $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'toggle', $.PERMISSION.Admin);
+        $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'setreward', $.PERMISSION.Admin);
+        $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'lookup', $.PERMISSION.Mod);
+        $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'setincomingmessage', $.PERMISSION.Admin);
+        $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'setnewincomingmessage', $.PERMISSION.Admin);
+        $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'setoutgoingmessage', $.PERMISSION.Admin);
+        $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'setoutgoingmessagespam', $.PERMISSION.Admin);
     });
 
     /* Export to API */

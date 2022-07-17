@@ -23,4 +23,4 @@ $.lang.register('discord.cooldown.default.set', 'Die Standardabklingzeit für Be
 $.lang.register('discord.cooldown.default.usage', 'Verwendung: !cooldown setdefault [Sekunden] - Erstelle eine Abklingzeit für Befehle ohne eine.');
 $.lang.register('discord.cooldown.coolcom.setGlobal', 'Die Abklingzeit für den Befehl !$1 wurde global auf $2 Sekunden gesetzt.');
 $.lang.register('discord.cooldown.coolcom.setUser', 'Die Abklingzeit für den Befehl !$1 wurde für jeden Benutzer individuell auf $2 Sekunden gesetzt.');
-$.lang.register('discord.cooldown.coolcom.setCombo', 'Die Abklingzeit für den Befehl !$1 wurde global auf 2 $ Sekunden und individuell für jeden Benutzer auf $3 Sekunden gesetzt.');
+$.lang.register('discord.cooldown.coolcom.setCombo', 'Die Abklingzeit für den Befehl !$1 wurde global auf 2$ Sekunden und individuell für jeden Benutzer auf $3 Sekunden gesetzt.');

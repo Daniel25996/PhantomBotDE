@@ -32,5 +32,5 @@ $.lang.register('discord.subscribehandler.channel.usage', 'Verwendung: !subscrib
 $.lang.register('discord.subscribehandler.channel.set', 'Abonnentenankündigungen werden nun im Kanal $1 gemacht.');
 $.lang.register('discord.subscribehandler.resubscriber.embedtitle', 'Neuer Re-Sub!');
 $.lang.register('discord.subscribehandler.subscriber.embedtitle', 'Neuer Sub!');
-$.lang.register('discord.subscribehandler.giftsubscriber.embedtitle', 'Neues Geschenk-Abo!');
-$.lang.register('discord.subscribehandler.primesubscriber.embedtitle', 'Neuer Prime Subscriber!');
+$.lang.register('discord.subscribehandler.giftsubscriber.embedtitle', 'Neues Geschenk-Sub!');
+$.lang.register('discord.subscribehandler.primesubscriber.embedtitle', 'Neuer Prime Abonnent!');

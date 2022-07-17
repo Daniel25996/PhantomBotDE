@@ -145,7 +145,7 @@ $(function() {
                         tables: ['permcom', 'cooldown', 'pricecom', 'paycom', 'disabledCommands'],
                         keys: [command, command, command, command, command]
                     }, function(e) {
-                        let cooldownJson = (e.cooldown === null ? { globalSec: -1, userSec: -1 } : JSON.parse(e.cooldown));
+                        let cooldownJson = (e.cooldown === null ? { globalSec: -1, userSec: -1, modsSkip: false } : JSON.parse(e.cooldown));
 
                         // Get advance modal from our util functions in /utils/helpers.js
                         helpers.getAdvanceModal('edit-command', 'Befehl bearbeiten', 'Speichern', $('<form/>', {
@@ -155,7 +155,7 @@ $(function() {
                         .append(helpers.getInputGroup('command-name', 'text', 'Befehl', '', '!' + command, 'Name des Befehls. Dieser kann nicht bearbeitet werden.', true))
                         // Append a select option for the command permission.
                         .append(helpers.getDropdownGroup('command-permission', 'Benutzerlevel', helpers.getGroupNameById(e.permcom),
-                            ['Caster', 'Administrator', 'Moderator', 'Abonnent', 'Spender', 'VIP', 'Stammzuschauer', 'Zuschauer']))
+                            helpers.getPermGroupNames()))
                         // Add an advance section that can be opened with a button toggle.
                         .append($('<div/>', {
                             'class': 'collapse',
@@ -175,6 +175,9 @@ $(function() {
                                 // Append input box for per-user cooldown.
                                 .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Pro-Benutzer Abklingzeit (Sekunden)', '-1', cooldownJson.userSec,
                                     'Abklingzeit des Befehls pro Benutzer in Sekunden. -1 entfernt die Abklingzeit pro Benutzer.'))
+                                 // Append input box for mods skip cooldown.
+                                .append(helpers.getCheckBox('command-cooldown-modsskip', cooldownJson.modsSkip, 'Mods überspringen Abklingzeit',
+                                    'Wenn diese Option aktiviert ist, sind Moderatoren von der Abklingzeit für diesen Befehl ausgenommen.'))
                                 .append(helpers.getCheckBox('command-disabled', e.disabledCommands !== null, 'Deaktiviert',
                                     'Wenn diese Option aktiviert ist, kann der Befehl nicht im Chat verwendet werden.'))
                                 // Callback function to be called once we hit the save button on the modal.
@@ -184,6 +187,7 @@ $(function() {
                                 commandReward = $('#command-reward'),
                                 commandCooldownGlobal = $('#command-cooldown-global'),
                                 commandCooldownUser = $('#command-cooldown-user'),
+                                commandCooldownModsSkip = $('#command-cooldown-modsskip').is(':checked') ? '1' : '0',
                                 commandDisabled = $('#command-disabled').is(':checked');
 
                             // Handle each input to make sure they have a value.
@@ -203,7 +207,7 @@ $(function() {
                                         updateCommandDisabled(command, commandDisabled, function () {
                                             // Add the cooldown to the cache.
                                             socket.wsEvent('default_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
-                                                ['add', command, commandCooldownGlobal.val(), commandCooldownUser.val()], function() {
+                                                ['add', command, commandCooldownGlobal.val(), commandCooldownUser.val(), commandCooldownModsSkip], function() {
                                                 // Edit the command permission.
                                                 socket.sendCommand('default_command_permisison_update', 'permcomsilent ' + command + ' ' +
                                                     helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function() {

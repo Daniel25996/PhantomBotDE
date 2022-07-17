@@ -88,7 +88,7 @@ public class TwitterCache implements Runnable {
         try {
             Thread.sleep(20 * 1000);
         } catch (InterruptedException ex) {
-            com.gmt2001.Console.err.println("TwitterCache::run: Der Initial-Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
+            com.gmt2001.Console.err.println("TwitterCache::run: Failed to execute initial sleep [InterruptedException]: " + ex.getMessage());
         }
 
         while (!killed) {
@@ -101,7 +101,7 @@ public class TwitterCache implements Runnable {
             try {
                 Thread.sleep(15 * 1000);
             } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.println("TwitterCache::run: Sleep konnte nicht ausgeführt werden [InterruptedException]: " + ex.getMessage());
+                com.gmt2001.Console.err.println("TwitterCache::run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
             }
         }
     }

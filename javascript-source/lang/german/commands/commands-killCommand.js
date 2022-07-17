@@ -17,7 +17,7 @@
 
 $.lang.register('killcommand.self.1', '$1 hat es irgendwie geschafft, sich selbst zu töten.');
 $.lang.register('killcommand.self.2', '$1 starb an einer unbekannten Ursache.');
-$.lang.register('killcommand.self.3', '$1 wurde von einem Felsbrocken, oder Trümmer davon, zerquetscht.');
+$.lang.register('killcommand.self.3', '$1 wurde von einem Felsbrocken zerquetscht.');
 $.lang.register('killcommand.self.4', '$1 explodierte.');
 $.lang.register('killcommand.self.5', '$1 vergaß wie man atmet.');
 $.lang.register('killcommand.self.6', '$1 hat gelernt, dass die Zellatmung Sauerstoff und keinen Sand benötigt.');
@@ -25,14 +25,14 @@ $.lang.register('killcommand.self.7', '$1 starb.');
 $.lang.register('killcommand.self.8', '$1 hat versucht, sich mit einem wilden Grizzlybären anzufreunden.');
 $.lang.register('killcommand.self.9', '$1 erstickte.');
 $.lang.register('killcommand.self.10', '$1 hat die Grenzen von Raum und Zeit erforscht und ging verloren.');
-$.lang.register('killcommand.self.11', '$1 impodierte.');
+$.lang.register('killcommand.self.11', '$1 implodierte.');
 $.lang.register('killcommand.self.12', '$1 ertrank.');
 $.lang.register('killcommand.self.13', '$1 hat aufgehört zu sein.');
 $.lang.register('killcommand.self.14', '$1 machte BOOOOM!');
-$.lang.register('killcommand.self.15', '$1 hat es geschaft, sich mit 0 zu teilen!');
-$.lang.register('killcommand.self.16', '$1 machte einen langen Spaziergang auf einem kurzen Pier.');
+$.lang.register('killcommand.self.15', '$1 hat herausgefunden, sich mit 0 zu teilen!');
+$.lang.register('killcommand.self.16', '$1 machte einen langen Spaziergang auf einem kurzen Steg.');
 $.lang.register('killcommand.self.17', '$1 fiel von einer Leiter.');
-$.lang.register('killcommand.self.18', '$1 fiel von einerm Baum.');
+$.lang.register('killcommand.self.18', '$1 fiel von einem Baum.');
 $.lang.register('killcommand.self.19', '$1 fiel von einem Dach.');
 $.lang.register('killcommand.self.20', '$1 ging in Flammen auf.');
 $.lang.register('killcommand.self.21', '$1 wurde vom Blitz getroffen.');
@@ -41,15 +41,15 @@ $.lang.register('killcommand.self.23', '$1 wurde erstochen.');
 $.lang.register('killcommand.self.24', '$1 wurde ein Opfer der Schwerkraft.');
 $.lang.register('killcommand.self.25', '$1\'s Todessehnsucht wurde erhört.');
 $.lang.register('killcommand.self.26', '$1\'s lebenswichtige Organe sind geplatzt.');
-$.lang.register('killcommand.self.27', '$1\'s Innereien wurden nach aussen gekehrt.');
+$.lang.register('killcommand.self.27', '$1\'s Innereien wurden nach außen gekehrt.');
 $.lang.register('killcommand.self.28', '$1 wurde zu Tode geleckt! Fragt nicht.');
 $.lang.register('killcommand.self.29', '$1 wurde gelöscht.');
 $.lang.register('killcommand.self.30', '$1 musste geteilt werden. Buchstäblich...');
 $.lang.register('killcommand.self.31', '$1 ist verblutet.');
-$.lang.register('killcommand.self.32', '$1, Essen ist eine Gabe Gottes. Gewürze eine gabe des Teufels. Ich glaube, es war ein wenig zu scharf für dich!');
-$.lang.register('killcommand.self.33', '$1 ist durch eine Fahrzeugexplosion gestorben!');
+$.lang.register('killcommand.self.32', '$1 Essen ist ein Geschenk Gottes. Gewürze eine gabe des Teufels. Ich glaube, es war ein wenig zu scharf für dich!');
+$.lang.register('killcommand.self.33', '$1 ist bei der Explosion eines Fahrzeuges gestorben!');
 $.lang.register('killcommand.self.34', '$1 hat sich selbst getötet!');
-$.lang.register('killcommand.self.35', '$1 wurde von einer Landmine in Luft gesprengt!');
+$.lang.register('killcommand.self.35', '$1 wurde von einer Landmine in die Luft gesprengt!');
 $.lang.register('killcommand.self.36', '$1 starb, an zu langem Luft anhalten!');
 $.lang.register('killcommand.self.37', '$1 wurde vom Feuer gebraten.');
 $.lang.register('killcommand.self.38', '$1 wurde von einer Rakete in die Luft gejagt!');
@@ -61,24 +61,25 @@ $.lang.register('killcommand.self.43', '$1 erfuhr kinetische Energie.');
 $.lang.register('killcommand.self.44', '$1 flog in die Luft.');
 $.lang.register('killcommand.self.45', '$1 fiel in eine Feuerstelle.');
 $.lang.register('killcommand.self.46', '$1 fiel aus einem Flugzeug.');
-$.lang.register('killcommand.self.47', '$1 ging in Flammen auf..');
+$.lang.register('killcommand.self.47', '$1 ging in Flammen auf.');
 $.lang.register('killcommand.self.48', '$1 verdorrte.');
-$.lang.register('killcommand.self.49', '$1 wollte Fallshirmspringen und vergaß den Fallschirm.');
+$.lang.register('killcommand.self.49', '$1 wollte Fallschirmspringen und vergaß den Fallschirm.');
 $.lang.register('killcommand.self.50', '$1 ist spontan verbrannt.');
-$.lang.register('killcommand.self.51', '$1 wurde von einem Geistesblitz getroffen, im wahrsten Sinne des Wortes.');
-$.lang.register('killcommand.self.52', '1 beendete alles. Leb wohl grausame Welt!');
+$.lang.register('killcommand.self.51', '$1 wurde beim Kacken vom Blitz erschlagen.');
+$.lang.register('killcommand.self.52', '$1 beendete alles. Leb wohl grausame Welt!');
 $.lang.register('killcommand.self.53', '$1 hat den Ereignishorizont überschritten.');
+$.lang.register('killcommand.self.54', '$1 versuchte nach 30 RedBull zu fliegen und fiel von einem Hochhaus.');
 
 
 $.lang.register('killcommand.other.1', '$1 ermordete $2 mit dem Horn eines Einhorns!');
 $.lang.register('killcommand.other.2', '$2 wurde von $1 getötet!');
-$.lang.register('killcommand.other.3', '$2 wurde von $1 als Hühnchen verkleidet und anschließend zerfleischt.');
+$.lang.register('killcommand.other.3', '$2 wurde von $1 zerfleischt, der als Huhn verkleidet war.');
 $.lang.register('killcommand.other.4', '$2 wurde von $1 auseinandergenommen, Verdaaaammt!');
 $.lang.register('killcommand.other.5', '$2 wurde von $1, mithilfe eines Autos brutal ermordet!');
-$.lang.register('killcommand.other.6', '$1 überschüttete $2 mit Fleischsaft und warf ihn in einen Käfig mit einem hungrigen Löwen.');
+$.lang.register('killcommand.other.6', '$2 wurde von $1 mit Fleischsaft überschüttet und in einen Käfig mit einem hungrigen Löwen geworfen.');
 $.lang.register('killcommand.other.7', '$1 veränderte die Gene einer Venusfliegenfalle, damit sie richtig groß wird und sperrte $2 mit ihr in einen Raum.');
 $.lang.register('killcommand.other.8', '$1 versohlte $2\'s Hintern, immer und immer wieder.');
-$.lang.register('killcommand.other.9', '$1 hat $2\'s Name auf die Todesliste gesetzt.');
+$.lang.register('killcommand.other.9', '$1 hat $2\'s Namen auf die Todesliste gesetzt.');
 $.lang.register('killcommand.other.10', '$1 befreite $2 aus dessen Elend.');
 $.lang.register('killcommand.other.11', '$1 zerstörte $2!');
 $.lang.register('killcommand.other.12', '$1 attackierte $2 mit einem riesigen Dildo!');
@@ -88,7 +89,7 @@ $.lang.register('killcommand.other.15', '$1 hat $2 mit einem rostigen Göffel an
 $.lang.register('killcommand.other.16', '$1 stahl ein Auto, bekannt als \'KITT\' und überfuhr damit $2.');
 $.lang.register('killcommand.other.17', '$1 kitzelte $2 zu Tode!');
 $.lang.register('killcommand.other.18', '$2\'s Schädel wurde von $1 gespalten!');
-$.lang.register('killcommand.other.19', '$2 liegt nach einem tragischen Unfall, in den $1 und einige Göffel involviert waren, zerstückelt in der Gegend rum.');
+$.lang.register('killcommand.other.19', '$2 liegt nach einem tragischen Unfall, in dem $1 und einige Göffel involviert waren, zerstückelt in der Gegend rum.');
 $.lang.register('killcommand.other.20', '$1 leckte $2, bis $2 matschig war, jaaaa... matschig!');
 $.lang.register('killcommand.other.21', '$1 katapultierte eine unglaubliche Menge von rostigen Göffeln auf $2. $2 starb.');
 $.lang.register('killcommand.other.22', '$1 gingen die Göffel und Einhornhörner aus, um $2 zu töten und verwendete stattdessen einen rostigen Kleiderbügel.');
@@ -102,7 +103,7 @@ $.lang.register('killcommand.other.33', '$1 schlug den letzten Schlag und beende
 
 /** Add "(jail)" at the start of the lang for the user to get timed out for the jailTime you set. You can also use $3 for the jail timeout time to be displayed. $4 = botname. */
 $.lang.register('killcommand.other.29', '(jail) $1 versuchte $2 mit einem Einhornhorn zu töten, aber die Polizei tauchte auf, bevor $1 dazu kam.');
-$.lang.register('killcommand.other.30', '(jail) $1 versuchte, $2 zu ermorden, aber das SEK versteckte sich im Gebüsch und sprang auf $1, bevor es möglich war.');
+$.lang.register('killcommand.other.30', '(jail) $1 versuchte, $2 zu ermorden, aber das SEK versteckte sich im Gebüsch und sprang auf $1, bevor es getan werden konnte.');
 $.lang.register('killcommand.other.31', '(jail) $1 wollte $2 mit einem Hammer schlagen. Allerdings war $2 ein verdeckter Ermittler!');
 $.lang.register('killcommand.other.32', '(jail) $4 wurde von $1 bezahlt, um $2 zu ermorden. $1\'s Plan scheiterte, weil $4 tatsächlich ein verdeckter Polizist war!');
 $.lang.register('killcommand.other.44', '(jail) $1 griff $2 mit einem Plastiklöffel an, aber plötzlich umgab ein Schwarm der Polizei $1 und und wurde verhaftet.');
@@ -121,7 +122,7 @@ $.lang.register('killcommand.other.42', '$1 umarmte $2 etwas zu fest.');
 $.lang.register('killcommand.other.43', '$1 schickte $2 zu einem tollen Bauernhof auf dem Land.');
 $.lang.register('killcommand.other.44', '$1 verarbeitete $2 zu Schildkrötensuppe.');
 
-$.lang.register('killcommand.jail.timeout.usage', 'Verwendung: !jailtimeouttime [Länge in Sekunden]');
+$.lang.register('killcommand.jail.timeout.usage', 'Verwendung: !jailtimeouttime (Länge in Sekunden)');
 $.lang.register('killcommand.jail.timeout.set', 'Gefängnisstrafe wurde auf $1 Sekunden festgelegt.');
 
 $.lang.register('killcommand.console.loaded', 'Todesbefehl-Nachrichten gefunden: $1 Selbst, $2 Andere.');

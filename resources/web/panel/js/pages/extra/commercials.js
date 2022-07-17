@@ -29,7 +29,7 @@ $(run = function() {
         if (e['commercialtimer'] === 'true') {
             $('#commercials-autotimer-on').html($('<i/>', {
                 'class': 'fa fa-check'
-            })).append('&nbsp; Autotimer aktualisieren');
+            })).append('&nbsp; Update Autotimer');
             $('#commercials-autotimer-off').removeClass('hidden');
         }
 
@@ -65,7 +65,7 @@ $(function() {
                     // Update the button.
                     $('#commercials-autotimer-on').html($('<i/>', {
                         'class': 'fa fa-check'
-                    })).append('&nbsp; Autotimer aktualisieren');
+                    })).append('&nbsp; Update Autotimer');
                     $('#commercials-autotimer-off').removeClass('hidden');
                 });
         }

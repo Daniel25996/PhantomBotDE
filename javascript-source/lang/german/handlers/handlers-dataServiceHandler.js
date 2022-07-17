@@ -22,7 +22,7 @@ $.lang.register('dataservicehandler.update.status.no_auth_key', 'Es wurde kein A
 $.lang.register('dataservicehandler.update.status.launch_fail', 'Die Remote API konnte nicht gestartet werden.');
 $.lang.register('dataservicehandler.update.status.rate_limit', 'Fehler beim Aktualisieren aufgrund von Geschwindigkeitsbeschränkungen.');
 
-$.lang.register('dataservicehandler.delete.status.success', 'Alle Account- und PhantomBotDE-Daten wurden vom Remote-Server entfernt.');
+$.lang.register('dataservicehandler.delete.status.success', 'Alle Account- und PhantomBot-Daten wurden vom Remote-Server entfernt.');
 $.lang.register('dataservicehandler.delete.status.authentication_failed', 'Authentifizierung fehlgeschlagen, API-Schlüssel prüfen.');
 $.lang.register('dataservicehandler.delete.status.no_such_user', 'Kein solcher Benutzer im Remote-Service definiert.');
 $.lang.register('dataservicehandler.delete.status.no_auth_key', 'Es wurde kein Autorisierungsschlüssel konfiguriert.');

@@ -48,7 +48,7 @@
                 subAction = subAction.replace(action, '').toLowerCase();
                 $.inidb.set('wordCounter', subAction, 0);
                 $.say(subAction + $.lang.get('wordcounter.added'));
-                $.log.event(sender + ' fügte "' + subAction + '" zu der Wortzählerliste hinzu');
+                $.log.event(sender + ' added "' + subAction + '" to the word counter list');
             }
 
             /**
@@ -66,7 +66,7 @@
                 subAction = subAction.replace(action, '').toLowerCase();
                 $.inidb.del('wordCounter', subAction);
                 $.say(subAction + $.lang.get('wordcounter.removed'));
-                $.log.event(sender + ' entfernte "' + subAction + '" von der Wortzählerliste');
+                $.log.event(sender + ' removed "' + subAction + '" from the word counter list');
             }
         }
 
@@ -109,7 +109,7 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        $.registerChatCommand('./handlers/wordCounter.js', 'wordcounter', 1);
-        $.registerChatCommand('./handlers/wordCounter.js', 'count', 7);
+        $.registerChatCommand('./handlers/wordCounter.js', 'wordcounter', $.PERMISSION.Admin);
+        $.registerChatCommand('./handlers/wordCounter.js', 'count', $.PERMISSION.Viewer);
     });
 })();
