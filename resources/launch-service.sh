@@ -127,7 +127,7 @@ if [[ ! -x "${JAVA}" ]]; then
     exit 1
 fi
 
-if [[ ! -O "PhantomBot.jar" ]]; then
+if [[ ! -O "PhantomBotDE.jar" ]]; then
     echo "The directory is not chown by the service user"
     echo "Please run the following command to fix this:"
     echo "   sudo chown ${EUID} ${pwd}"
