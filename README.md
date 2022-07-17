@@ -6,7 +6,7 @@
 | Versionen | |
 |--------------|---|
 | PhantomBot   | [![](https://img.shields.io/github/release/phantombot/phantombot.svg?style=for-the-badge)](https://github.com/PhantomBot/PhantomBot/releases/latest) |
-| PhantomBotDE | [![](https://img.shields.io/github/release-pre/PhantomBotDE/PhantomBotDE.svg?style=for-the-badge)](https://github.com/PhantomBotDE/PhantomBotDE/releases/latest) |
+| PhantomBotDE | [![](https://img.shields.io/github/release/Daniel25996/PhantomBotDE.svg?style=for-the-badge)](https://github.com/Daniel25996/PhantomBotDE/releases/latest) |
 
 ![Java CI](https://github.com/PhantomBotDE/PhantomBotDE/workflows/Java%20CI/badge.svg)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/e78b35af8f2442d7a8c5040c41164739)](https://www.codacy.com/gh/PhantomBot/PhantomBot/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=PhantomBot/PhantomBot&amp;utm_campaign=Badge_Grade)
