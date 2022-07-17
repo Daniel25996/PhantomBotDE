@@ -35,7 +35,7 @@ import tv.phantombot.RepoVersion;
  */
 public final class GitHubAPIv3 {
 
-    private static final String BASE_URL = "https://api.github.com/repos/PhantomBotDE/PhantomBotDE";
+    private static final String BASE_URL = "https://api.github.com/repos/Daniel25996/PhantomBotDE";
 
     private GitHubAPIv3() {
     }
@@ -99,7 +99,7 @@ public final class GitHubAPIv3 {
         String os = PhantomBot.getOsSuffix();
 
         JSONArray assetsArray = jsonObject.getJSONArray("assets");
-        Pattern p = Pattern.compile(".*PhantomBot-([0-9]+\\.?)+" + os + "\\.zip", Pattern.CASE_INSENSITIVE);
+        Pattern p = Pattern.compile(".*PhantomBotDE-([0-9]+\\.?)+" + os + "\\.zip", Pattern.CASE_INSENSITIVE);
         int i;
         boolean found = false;
         for (i = 0; i < assetsArray.length(); i++) {
@@ -110,7 +110,7 @@ public final class GitHubAPIv3 {
         }
 
         if (!found) {
-            p = Pattern.compile(".*PhantomBot-([0-9]+\\.?)+\\.zip", Pattern.CASE_INSENSITIVE);
+            p = Pattern.compile(".*PhantomBotDE-([0-9]+\\.?)+\\.zip", Pattern.CASE_INSENSITIVE);
             for (i = 0; i < assetsArray.length(); i++) {
                 if (assetsArray.getJSONObject(i).has("browser_download_url") && p.matcher(assetsArray.getJSONObject(i).getString("browser_download_url")).matches()) {
                     break;
