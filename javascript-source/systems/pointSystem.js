@@ -32,8 +32,8 @@
             penaltys = [],
             pointsBonus = false,
             pointsBonusAmount = 0,
-            pointNameSingle = $.getSetIniDbString('pointSettings', 'pointNameSingle', 'point'),
-            pointNameMultiple = $.getSetIniDbString('pointSettings', 'pointNameMultiple', 'points'),
+            pointNameSingle = $.getSetIniDbString('pointSettings', 'pointNameSingle', 'Punkt'),
+            pointNameMultiple = $.getSetIniDbString('pointSettings', 'pointNameMultiple', 'Punkte'),
             pointsMessage = $.getSetIniDbString('pointSettings', 'pointsMessage', '(userprefix) du hast im Moment (pointsstring) und du warst im Chat für (time).'),
             userCache = {};
 
@@ -54,12 +54,12 @@
         pointsMessage = $.getIniDbString('pointSettings', 'pointsMessage');
         activeBonus = $.getIniDbNumber('pointSettings', 'activeBonus');
 
-        if (!pointNameMultiple.equalsIgnoreCase('points') || !pointNameSingle.equalsIgnoreCase('point')) {
+        if (!pointNameMultiple.equalsIgnoreCase('Punkte') || !pointNameSingle.equalsIgnoreCase('Punkt')) {
             tempPointNameSingle = pointNameSingle;
             tempPointNameMultiple = pointNameMultiple;
         }
 
-        if (!pointNameMultiple.equalsIgnoreCase('points') || !pointNameSingle.equalsIgnoreCase('point')) {
+        if (!pointNameMultiple.equalsIgnoreCase('Punkte') || !pointNameSingle.equalsIgnoreCase('Punkt')) {
             registerNewPointsCommands(tempPointNameSingle, tempPointNameMultiple, true);
         }
     }

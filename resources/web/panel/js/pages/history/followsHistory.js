@@ -100,11 +100,7 @@ $(function() {
 
     // On load more time button.
     $('#follows-history-load-more').on('click', function() {
-        let table = $('#followsHistoryTable').DataTable({
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/German.json"
-                }
-    }),
+        let table = $('#followsHistoryTable').DataTable(),
             dataCount = table.rows().count(),
             follows = [];
         // Only allow more data to be loaded once the last click was fully loaded.

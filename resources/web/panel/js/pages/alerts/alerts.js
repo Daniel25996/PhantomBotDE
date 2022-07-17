@@ -69,7 +69,7 @@ $(function() {
                 'role': 'form'
             })
             // Add the toggle for follow alerts.
-            .append(helpers.getDropdownGroup('follow-toggle', 'Follow-Alerts aktivieren', (e.followToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+            .append(helpers.getDropdownGroup('follow-toggle', 'Follow-Alarme aktivieren', (e.followToggle === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
                 'Wenn eine Nachricht im Kanal gesendet werden soll, wenn jemand folgt. Dadurch wird auch die Belohnung umgeschaltet.'))
             // Add the the text area for the follow message.
             .append(helpers.getTextAreaGroup('follow-message', 'text', 'Follow Nachricht', '', e.followMessage,

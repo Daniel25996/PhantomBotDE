@@ -204,7 +204,23 @@
 
         // custom commands without tags can be directed towards users by mods
         if (!tagFound && atEnabled && event.getArgs()[0] !== undefined && $.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Mod)) {
-            return $.jsString(event.getArgs()[0]) + ' -> ' + unescapeTags(message);
+            // Check if an @ is in the tag, if not, adding it
+            if (!event.getArgs()[0].contains('@')) {
+                var new_tag = '@' + event.getArgs()[0]
+            } else {
+                var new_tag = event.getArgs()[0]
+            }
+            // Split the message into parts
+            var part = message.split(" ");
+            // Query whether the command is written in color ('/me ')
+            if (part[0]=="/me"){
+                    //  remove '/me ' if present
+                    message=message.replace('/me ', '')
+                //  write '/me ' at the beginning of the message
+                return '/me ' + new_tag + ' -> ' + unescapeTags(message);
+            } else {
+                return new_tag + ' -> ' + unescapeTags(message);
+            }
         }
 
         return unescapeTags(message);
