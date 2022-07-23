@@ -259,7 +259,7 @@ $(function () {
             let newMax = (max === undefined ? Number.MAX_SAFE_INTEGER : max);
 
             if (isNaN(parseInt(obj.val())) || isNaN(obj.val()) || parseInt(obj.val()) < min || parseInt(obj.val()) > newMax) {
-                return 'Bitte geben Sie eine Zahl ein, die größer oder gleich ' + min + (max !== undefined ? 'und kleiner oder gleich ' + newMax + '' : '') + 'ist.';
+                return 'Bitte gebe eine Zahl ein, die größer oder gleich ' + min + (max !== undefined ? 'und kleiner oder gleich ' + newMax + '' : '') + 'ist.';
             }
             return null;
         });
@@ -1155,12 +1155,12 @@ $(function () {
                 } else {
                     html = 'Version ' + version + ' des PhantomBotDE ist jetzt zum Download verfügbar! <br>' +
                             'Du siehst die Änderungen dieser Version ' +
-                            $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://github.com/PhantomBotDE/PhantomBotDE/releases/' + version).append('hier')[0].outerHTML + '. <br>' +
+                            $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://github.com/Daniel25996/PhantomBotDE/releases/' + version).append('hier')[0].outerHTML + '. <br>' +
                             'Hole dir deine eigene Kopie der Version ' + version + ' des PhantomBotDE ' +
                             $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', downloadLink).append('hier.')[0].outerHTML + ' <br>' +
-                            '<b>Bitte prüfen ' +
+                            '<b>Bitte seh dir ' +
                             $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('diesen Guide')[0].outerHTML +
-                            ', wie man PhantomBotDE richtig aktualisiert.</b>';
+                            ', wie man den PhantomBot richtig aktualisiert.</b>';
                 }
 
                 // Set the total notifications.
