@@ -26,10 +26,10 @@ Dies ist eine deutsche Übersetzung vom PhantomBot, ich übersetzte immer die ne
 
 ## Wie kann ich folgen/mitmachen?
 
-* Schau dir unsere [Versionshistorie](https://github.com/PhantomBot/PhantomBot/releases) an.
+* Schau dir die [Versionshistorie](https://github.com/PhantomBot/PhantomBot/releases) an.
 * Wenn du ein Entwickler bist, kannst dir den Quellcode ansehen und Pull-Requests einreichen. Wir stellen dir einen [Leitfaden](https://github.com/PhantomBot/PhantomBot/blob/master/development-resources/DEVSETUP.md) zur Einrichtung deiner Entwicklungsumgebung zur Verfügung.
 * Bitte vergesse nicht einen **watch** dazulassen, und unserem **Repo einen Stern zu geben**!
-* Ein großes Dankeschön geht raus an die Leute [die zu dem Projekt beigetragen haben](https://github.com/PhantomBotDE/PhantomBotDE/graphs/contributors).
+* Ein großes Dankeschön geht raus an die Leute [die zu dem Projekt beigetragen haben](https://github.com/Daniel25996/PhantomBotDE/graphs/contributors).
 
 ## Vorraussetzungen
 
@@ -42,7 +42,7 @@ x86_64 (64-bit) Architekturen
 * Keine Voraussetzungen
 
 ## Installation
-Bitte lesen Sie die plattformspezifische Installationsdokumentation.
+Bitte lese die plattformspezifische Installationsdokumentation.
 * [Windows](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/windows)
 * Linux:
   * [Ubuntu 16.04](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/ubuntu)
