@@ -49,8 +49,8 @@ Bitte lesen Sie die plattformspezifische Installationsdokumentation.
   * [CentOS 7](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/centos)
 * [macOS](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/macos)
 
-## Upgrading PhantomBot
-Detaillierte Upgrade-Anweisungen finden Sie in unserer [Dokumentation](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot).
+## PhantomBot updaten
+Eine detaillierte Update-Anweisung findest du in der [Dokumentation](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot).
 
 ## License
 
