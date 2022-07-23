@@ -756,25 +756,25 @@
             userGroups[PERMISSION.Mod] = 'Moderator';
             $.setIniDbString('groups', PERMISSION.Mod.toString(), 'Moderator');
         }
-        if (!userGroups[PERMISSION.Sub] || !$.equalsIgnoreCase(userGroups[PERMISSION.Sub], 'Subscriber')) {
-            userGroups[PERMISSION.Sub] = 'Subscriber';
-            $.setIniDbString('groups', PERMISSION.Sub.toString(), 'Subscriber');
+        if (!userGroups[PERMISSION.Sub] || !$.equalsIgnoreCase(userGroups[PERMISSION.Sub], 'Abonennt')) {
+            userGroups[PERMISSION.Sub] = 'Abonnent';
+            $.setIniDbString('groups', PERMISSION.Sub.toString(), 'Abonnent');
         }
-        if (!userGroups[PERMISSION.Donator] || !$.equalsIgnoreCase(userGroups[PERMISSION.Donator], 'Donator')) {
-            userGroups[PERMISSION.Donator] = 'Donator';
-            $.setIniDbString('groups', PERMISSION.Donator.toString(), 'Donator');
+        if (!userGroups[PERMISSION.Donator] || !$.equalsIgnoreCase(userGroups[PERMISSION.Donator], 'Spender')) {
+            userGroups[PERMISSION.Donator] = 'Spender';
+            $.setIniDbString('groups', PERMISSION.Donator.toString(), 'Spender');
         }
         if (!userGroups[PERMISSION.VIP] || !$.equalsIgnoreCase(userGroups[PERMISSION.VIP], 'VIP')) {
             userGroups[PERMISSION.VIP] = 'VIP';
             $.setIniDbString('groups', PERMISSION.VIP.toString(), 'VIP');
         }
-        if (!userGroups[PERMISSION.Regular] || !$.equalsIgnoreCase(userGroups[PERMISSION.Regular], 'Regular')) {
-            userGroups[PERMISSION.Regular] = 'Regular';
-            $.setIniDbString('groups', PERMISSION.Regular.toString(), 'Regular');
+        if (!userGroups[PERMISSION.Regular] || !$.equalsIgnoreCase(userGroups[PERMISSION.Regular], 'Stammzuschauer')) {
+            userGroups[PERMISSION.Regular] = 'Stammzuschauer';
+            $.setIniDbString('groups', PERMISSION.Regular.toString(), 'Stammzuschauer');
         }
-        if (!userGroups[PERMISSION.Viewer] || !$.equalsIgnoreCase(userGroups[PERMISSION.Viewer], 'Viewer')) {
-            userGroups[PERMISSION.Viewer] = 'Viewer';
-            $.setIniDbString('groups', PERMISSION.Viewer.toString(), 'Viewer');
+        if (!userGroups[PERMISSION.Viewer] || !$.equalsIgnoreCase(userGroups[PERMISSION.Viewer], 'Zuschauer')) {
+            userGroups[PERMISSION.Viewer] = 'Zuschauer';
+            $.setIniDbString('groups', PERMISSION.Viewer.toString(), 'Zuschauer');
         }
 
         setUserGroupById($.ownerName.toLowerCase(), PERMISSION.Caster);

@@ -234,19 +234,19 @@
             } else if (commands[command].groupId === $.PERMISSION.Mod) {
                 group = 'Moderator';
             } else if (commands[command].groupId === $.PERMISSION.Sub) {
-                group = 'Subscriber';
+                group = 'Abonnent';
             } else if (commands[command].groupId === $.PERMISSION.Donator) {
-                group = 'Donator';
+                group = 'Spender';
             } else if (commands[command].groupId === $.PERMISSION.VIP) {
                 group = 'VIP';
             } else if (commands[command].groupId === $.PERMISSION.Regular) {
-                group = 'Regular';
+                group = 'Stammzuschauer';
             } else if (commands[command].groupId === $.PERMISSION.Viewer) {
-                group = 'Viewer';
+                group = 'Zuschauer';
             }
             return group;
         }
-        return 'Viewer';
+        return 'Zuschauer';
     }
 
     /*
@@ -284,19 +284,19 @@
             } else if (commands[command].subcommands[subcommand].groupId === $.PERMISSION.Mod) {
                 group = 'Moderator';
             } else if (commands[command].subcommands[subcommand].groupId === $.PERMISSION.Sub) {
-                group = 'Subscriber';
+                group = 'Abonnent';
             } else if (commands[command].subcommands[subcommand].groupId === $.PERMISSION.Donator) {
-                group = 'Donator';
+                group = 'Spender';
             } else if (commands[command].subcommands[subcommand].groupId === $.PERMISSION.VIP) {
                 group = 'VIP';
             } else if (commands[command].subcommands[subcommand].groupId === $.PERMISSION.Regular) {
-                group = 'Regular';
+                group = 'Stammzuschauer';
             } else if (commands[command].subcommands[subcommand].groupId === $.PERMISSION.Viewer) {
-                group = 'Viewer';
+                group = 'Zuschauer';
             }
             return group;
         }
-        return 'Viewer';
+        return 'Zuschauer';
     }
 
     /*
