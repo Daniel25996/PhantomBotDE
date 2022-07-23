@@ -83,8 +83,8 @@ $(run = function() {
                 { 'width': '45%', 'targets': 0 }
             ],
             'columns': [
-                { 'title': 'Benutzer' },
-                { 'title': 'Berechtigung' },
+                { 'title': 'Benutzer', 'defaultContent': '<i>null</i>' },
+                { 'title': 'Berechtigung', 'defaultContent': '<i>null</i>' },
                 { 'title': 'Aktionen' }
             ]
         });

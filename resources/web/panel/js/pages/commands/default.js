@@ -110,8 +110,8 @@ $(function() {
                         { 'width': '45%', 'targets': 0 }
                     ],
                     'columns': [
-                        { 'title': 'Befehl' },
-                        { 'title': 'Benutzerlevel' },
+                        { 'title': 'Befehl', 'defaultContent': '<i>null</i>' },
+                        { 'title': 'Benutzerlevel', 'defaultContent': '<i>null</i>' },
                         { 'title': 'Status' },
                         { 'title': 'Aktionen' }
                     ]

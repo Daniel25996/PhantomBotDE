@@ -12,17 +12,17 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/e78b35af8f2442d7a8c5040c41164739)](https://www.codacy.com/gh/PhantomBot/PhantomBot/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=PhantomBot/PhantomBot&amp;utm_campaign=Badge_Grade)
 [![GitHub license](https://img.shields.io/github/license/PhantomBotDE/PhantomBotDE)](https://github.com/PhantomBot/PhantomBot/blob/master/LICENSE)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/Daniel25996/PhantomBotDE?sort=semver)](https://github.com/Daniel25996/PhantomBotDE/releases/latest)
-**PhantomBotDE** ist ein Twitch Chat-Bot powered by Java.
-PhantomBot hat viele moderne Eigenschaften standardmäßig, wie zum Beispiel ein eingebautes Webpanel, verbesserte Moderation, Minispiele für den Chat, ein Punktesystem, Verlosungen, benutzerdefinierte Befehle, einen Musikpalyer mit Songrequest Funktion und mehr! PhantomBotDE kann mit vielen Services verbunden werden, wie  [Discord](https://discordapp.com/), [Twitter](https://twitter.com), [TipeeeStream](https://tipeeestream.com), [StreamLabs](https://streamlabs.com) und [StreamElements](https://streamelements.com)!
+**PhantomBo** ist ein Twitch Chat-Bot powered by Java.
+PhantomBot hat viele moderne Eigenschaften standardmäßig, wie zum Beispiel ein eingebautes Webpanel, verbesserte Moderation, Minispiele für den Chat, ein Punktesystem, Verlosungen, benutzerdefinierte Befehle, einen Musikpalyer mit Songrequest Funktion und mehr! PhantomBot kann mit vielen Services verbunden werden, wie  [Discord](https://discordapp.com/), [Twitter](https://twitter.com), [TipeeeStream](https://tipeeestream.com), [StreamLabs](https://streamlabs.com) und [StreamElements](https://streamelements.com)!
 
 Zusätzliche Funktionen werden durch die Verwendung von Modulen von Drittanbietern ermöglicht.
 
-Dies ist der deutsche Fork von PhantomBotDE, wir übersetzten immer die neuste Version, sobald die größten Bugs behoben sind.
+Dies ist eine deutsche Übersetzung vom PhantomBot, ich übersetzte immer die neuste Version.
 
-<u>**Bitte beachtet, dass die ursprünglichen Entwickler keinen Support für PhantomBotDE anbieten (können).**</u>
+<u>**Bitte beachtet, dass die ursprünglichen Entwickler keinen Support für den PhantomBotDE anbieten (können).**</u>
 
 ## Links zum ursprünglichen englischen PhantomBot
-* [Get PhantomBot](https://phantom.bot/ "PhantomBot")
+[Get PhantomBot](https://phantombot.github.io/PhantomBot/ "PhantomBot Guides and OAuth")
 * [Security Policy](https://github.com/PhantomBot/PhantomBot/blob/master/SECURITY.md)
 * [Documentation & Installation Instructions](https://phantom.bot/guides/ "Documenation and Installation Instructions")
 * [Follow us on Twitter](https://www.twitter.com/PhantomBot "PhantomBot Twitter")
@@ -30,7 +30,7 @@ Dies ist der deutsche Fork von PhantomBotDE, wir übersetzten immer die neuste V
 
 ## Wie kann ich folgen/mitmachen?
 
-* Schau dir unsere [Versionshistorie](https://github.com/PhantomBotDE/PhantomBotDE/releases) an.
+* Schau dir unsere [Versionshistorie](https://github.com/PhantomBot/PhantomBot/releases) an.
 * Wenn du ein Entwickler bist, kannst dir den Quellcode ansehen und Pull-Requests einreichen. Wir stellen dir einen [Leitfaden](https://github.com/PhantomBot/PhantomBot/blob/master/development-resources/DEVSETUP.md) zur Einrichtung deiner Entwicklungsumgebung zur Verfügung.
 * Bitte vergesse nicht einen **watch** dazulassen, und unserem **Repo einen Stern zu geben**!
 * Ein großes Dankeschön geht raus an die Leute [die zu dem Projekt beigetragen haben](https://github.com/PhantomBotDE/PhantomBotDE/graphs/contributors).
@@ -53,6 +53,7 @@ Bitte lesen Sie die plattformspezifische Installationsdokumentation.
   * [CentOS 7](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/centos)
 * [macOS](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/macos)
 
+## Upgrading PhantomBot
 Detaillierte Upgrade-Anweisungen finden Sie in unserer [Dokumentation](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot).
 
 ## License

@@ -30,7 +30,10 @@ $.lang.register('ticketrafflesystem.winner.multiple', 'Die Gewinner:innen dieser
 $.lang.register('ticketrafflesystem.winner.single.award', 'Der/Die Gewinner:in wurde ausgezeichnet: $1!');
 $.lang.register('ticketrafflesystem.winner.multiple.award', 'Die Gewinner wurden ausgezeichnet: $1 jeder!');
 $.lang.register('ticketrafflesystem.only.buy.amount', 'Du kannst nur $1 Ticket(s) kaufen.');
+$.lang.register('ticketrafflesystem.only.buy.amount.limiter', 'Du kannst nur $1 Ticket(s) kaufen, weil du einen Bonus von $2% erhältst.');
 $.lang.register('ticketrafflesystem.limit.hit', 'Du kannst nicht mehr als $1 Ticket(s) kaufen.');
+$.lang.register('ticketrafflesystem.limit.hit.limiter', 'Du darfst maximal $1 Ticket(s) kaufen, da du dafür einen Bonus von $2% erhältst. Du hast derzeit $3 Tickets.');
+$.lang.register('ticketrafflesystem.settings.err.open', 'Du kannst diese Einstellung nicht ändern, während eine Verlosung offen ist!');
 $.lang.register('ticketrafflesystem.err.not.following', 'Du musst dem Kanal folgen, um teilnehmen zu können.');
 $.lang.register('ticketrafflesystem.err.points', 'Du hast nicht genügend $1, um teilzunehmen.');
 $.lang.register('ticketrafflesystem.err.not.enoughUsers', 'Es haben nicht genügend Benutzer teilgenommen, um $1 Gewinner:innen zu ziehen.');
@@ -39,6 +42,8 @@ $.lang.register('ticketrafflesystem.entered.bonus', '$1 (+ $2 Bonus) Einträge z
 $.lang.register('ticketrafflesystem.usage', 'Verwendung: !traffle open [Max. Einträge] [Stammzuschauer-Ticket-Multiplikator (default = 1)] [Abonnenten-Ticket-Multiplikator  (default = 1)] [Ticketpreis] [-followers]');
 $.lang.register('ticketrafflesystem.msg.enabled', 'Nachrichten zur Ticketverlosung wurden aktiviert.');
 $.lang.register('ticketrafflesystem.msg.disabled', 'Nachrichten zur Ticketverlosung wurden deaktiviert.');
+$.lang.register('ticketrafflesystem.limiter.enabled', 'Ticketbegrenzer aktiviert. Bonustickets zählen zum Ticketlimit!');
+$.lang.register('ticketrafflesystem.limiter.disabled', 'Ticketbegrenzer deaktiviert. Bonustickets zählen nicht zum Ticketlimit!');
 $.lang.register('ticketrafflesystem.ticket.usage', 'Verwendung: !tickets (Menge / max) - Und du hast aktuell $1 Tickets.');
 $.lang.register('ticketrafflesystem.ticket.usage.bonus', 'Verwendung: !tickets (Menge / max) - Und du hast derzeit $1 (+ $2 Bonus) Tickets.');
 $.lang.register('ticketrafflesystem.auto.msginterval.set', 'Meldungsintervall auf $1 Minuten festgelegt.');
