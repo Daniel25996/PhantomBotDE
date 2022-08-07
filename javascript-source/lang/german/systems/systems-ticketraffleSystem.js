@@ -33,6 +33,8 @@ $.lang.register('ticketrafflesystem.only.buy.amount', 'Du kannst nur $1 Ticket(s
 $.lang.register('ticketrafflesystem.only.buy.amount.limiter', 'Du kannst nur $1 Ticket(s) kaufen, weil du einen Bonus von $2% erhältst.');
 $.lang.register('ticketrafflesystem.limit.hit', 'Du kannst nicht mehr als $1 Ticket(s) kaufen.');
 $.lang.register('ticketrafflesystem.limit.hit.limiter', 'Du darfst maximal $1 Ticket(s) kaufen, da du dafür einen Bonus von $2% erhältst. Du hast derzeit $3 Tickets.');
+$.lang.register('ticketrafflesystem.limit.hit.bonus', 'Du darfst nur maximal $1 Ticket(s) kaufen. Du hast aktuell $2 (+ $3 Bonus) Tickets.');
+$.lang.register('ticketrafflesystem.limit.hit.limiter.bonus', 'Du darfst maximal $1 Ticket(s) kaufen, da du dafür einen Bonus von $2% erhältst. Du hast derzeit $3 (+ $4 Bonus) Tickets.');
 $.lang.register('ticketrafflesystem.settings.err.open', 'Du kannst diese Einstellung nicht ändern, während eine Verlosung offen ist!');
 $.lang.register('ticketrafflesystem.err.not.following', 'Du musst dem Kanal folgen, um teilnehmen zu können.');
 $.lang.register('ticketrafflesystem.err.points', 'Du hast nicht genügend $1, um teilzunehmen.');

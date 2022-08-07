@@ -18,7 +18,7 @@ Dies ist eine deutsche Übersetzung vom PhantomBot, ich übersetzte immer die ne
 <u>**Bitte beachtet, dass die ursprünglichen Entwickler keinen Support für den PhantomBotDE anbieten (können).**</u>
 
 ## Links zum ursprünglichen englischen PhantomBot
-[Get PhantomBot](https://phantombot.github.io/PhantomBot/ "PhantomBot Guides and OAuth")
+[Get PhantomBot](https://phantombot.dev "PhantomBot Guides and OAuth")
 * [Security Policy](https://github.com/PhantomBot/PhantomBot/blob/master/SECURITY.md)
 * [Documentation & Installation Instructions](https://phantom.bot/guides/ "Documenation and Installation Instructions")
 * [Follow us on Twitter](https://www.twitter.com/PhantomBot "PhantomBot Twitter")
@@ -43,14 +43,14 @@ x86_64 (64-bit) Architekturen
 
 ## Installation
 Bitte lese die plattformspezifische Installationsdokumentation.
-* [Windows](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/windows)
+* [Windows](https://phantombot.dev/guides/#guide=content/setupbot/windows)
 * Linux:
-  * [Ubuntu 16.04](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/ubuntu)
-  * [CentOS 7](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/centos)
-* [macOS](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/macos)
+  * [Ubuntu 16.04](https://phantombot.dev/guides/#guide=content/setupbot/ubuntu)
+  * [CentOS 7](https://phantombot.dev/guides/#guide=content/setupbot/centos)
+* [macOS](https://phantombot.dev/guides/#guide=content/setupbot/macos)
 
 ## PhantomBot updaten
-Eine detaillierte Update-Anweisung findest du in der [Dokumentation](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot).
+Eine detaillierte Update-Anweisung findest du in der [Dokumentation](https://phantombot.dev/guides/#guide=content/setupbot/updatebot).
 
 ## License
 

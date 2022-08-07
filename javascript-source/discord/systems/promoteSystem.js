@@ -110,7 +110,16 @@
                     return;
                 }
 
-                var twitchID = $.username.getID(args[1]);
+                var twitchID;
+                try {
+                    twitchID = $.username.getID(args[1]);
+                } catch (ex) {
+                    if (ex.javaException === undefined || !ex.javaException.getMessage().contains("Illegal character in query")) {
+                        throw ex;
+                    }
+
+                    twitchID = $.javaString('0');
+                }
                 if (twitchID.equals('0')) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.noacct', args[1]));
                     return;

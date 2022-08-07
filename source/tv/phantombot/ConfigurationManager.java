@@ -162,7 +162,7 @@ public class ConfigurationManager {
         changed |= setDefaultIfMissing(startProperties, PROP_MSGLIMIT30, "19.0", "Set default msglimit30");
         changed |= setDefaultIfMissing(startProperties, PROP_MUSICENABLE, "true", "Set default musicenable");
 
-        changed |= setDefaultIfMissing(startProperties, PROP_USEROLLBAR, "false", "Disable Rollbar");
+        changed |= setDefaultIfMissing(startProperties, PROP_USEROLLBAR, "false", "Enable Rollbar");
 
         /* Check to see if there's a webOauth set */
         changed |= setDefaultIfMissing(startProperties, PROP_WEBAUTH, ConfigurationManager::generateWebAuth, "New webauth key has been generated for " + BOTLOGIN_TXT_LOCATION);
@@ -272,14 +272,14 @@ public class ConfigurationManager {
                 com.gmt2001.Console.out.print("Wir empfehlen die Verwendung von Ouroboros: https://github.com/gmt2001/ouroboros\r\n");
             } else if (SystemUtils.IS_OS_WINDOWS) {
                 com.gmt2001.Console.out.print("PhantomBot hat festgestellt, dass auf deinem Gerät Windows ausgeführt wird.\r\n");
-                com.gmt2001.Console.out.print("Hier ist die Einrichtungsanleitung für Windows: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/windows");
+                com.gmt2001.Console.out.print("Hier ist die Einrichtungsanleitung für Windows: https://phantombot.dev/guides/#guide=content/setupbot/windows");
             } else if (SystemUtils.IS_OS_LINUX) {
                 com.gmt2001.Console.out.print("PhantomBot hat festgestellt, dass auf deinem Gerät Linux ausgeführt wird.\r\n");
-                com.gmt2001.Console.out.print("Hier ist die Einrichtungsanleitung für Ubuntu: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/ubuntu\r\n");
-                com.gmt2001.Console.out.print("Hier ist die Einrichtungsanleitung für CentOS: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/centos");
+                com.gmt2001.Console.out.print("Hier ist die Einrichtungsanleitung für Ubuntu: https://phantombot.dev/guides/#guide=content/setupbot/ubuntu\r\n");
+                com.gmt2001.Console.out.print("Hier ist die Einrichtungsanleitung für CentOS: https://phantombot.dev/guides/#guide=content/setupbot/centos");
             } else if (SystemUtils.IS_OS_MAC) {
                 com.gmt2001.Console.out.print("PhantomBot hat festgestellt, dass auf deinem Gerät macOS ausgeführt wird.\r\n");
-                com.gmt2001.Console.out.print("Hier ist die Einrichtungsanleitung für macOS: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/macos");
+                com.gmt2001.Console.out.print("Hier ist die Einrichtungsanleitung für macOS: https://phantombot.dev/guides/#guide=content/setupbot/macos");
             } else if (SystemUtils.IS_OS_FREE_BSD || SystemUtils.IS_OS_NET_BSD || SystemUtils.IS_OS_OPEN_BSD) {
                 com.gmt2001.Console.out.print("PhantomBot hat festgestellt, dass auf deinem Gerät BSD ausgeführt wird.\r\n");
                 com.gmt2001.Console.out.print("Entschuldigung, wir haben keine Einrichtungsanleitungen für dieses Betriebssystem.\r\n");

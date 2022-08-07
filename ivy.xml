@@ -23,8 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <ivy-module version="2.0">
     <info organisation="tv.phantombot" module="phantombot" revision="custom" status="integration" branch="custom">
         <license name="The GNU General Public License, Version 3" url="https://www.gnu.org/licenses/gpl-3.0.html"/>
-        <repository name="PhantomBotDE" url="https://github.com/PhantomBotDE/PhantomBotDE" artifacts="true"/>
-        <description homepage="https://phantombot.github.io/PhantomBot/">
+        <repository name="PhantomBotDE" url="https://github.com/Daniel25996/PhantomBotDE" artifacts="true"/>
+        <description homepage="https://phantombot.dev">
             PhantomBotDE ist ein Twitch-Chat-Bot, der mit Java läuft wird.
             PhantomBot verfügt über viele moderne Funktionen wie ein integriertes Webpanel,
             verbesserte Moderation, Spiele, ein Punktesystem, Verlosungen, benutzerdefinierte Befehle,

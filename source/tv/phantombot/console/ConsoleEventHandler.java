@@ -19,6 +19,7 @@ package tv.phantombot.console;
 import com.gmt2001.GamesListUpdater;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.HttpResponse;
+import com.gmt2001.Reflect;
 import com.gmt2001.TwitchAPIv5;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -410,6 +411,7 @@ public final class ConsoleEventHandler implements Listener {
             String randomUser = PhantomBot.generateRandomString(10);
             String tier = "1000";
             String months = ((int) (Math.random() * 100.0)) + "";
+            String giftMonths = ((int) (Math.random() * 100.0)) + "";
             if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
                 randomUser = argument[0];
             }
@@ -422,14 +424,18 @@ public final class ConsoleEventHandler implements Listener {
                 months = argument[2];
             }
 
-            com.gmt2001.Console.out.println("[CONSOLE] Executing giftsubtest (User: " + randomUser + ", tier: " + tier + ", months: " + months + ")");
+            if (argument != null && argument.length > 3 && !argument[3].isBlank()) {
+                giftMonths = argument[3];
+            }
 
-            EventBus.instance().postAsync(new TwitchSubscriptionGiftEvent(PhantomBot.instance().getChannelName(), randomUser, months, tier));
+            com.gmt2001.Console.out.println("[CONSOLE] Executing giftsubtest (User: " + randomUser + ", tier: " + tier + ", months: " + months + ", giftMonths: " + giftMonths + ")");
+
+            EventBus.instance().postAsync(new TwitchSubscriptionGiftEvent(PhantomBot.instance().getChannelName(), randomUser, months, tier, giftMonths));
             return;
         }
 
         /**
-         * @consolecommand massanongiftsubtest (amount) (tier) - Test a mass anonymous gift subscription.
+         * @consolecommand massanonsubgifttest (amount) (tier) - Test a mass anonymous gift subscription.
          */
         if (message.equalsIgnoreCase("massanonsubgifttest")) {
             String amount = "10";
@@ -453,6 +459,7 @@ public final class ConsoleEventHandler implements Listener {
             String userName = PhantomBot.generateRandomString(8);
             String tier = "1000";
             String months = ((int) (Math.random() * 100.0)) + "";
+            String giftMonths = ((int) (Math.random() * 100.0)) + "";
             if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
                 userName = argument[0];
             }
@@ -464,8 +471,12 @@ public final class ConsoleEventHandler implements Listener {
             if (argument != null && argument.length > 2 && !argument[2].isBlank()) {
                 months = argument[2];
             }
-            com.gmt2001.Console.out.println("Testing Anonymous Gift Sub (Username = " + userName + ", months: " + months + ", tier: " + tier + ")");
-            EventBus.instance().postAsync(new TwitchAnonymousSubscriptionGiftEvent(userName, months, tier));
+
+            if (argument != null && argument.length > 3 && !argument[3].isBlank()) {
+                giftMonths = argument[3];
+            }
+            com.gmt2001.Console.out.println("Testing Anonymous Gift Sub (Username = " + userName + ", months: " + months + ", tier: " + tier + ", giftMonths: " + giftMonths + ")");
+            EventBus.instance().postAsync(new TwitchAnonymousSubscriptionGiftEvent(userName, months, tier, giftMonths));
             return;
         }
 
@@ -619,30 +630,6 @@ public final class ConsoleEventHandler implements Listener {
 
             PhantomBot.exitOK();
             return;
-        }
-
-        /**
-         * @consolecommand apioauth - Updates the API (Caster) oauth.
-         */
-        if (message.equalsIgnoreCase("apioauth")) {
-            System.out.print("Please enter your oauth token that you generated from https://phantombot.github.io/PhantomBot/oauth/ while logged as the caster: ");
-
-            String apiOAuth = System.console().readLine().trim();
-
-            transaction.setProperty("apioauth", apiOAuth);
-            changed = true;
-        }
-
-        /**
-         * @consolecommand oauth - Updates the Chat (Bot) oauth.
-         */
-        if (message.equalsIgnoreCase("oauth")) {
-            System.out.print("Please enter your oauth token that you generated from https://phantombot.github.io/PhantomBot/oauth/ while logged as the bot: ");
-
-            String apiOAuth = System.console().readLine().trim();
-
-            transaction.setProperty("oauth", apiOAuth);
-            changed = true;
         }
 
         /**
@@ -855,6 +842,14 @@ public final class ConsoleEventHandler implements Listener {
             }
         }
 
+        /**
+         * @consolecommand dumpheap - Creates a heap dump
+         */
+        if (message.equalsIgnoreCase("dumpheap")) {
+            Reflect.dumpHeap();
+            com.gmt2001.Console.out.println("Heap Dump Completed");
+        }
+
         // Check to see if any settings have been changed.
         if (changed) {
             transaction.commit();
@@ -870,13 +865,15 @@ public final class ConsoleEventHandler implements Listener {
 
         String botname;
 
-        if (PhantomBot.instance() != null && PhantomBot.instance().getBotName() != null) {
-            botname = PhantomBot.instance().getBotName();
-        } else {
-            botname = "__NOINSTANCE";
-        }
+        if (PhantomBot.instance() != null) {
+            if (PhantomBot.instance().getBotName() != null) {
+                botname = PhantomBot.instance().getBotName();
+            } else {
+                botname = "__NOBOTNAME";
+            }
 
-        // Handle any other commands.
-        PhantomBot.instance().handleCommand(botname, event.getMessage());
+            // Handle any other commands.
+            PhantomBot.instance().handleCommand(botname, event.getMessage());
+        }
     }
 }

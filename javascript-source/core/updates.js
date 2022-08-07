@@ -431,4 +431,145 @@
         $.consoleLn('PhantomBot Update 3.6.3 abgeschlossen!');
         $.inidb.SetBoolean('updates', '', 'installedv3.6.3', true);
     }
+
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.4') || !$.inidb.GetBoolean('updates', '', 'installedv3.6.4-1')) {
+        $.consoleLn('Starte PhantomBot Update 3.6.4 Updates...');
+        if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.4')) {
+            var subMessage = $.getIniDbString('subscribeHandler', 'subscribeMessage', '(name) hat abonniert!'),
+                    primeSubMessage = $.getIniDbString('subscribeHandler', 'primeSubscribeMessage', '(name) hat  mit Prime abonniert!'),
+                    reSubMessage = $.getIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) hat (months) Monate hintereinander abonniert!'),
+                    giftSubMessage = $.getIniDbString('subscribeHandler', 'giftSubMessage', '(name) hat (recipient) ein Abo geschenkt!'),
+                    giftAnonSubMessage = $.getIniDbString('subscribeHandler', 'giftAnonSubMessage', 'Ein anonymer Zuschauer hat ein Abo an (recipient) verschenkt!'),
+                    massGiftSubMessage = $.getIniDbString('subscribeHandler', 'massGiftSubMessage', '(name) hat gerade (amount) Abos an zufällige Personen verschenkt!'),
+                    massAnonGiftSubMessage = $.getIniDbString('subscribeHandler', 'massAnonGiftSubMessage', 'Ein anonymer Zuschauer hat (amount) Abos an zufällige Personen verschenkt!'),
+                    subReward = $.getIniDbNumber('subscribeHandler', 'subscribeReward', 0),
+                    reSubReward = $.getIniDbNumber('subscribeHandler', 'reSubscribeReward', 0),
+                    giftSubReward = $.getIniDbNumber('subscribeHandler', 'giftSubReward', 0),
+                    massGiftSubReward = $.getIniDbNumber('subscribeHandler', 'massGiftSubReward', 0),
+                    customEmote = $.getIniDbString('subscribeHandler', 'resubEmote', ''),
+                    subPlan1000 = $.getIniDbString('subscribeHandler', 'subPlan1000', 'Tier 1'),
+                    subPlan2000 = $.getIniDbString('subscribeHandler', 'subPlan2000', 'Tier 2'),
+                    subPlan3000 = $.getIniDbString('subscribeHandler', 'subPlan3000', 'Tier 3'),
+                    subPlanPrime = $.getIniDbString('subscribeHandler', 'subPlanPrime', 'Prime');
+
+            var createSingleJson = function (val) {
+                return JSON.stringify({
+                    '1000': val,
+                    '2000': val,
+                    '3000': val,
+                    'Prime': val
+                });
+            };
+
+            var createSingleNPJson = function (val) {
+                return JSON.stringify({
+                    '1000': val,
+                    '2000': val,
+                    '3000': val
+                });
+            };
+
+            var createDuoJson = function (val, vPrime) {
+                return JSON.stringify({
+                    '1000': val,
+                    '2000': val,
+                    '3000': val,
+                    'Prime': vPrime
+                });
+            };
+
+            var createMultiJson = function (v1000, v2000, v3000, vPrime) {
+                return JSON.stringify({
+                    '1000': v1000,
+                    '2000': v2000,
+                    '3000': v3000,
+                    'Prime': vPrime
+                });
+            };
+
+            $.inidb.set('subscribeHandler', 'subscribeMessage', createDuoJson(subMessage, primeSubMessage));
+            $.inidb.del('subscribeHandler', 'primeSubscribeMessage');
+            $.inidb.set('subscribeHandler', 'reSubscribeMessage', createSingleJson(reSubMessage));
+            $.inidb.set('subscribeHandler', 'giftSubMessage', createSingleNPJson(giftSubMessage));
+            $.inidb.set('subscribeHandler', 'giftAnonSubMessage', createSingleNPJson(giftAnonSubMessage));
+            $.inidb.set('subscribeHandler', 'massGiftSubMessage', createSingleNPJson($.jsString(massGiftSubMessage).replace('(reward)', '(giftreward)')));
+            $.inidb.set('subscribeHandler', 'massAnonGiftSubMessage', createSingleNPJson(massAnonGiftSubMessage));
+            $.inidb.del('subscribeHandler', 'primeSubscriberWelcomeToggle');
+            $.inidb.set('subscribeHandler', 'subscribeReward', createSingleJson(subReward));
+            $.inidb.set('subscribeHandler', 'reSubscribeReward', createSingleJson(reSubReward));
+            $.inidb.set('subscribeHandler', 'giftSubReward', createSingleNPJson(giftSubReward));
+            $.inidb.set('subscribeHandler', 'massGiftSubReward', createSingleNPJson(massGiftSubReward));
+            $.inidb.set('subscribeHandler', 'subEmote', createSingleJson(customEmote));
+            $.inidb.del('subscribeHandler', 'resubEmote');
+            $.inidb.set('subscribeHandler', 'subPlans', createMultiJson(subPlan1000, subPlan2000, subPlan3000, subPlanPrime));
+            $.inidb.del('subscribeHandler', 'subPlan1000');
+            $.inidb.del('subscribeHandler', 'subPlan2000');
+            $.inidb.del('subscribeHandler', 'subPlan3000');
+            $.inidb.del('subscribeHandler', 'subPlanPrime');
+        }
+
+        var commands = $.inidb.GetKeyList('tempDisabledCommandScript', ''),
+            i, cmd;
+
+        for (i in commands) {
+            cmd = $.jsString(commands[i]);
+            if (cmd.toLowerCase() !== cmd) {
+                $.inidb.set('tempDisabledCommandScript', cmd.toLowerCase(), $.inidb.get('tempDisabledCommandScript', cmd));
+                $.inidb.del('tempDisabledCommandScript', cmd);
+            }
+        }
+
+        if ($.inidb.FileExists('traffleState')) {
+            var bools = JSON.parse($.inidb.get('traffleState', 'bools'));
+
+            $.inidb.SetBoolean('traffleState', '', 'followers', (bools[0] === 'true'));
+            $.inidb.RemoveKey('traffleState', '', 'bools');
+
+            if ($.inidb.FileExists('traffleSettings')) {
+                $.inidb.set('traffleState', 'isActive', $.inidb.get('traffleSettings', 'isActive'));
+                $.inidb.RemoveKey('traffleSettings', '', 'isActive');
+            }
+        }
+
+        $.inidb.set('traffleSettings', 'traffleMSGToggle', $.inidb.get('settings', 'tRaffleMSGToggle'));
+        $.inidb.set('traffleSettings', 'traffleMessage', $.inidb.get('settings', 'traffleMessage'));
+        $.inidb.set('traffleSettings', 'traffleMessageInterval', $.inidb.get('settings', 'traffleMessageInterval'));
+        $.inidb.set('traffleSettings', 'traffleLimiter', $.inidb.get('settings', 'tRaffleLimiter'));
+        $.inidb.RemoveKey('settings', '', 'traffleMSGToggle');
+        $.inidb.RemoveKey('settings', '', 'traffleMessage');
+        $.inidb.RemoveKey('settings', '', 'traffleMessageInterval');
+        $.inidb.RemoveKey('settings', '', 'traffleLimiter');
+
+        var calcBonus = function(subTMulti, regTMulti, user, tickets) {
+            var bonus = tickets;
+
+            if ($.isSub(user, null)) {
+                bonus = tickets * subTMulti;
+            } else if ($.isRegular(user)) {
+                bonus = tickets * regTMulti;
+            }
+
+            return Math.round(bonus - tickets);
+        };
+
+        if ($.inidb.FileExists('ticketsList') && $.inidb.HasKey('traffleState', '', 'subTMulti') && $.inidb.HasKey('traffleState', '', 'regTMulti')) {
+            var users = $.inidb.GetKeyList('ticketsList', ''),
+                first = $.inidb.get('ticketsList', users[0]),
+                subTMulti = parseInt($.inidb.get('traffleState', 'subTMulti')),
+                regTMulti = parseInt($.inidb.get('traffleState', 'regTMulti'));
+
+            if (!isNaN(first)) { // NaN = JSON present instead of a basic ticket count (old value) - do not update the list
+                for (var i = 0; i < users.length; i++) {
+                    var times = $.getIniDbNumber('ticketsList', users[i]),
+                        bonus = calcBonus(subTMulti, regTMulti, users[i], times);
+
+                    $.inidb.set('ticketsList', users[i], JSON.stringify([times, bonus]));
+                }
+            }
+        }
+
+        $.consoleLn('PhantomBot Update 3.6.4 abgeschlossen!');
+        $.inidb.SetBoolean('updates', '', 'installedv3.6.4', true);
+        $.inidb.SetBoolean('updates', '', 'installedv3.6.4-1', true);
+    }
 })();

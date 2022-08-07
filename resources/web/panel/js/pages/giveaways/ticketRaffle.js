@@ -17,7 +17,7 @@
 
 $(run = function () {
     socket.getDBValues('traffle_module_status_toggle', {
-        tables: ['modules', 'traffleSettings', 'traffleState'],
+        tables: ['modules', 'traffleState', 'traffleState'],
         keys: ['./systems/ticketraffleSystem.js', 'isActive', 'hasDrawn']
     }, true, function (e) {
         if (!helpers.handleModuleLoadUp(['ticketRaffleListModule', 'ticketRaffleModal'], e['./systems/ticketraffleSystem.js'], 'ticketRaffleModuleToggle')) {
@@ -43,8 +43,10 @@ $(run = function () {
                         'html': results[i].key
                     }));
 
+                    let ticketJSON = JSON.parse(results[i].value);
+
                     tr.append($('<td/>', {
-                        'html': results[i].value
+                        'html': (ticketJSON[0] + ' (+' + ticketJSON[1] + ')')
                     }));
 
                     table.append(tr);
@@ -56,7 +58,7 @@ $(run = function () {
          * @function Loads the raffle winners.
          */
         helpers.temp.loadWinners = function () {
-            socket.getDBValue('get_traffle_list', 'traffleresults', 'winner', function (results) {
+            socket.getDBValue('get_traffle_winner_list', 'traffleresults', 'winner', function (results) {
                 const table = $('#ticket-raffle-table');
 
                 $('#traffle-list-title').text("Gewinner der Ticketverlosung");
@@ -87,7 +89,7 @@ $(run = function () {
                 'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout&' : '?') + 'parent=' + location.hostname
             }));
         } else {
-            $('#ticket-raffle-chat').html('Aufgrund von Änderungen durch Twitch kann das Chat-Panel nicht mehr angezeigt werden, es sei denn, du aktivierst SSL im PhantomBot-Panel und änderst den Baseport auf 443. Dies funktioniert möglicherweise nicht ohne Root-Privilegien.<br /><br />Alternativ können Sie sich mit der GitHub-Version des Panels bei <a href="https://phantombot.github.io/PhantomBot/">PhantomBot - GitHub.io</a> anmelden, die dieses Problem umgeht.<br /><br />Hilfe beim Einrichten von SSL finden Sie in <a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/integrations/twitchembeds">diesem Handbuch</a>.');
+            $('#ticket-raffle-chat').html('Aufgrund von Änderungen durch Twitch kann das Chat-Panel nicht mehr angezeigt werden, es sei denn, du aktivierst SSL im PhantomBot-Panel und änderst den Baseport auf 443. Dies funktioniert möglicherweise nicht ohne Root-Privilegien.<br /><br />Alternativ können Sie sich mit der GitHub-Version des Panels bei <a href="https://phantombot.dev/">PhantomBot</a> anmelden, die dieses Problem umgeht.<br /><br />Hilfe beim Einrichten von SSL finden Sie in <a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds">diesem Handbuch</a>.');
             $('#ticket-raffle-chat').addClass('box-body');
         }
 
@@ -218,7 +220,7 @@ $(function () {
             'class': 'fa fa-unlock-alt'
         })).append('&nbsp; Öffnen').removeClass('btn-warning').addClass('btn-success');
 
-        $('#traffle-list-title').val("Ticket Raffle List");
+        $('#traffle-list-title').val('Liste der Ticketverlosung');
 
         // Close raffle but don't pick a winner.
         socket.sendCommand('reset_traffle_cmd', 'traffle reset', function () {
@@ -229,8 +231,8 @@ $(function () {
     // Raffle settings button.
     $('#ticket-raffle-settings').on('click', function () {
         socket.getDBValues('get_traffle_settings', {
-            tables: ['settings', 'settings', 'settings', 'settings'],
-            keys: ['tRaffleMSGToggle', 'traffleMessage', 'traffleMessageInterval', 'tRaffleLimiter']
+            tables: ['traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings'],
+            keys: ['traffleMSGToggle', 'traffleMessage', 'traffleMessageInterval', 'traffleLimiter']
         }, true, function (e) {
             helpers.getModal('traffle-settings-modal', 'Ticketverlosungseinstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
@@ -255,10 +257,10 @@ $(function () {
                 'role': 'form'
             })
             // Add toggle for warning messages.
-            .append(helpers.getDropdownGroup('warning-msg', 'Warnmeldungen aktivieren', (e['tRaffleMSGToggle'] === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+            .append(helpers.getDropdownGroup('warning-msg', 'Warnmeldungen aktivieren', (e['traffleMSGToggle'] === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
                 'Wenn Warnmeldungen in den Chat gesendet werden sollen, wenn ein Benutzer bereits eingetragen ist oder nicht genügend Punkte hat.'))
             // Add toggle for the limiter.
-            .append(helpers.getDropdownGroup('limiter', 'Begrenzer aktivieren', (e['tRaffleLimiter'] === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+            .append(helpers.getDropdownGroup('limiter', 'Begrenzer aktivieren', (e['traffleLimiter'] === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
                 'EIN: Begrenzt die Gesamtzahl der Tickets (gekaufte Tickets + Bonustickets) auf das eingestellte Limit. AUS: Beschränken Sie nur die Anzahl der gekauften Tickets.'))))),
             function () {
                 let raffleTimer = $('#msg-timer'),
@@ -272,8 +274,8 @@ $(function () {
                         break;
                     default:
                         socket.updateDBValues('update_traffle_settings_2', {
-                            tables: ['settings', 'settings', 'settings', 'settings'],
-                            keys: ['tRaffleMSGToggle', 'traffleMessage', 'traffleMessageInterval', 'tRaffleLimiter'],
+                            tables: ['traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings'],
+                            keys: ['traffleMSGToggle', 'traffleMessage', 'traffleMessageInterval', 'traffleLimiter'],
                             values: [warningMsg, raffleMessage.val(), raffleTimer.val(), limiter]
                         }, function () {
                             socket.sendCommand('raffle_reload_cmd', 'reloadtraffle', function () {
