@@ -1160,7 +1160,7 @@ $(function () {
                             $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', downloadLink).append('hier.')[0].outerHTML + ' <br>' +
                             '<b>Bitte seh dir ' +
                             $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://phantombot.dev/guides/#guide=content/setupbot/updatebot').append('diesen Guide')[0].outerHTML +
-                            ', wie man den PhantomBot richtig aktualisiert.</b>';
+                            ' an, wie man den PhantomBot richtig aktualisiert.</b>';
                 }
 
                 // Set the total notifications.
