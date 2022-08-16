@@ -18,7 +18,7 @@
 // Function that querys all of the data we need.
 $(run = function () {
     socket.getDBValues('raffle_module_status_toggle', {
-        tables: ['modules', 'raffleSettings'],
+        tables: ['modules', 'raffleState'],
         keys: ['./systems/raffleSystem.js', 'isActive']
     }, true, function (e) {
         if (!helpers.handleModuleLoadUp(['raffleListModule', 'raffleModal'], e['./systems/raffleSystem.js'], 'raffleModuleToggle')) {
@@ -28,7 +28,7 @@ $(run = function () {
         }
 
         // Update the open button to close if the raffle is active.
-        if (e['isActive'] === 'true') {
+        if (e['isActive'] === '1' || e['isActive'] === 'true') {
             $('#open-or-close-raffle').html($('<i/>', {
                 'class': 'fa fa-lock'
             })).append('&nbsp; Schließen').removeClass('btn-success').addClass('btn-warning');
@@ -39,9 +39,9 @@ $(run = function () {
          */
         helpers.temp.loadRaffleList = function () {
             socket.getDBTableValues('get_raffle_list', 'raffleList', function (results) {
-                socket.getDBValues ('get_raffle_hasDrawn', {
-                    tables: ['raffleState', 'raffleresults'],
-                    keys: ['bools', 'winner'],
+                socket.getDBValues('get_raffle_hasDrawn', {
+                    tables: ['raffleState', 'raffleState', 'raffleresults', 'raffleSettings'],
+                    keys: ['hasDrawn', 'isActive', 'winner', 'noRepickSame']
                 }, true, function(e) {
                     const table = $('#raffle-table');
                     var hasDrawn = false,
@@ -54,14 +54,23 @@ $(run = function () {
                         $('#draw-raffle').prop('disabled', false);
                     }
 
-                    if (e['bools'] !== undefined) {
-                        var json = JSON.parse(e['bools']);
-                        // Check length of bools array here, previous savedStates are missing the new bool (pre 3.7.0)
-                        if (json.length >= 5 && json[4]) {
+                    if (e['hasDrawn'] !== undefined) {
+                        hasDrawn = (e['hasDrawn'] === '1' || e['hasDrawn'] === 'true');
+                        if (hasDrawn) {
                             var winners = JSON.parse(e['winner']);
-                            hasDrawn = true;
                             length = (length < winners.length) ? winners.length : length;
                         }
+                    }
+
+                    //Update Buttons
+                    if (e['isActive'] === '0' || e['isActive'] === 'false') {
+                        $('#open-or-close-raffle').html($('<i/>', {
+                            'class': 'fa fa-unlock-alt'
+                        })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
+                    } else if (e['isActive'] === '1' || e['isActive'] === 'true') {
+                        $('#open-or-close-raffle').html($('<i/>', {
+                            'class': 'fa fa-lock'
+                        })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
                     }
 
                     // Remove current data content.
@@ -74,7 +83,7 @@ $(run = function () {
                             'html': ((i < results.length && results[i] !== undefined) ? results[i].key : '')
                         }))
                         .append($('<td/>', {
-                            'html' : ((hasDrawn && i < winners.length && winners[i] !== undefined) ? winners[i] : '')
+                            'html': ((hasDrawn && i < winners.length && winners[i] !== undefined) ? winners[i] : '')
                         }));
 
                         table.append(tr);
@@ -111,7 +120,7 @@ $(function () {
     // Module toggle.
     $('#raffleModuleToggle').on('change', function () {
         socket.sendCommandSync('raffle_system_module_toggle_cmd',
-                'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./systems/raffleSystem.js', run);
+            'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./systems/raffleSystem.js', run);
     });
 
     // Title update
@@ -121,7 +130,7 @@ $(function () {
         } else {
             $('#raffle-cost-title').html('Kosten');
         }
-    })
+    });
 
     // Open/close raffle button.
     $('#open-or-close-raffle').on('click', function () {
@@ -165,12 +174,12 @@ $(function () {
             socket.sendCommandSync('close_raffle_cmd', 'raffle close', function () {
                 // Alert the user.
                 toastr.success('Die Verlosung wurde erfolgreich beendet!');
-                // Reload to remove the winner.
-                helpers.temp.loadRaffleList();
                 // Update the button.
                 $('#open-or-close-raffle').html($('<i/>', {
                     'class': 'fa fa-unlock-alt'
-                })).append('&nbsp; Öffnen').removeClass('btn-warning').addClass('btn-success');
+                })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
+                // Reload to remove the winner.
+                helpers.temp.loadRaffleList();
             });
         }
     });
@@ -191,7 +200,7 @@ $(function () {
                     // Reload
                     helpers.temp.loadRaffleList();
                 });
-            }
+        }
     });
 
     // Reset raffle button.
@@ -225,34 +234,34 @@ $(function () {
             helpers.getModal('raffle-settings-modal', 'Verlosungseinstellungen', 'Speichern', $('<form/>', {
                 'role': 'form'
             })
-                // Add the div for the col boxes.
-                .append($('<div/>', {
-                    'class': 'panel-group',
-                    'id': 'accordion'
-                })
-                // Append first collapsible accordion.
-                .append(helpers.getCollapsibleAccordion('main-1', 'Zeitgesteuerte Nachrichteneinstellungen', $('<form/>', {
-                    'role': 'form'
-                })
-                // Append interval box for the message
-                .append(helpers.getInputGroup('msg-timer', 'number', 'Nachrichtenintervall (Minuten)', '', e['raffleMessageInterval'],
-                        'Wie oft die Verlosungsnachricht in den Chat gesendet werden soll, während eine Verlosung aktiv ist.'))
-                // Append message box for the message
-                .append(helpers.getTextAreaGroup('msg-msg', 'text', 'Verlosungsnachricht', '', e['raffleMessage'],
-                        'Die Nachricht wird in jedem Intervall gesendet, während die Verlosung aktiv ist. Tags: (keyword) und (entries)'))))
-                // Append second collapsible accordion.
-                .append(helpers.getCollapsibleAccordion('main-2', 'Zusätzliche Einstellungen', $('<form/>', {
-                    'role': 'form'
-                })
-                // Add toggle for warning messages.
-                .append(helpers.getDropdownGroup('warning-msg', 'Warnmeldungen aktivieren', (e['raffleMSGToggle'] === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
-                        'Wenn Warnmeldungen im Chat gesendet werden sollen, wenn ein Benutzer bereits eingetragen ist oder nicht genügend Punkte hat.'))
-                // Add toggle for repicks
-                .append(helpers.getDropdownGroup('draw-toggle', 'Mehrere Ziehungen zulassen', (e['noRepickSame'] === 'false' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
-                        'Wenn ein Benutzer mehrmals für eine Verlosung gezogen werden kann.'))
-                // Add toggle for repicks
-                .append(helpers.getDropdownGroup('whisper-toggle', 'Dem Gewinner flüstern', (e['raffleWhisperWinner'] === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
-                        'Wenn der Gewinner der Verlosung ein Flüsternachricht bekommen soll, dass er gewonnen hat.'))))),
+            // Add the div for the col boxes.
+            .append($('<div/>', {
+                'class': 'panel-group',
+                'id': 'accordion'
+            })
+            // Append first collapsible accordion.
+            .append(helpers.getCollapsibleAccordion('main-1', 'Zeitgesteuerte Nachrichteneinstellungen', $('<form/>', {
+                'role': 'form'
+            })
+            // Append interval box for the message
+            .append(helpers.getInputGroup('msg-timer', 'number', 'Nachrichtenintervall (Minuten)', '', e['raffleMessageInterval'],
+                'Wie oft die Verlosungsnachricht in den Chat gesendet werden soll, während eine Verlosung aktiv ist.'))
+            // Append message box for the message
+            .append(helpers.getTextAreaGroup('msg-msg', 'text', 'Verlosungsnachricht', '', e['raffleMessage'],
+                'Die Nachricht wird in jedem Intervall gesendet, während die Verlosung aktiv ist. Tags: (keyword) und (entries)'))))
+            // Append second collapsible accordion.
+            .append(helpers.getCollapsibleAccordion('main-2', 'Zusätzliche Einstellungen', $('<form/>', {
+                'role': 'form'
+            })
+            // Add toggle for warning messages.
+            .append(helpers.getDropdownGroup('warning-msg', 'Warnmeldungen aktivieren', (e['raffleMSGToggle'] === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                'Wenn Warnmeldungen im Chat gesendet werden sollen, wenn ein Benutzer bereits eingetragen ist oder nicht genügend Punkte hat.'))
+            // Add toggle for repicks
+            .append(helpers.getDropdownGroup('draw-toggle', 'Mehrere Ziehungen zulassen', (e['noRepickSame'] === 'false' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                'Wenn ein Benutzer mehrmals für eine Verlosung gezogen werden kann.'))
+            // Add toggle for repicks
+            .append(helpers.getDropdownGroup('whisper-toggle', 'Dem Gewinner flüstern', (e['raffleWhisperWinner'] === 'true' ? 'Ja' : 'Nein'), ['Ja', 'Nein'],
+                'Wenn der Gewinner der Verlosung ein Flüsternachricht bekommen soll, dass er gewonnen hat.'))))),
             function () {
                 let raffleTimer = $('#msg-timer'),
                     raffleMessage = $('#msg-msg'),
